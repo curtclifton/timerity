@@ -1,0 +1,684 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4D0A160D1A33E051001BF0BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A160C1A33E051001BF0BE /* AppDelegate.swift */; };
+		4D0A160F1A33E051001BF0BE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A160E1A33E051001BF0BE /* ViewController.swift */; };
+		4D0A16121A33E051001BF0BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D0A16101A33E051001BF0BE /* Main.storyboard */; };
+		4D0A16141A33E051001BF0BE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D0A16131A33E051001BF0BE /* Images.xcassets */; };
+		4D0A16171A33E051001BF0BE /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D0A16151A33E051001BF0BE /* LaunchScreen.xib */; };
+		4D0A16231A33E051001BF0BE /* TimerityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A16221A33E051001BF0BE /* TimerityTests.swift */; };
+		4D0A16331A33E06A001BF0BE /* WatchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D0A16321A33E06A001BF0BE /* WatchKit.framework */; };
+		4D0A16391A33E06A001BF0BE /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A16381A33E06A001BF0BE /* InterfaceController.swift */; };
+		4D0A163B1A33E06A001BF0BE /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A163A1A33E06A001BF0BE /* NotificationController.swift */; };
+		4D0A163D1A33E06A001BF0BE /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A163C1A33E06A001BF0BE /* GlanceController.swift */; };
+		4D0A163F1A33E06A001BF0BE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D0A163E1A33E06A001BF0BE /* Images.xcassets */; };
+		4D0A16431A33E06A001BF0BE /* Timerity Watch App.app in Resources */ = {isa = PBXBuildFile; fileRef = 4D0A16421A33E06A001BF0BE /* Timerity Watch App.app */; };
+		4D0A164A1A33E06A001BF0BE /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D0A16491A33E06A001BF0BE /* Interface.storyboard */; };
+		4D0A164C1A33E06A001BF0BE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D0A164B1A33E06A001BF0BE /* Images.xcassets */; };
+		4D0A164F1A33E06A001BF0BE /* Timerity WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 4D0A16301A33E06A001BF0BE /* Timerity WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4D0A161D1A33E051001BF0BE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4D0A15FF1A33E051001BF0BE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4D0A16061A33E051001BF0BE;
+			remoteInfo = Timerity;
+		};
+		4D0A16441A33E06A001BF0BE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4D0A15FF1A33E051001BF0BE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4D0A16411A33E06A001BF0BE;
+			remoteInfo = "Timerity Watch App";
+		};
+		4D0A164D1A33E06A001BF0BE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4D0A15FF1A33E051001BF0BE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4D0A162F1A33E06A001BF0BE;
+			remoteInfo = "Timerity WatchKit Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4D0A16561A33E06A001BF0BE /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				4D0A164F1A33E06A001BF0BE /* Timerity WatchKit Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		4D0A16071A33E051001BF0BE /* Timerity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timerity.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D0A160B1A33E051001BF0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4D0A160C1A33E051001BF0BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4D0A160E1A33E051001BF0BE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		4D0A16111A33E051001BF0BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		4D0A16131A33E051001BF0BE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		4D0A16161A33E051001BF0BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		4D0A161C1A33E051001BF0BE /* TimerityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimerityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D0A16211A33E051001BF0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4D0A16221A33E051001BF0BE /* TimerityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerityTests.swift; sourceTree = "<group>"; };
+		4D0A16301A33E06A001BF0BE /* Timerity WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Timerity WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D0A16321A33E06A001BF0BE /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = System/Library/Frameworks/WatchKit.framework; sourceTree = SDKROOT; };
+		4D0A16361A33E06A001BF0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4D0A16371A33E06A001BF0BE /* PushNotificationPayload.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PushNotificationPayload.json; sourceTree = "<group>"; };
+		4D0A16381A33E06A001BF0BE /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
+		4D0A163A1A33E06A001BF0BE /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		4D0A163C1A33E06A001BF0BE /* GlanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlanceController.swift; sourceTree = "<group>"; };
+		4D0A163E1A33E06A001BF0BE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		4D0A16421A33E06A001BF0BE /* Timerity Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Timerity Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D0A16481A33E06A001BF0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4D0A16491A33E06A001BF0BE /* Interface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Interface.storyboard; sourceTree = "<group>"; };
+		4D0A164B1A33E06A001BF0BE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4D0A16041A33E051001BF0BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D0A16191A33E051001BF0BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D0A162D1A33E06A001BF0BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D0A16331A33E06A001BF0BE /* WatchKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4D0A15FE1A33E051001BF0BE = {
+			isa = PBXGroup;
+			children = (
+				4D0A16091A33E051001BF0BE /* Timerity */,
+				4D0A161F1A33E051001BF0BE /* TimerityTests */,
+				4D0A16341A33E06A001BF0BE /* Timerity WatchKit Extension */,
+				4D0A16461A33E06A001BF0BE /* Timerity Watch App */,
+				4D0A16311A33E06A001BF0BE /* Frameworks */,
+				4D0A16081A33E051001BF0BE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4D0A16081A33E051001BF0BE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4D0A16071A33E051001BF0BE /* Timerity.app */,
+				4D0A161C1A33E051001BF0BE /* TimerityTests.xctest */,
+				4D0A16301A33E06A001BF0BE /* Timerity WatchKit Extension.appex */,
+				4D0A16421A33E06A001BF0BE /* Timerity Watch App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4D0A16091A33E051001BF0BE /* Timerity */ = {
+			isa = PBXGroup;
+			children = (
+				4D0A160C1A33E051001BF0BE /* AppDelegate.swift */,
+				4D0A160E1A33E051001BF0BE /* ViewController.swift */,
+				4D0A16101A33E051001BF0BE /* Main.storyboard */,
+				4D0A16131A33E051001BF0BE /* Images.xcassets */,
+				4D0A16151A33E051001BF0BE /* LaunchScreen.xib */,
+				4D0A160A1A33E051001BF0BE /* Supporting Files */,
+			);
+			path = Timerity;
+			sourceTree = "<group>";
+		};
+		4D0A160A1A33E051001BF0BE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4D0A160B1A33E051001BF0BE /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4D0A161F1A33E051001BF0BE /* TimerityTests */ = {
+			isa = PBXGroup;
+			children = (
+				4D0A16221A33E051001BF0BE /* TimerityTests.swift */,
+				4D0A16201A33E051001BF0BE /* Supporting Files */,
+			);
+			path = TimerityTests;
+			sourceTree = "<group>";
+		};
+		4D0A16201A33E051001BF0BE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4D0A16211A33E051001BF0BE /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4D0A16311A33E06A001BF0BE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4D0A16321A33E06A001BF0BE /* WatchKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4D0A16341A33E06A001BF0BE /* Timerity WatchKit Extension */ = {
+			isa = PBXGroup;
+			children = (
+				4D0A16381A33E06A001BF0BE /* InterfaceController.swift */,
+				4D0A163A1A33E06A001BF0BE /* NotificationController.swift */,
+				4D0A163C1A33E06A001BF0BE /* GlanceController.swift */,
+				4D0A163E1A33E06A001BF0BE /* Images.xcassets */,
+				4D0A16351A33E06A001BF0BE /* Supporting Files */,
+			);
+			path = "Timerity WatchKit Extension";
+			sourceTree = "<group>";
+		};
+		4D0A16351A33E06A001BF0BE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4D0A16361A33E06A001BF0BE /* Info.plist */,
+				4D0A16371A33E06A001BF0BE /* PushNotificationPayload.json */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4D0A16461A33E06A001BF0BE /* Timerity Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				4D0A16491A33E06A001BF0BE /* Interface.storyboard */,
+				4D0A164B1A33E06A001BF0BE /* Images.xcassets */,
+				4D0A16471A33E06A001BF0BE /* Supporting Files */,
+			);
+			path = "Timerity Watch App";
+			sourceTree = "<group>";
+		};
+		4D0A16471A33E06A001BF0BE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4D0A16481A33E06A001BF0BE /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4D0A16061A33E051001BF0BE /* Timerity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4D0A16261A33E051001BF0BE /* Build configuration list for PBXNativeTarget "Timerity" */;
+			buildPhases = (
+				4D0A16031A33E051001BF0BE /* Sources */,
+				4D0A16041A33E051001BF0BE /* Frameworks */,
+				4D0A16051A33E051001BF0BE /* Resources */,
+				4D0A16561A33E06A001BF0BE /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4D0A164E1A33E06A001BF0BE /* PBXTargetDependency */,
+			);
+			name = Timerity;
+			productName = Timerity;
+			productReference = 4D0A16071A33E051001BF0BE /* Timerity.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4D0A161B1A33E051001BF0BE /* TimerityTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4D0A16291A33E051001BF0BE /* Build configuration list for PBXNativeTarget "TimerityTests" */;
+			buildPhases = (
+				4D0A16181A33E051001BF0BE /* Sources */,
+				4D0A16191A33E051001BF0BE /* Frameworks */,
+				4D0A161A1A33E051001BF0BE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4D0A161E1A33E051001BF0BE /* PBXTargetDependency */,
+			);
+			name = TimerityTests;
+			productName = TimerityTests;
+			productReference = 4D0A161C1A33E051001BF0BE /* TimerityTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4D0A162F1A33E06A001BF0BE /* Timerity WatchKit Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4D0A16531A33E06A001BF0BE /* Build configuration list for PBXNativeTarget "Timerity WatchKit Extension" */;
+			buildPhases = (
+				4D0A162C1A33E06A001BF0BE /* Sources */,
+				4D0A162D1A33E06A001BF0BE /* Frameworks */,
+				4D0A162E1A33E06A001BF0BE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4D0A16451A33E06A001BF0BE /* PBXTargetDependency */,
+			);
+			name = "Timerity WatchKit Extension";
+			productName = "Timerity WatchKit Extension";
+			productReference = 4D0A16301A33E06A001BF0BE /* Timerity WatchKit Extension.appex */;
+			productType = "com.apple.product-type.watchkit-extension";
+		};
+		4D0A16411A33E06A001BF0BE /* Timerity Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4D0A16501A33E06A001BF0BE /* Build configuration list for PBXNativeTarget "Timerity Watch App" */;
+			buildPhases = (
+				4D0A16401A33E06A001BF0BE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Timerity Watch App";
+			productName = "Timerity Watch App";
+			productReference = 4D0A16421A33E06A001BF0BE /* Timerity Watch App.app */;
+			productType = "com.apple.product-type.application.watchapp";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4D0A15FF1A33E051001BF0BE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0620;
+				ORGANIZATIONNAME = curtclifton.net;
+				TargetAttributes = {
+					4D0A16061A33E051001BF0BE = {
+						CreatedOnToolsVersion = 6.2;
+					};
+					4D0A161B1A33E051001BF0BE = {
+						CreatedOnToolsVersion = 6.2;
+						TestTargetID = 4D0A16061A33E051001BF0BE;
+					};
+					4D0A162F1A33E06A001BF0BE = {
+						CreatedOnToolsVersion = 6.2;
+					};
+					4D0A16411A33E06A001BF0BE = {
+						CreatedOnToolsVersion = 6.2;
+					};
+				};
+			};
+			buildConfigurationList = 4D0A16021A33E051001BF0BE /* Build configuration list for PBXProject "Timerity" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4D0A15FE1A33E051001BF0BE;
+			productRefGroup = 4D0A16081A33E051001BF0BE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4D0A16061A33E051001BF0BE /* Timerity */,
+				4D0A161B1A33E051001BF0BE /* TimerityTests */,
+				4D0A162F1A33E06A001BF0BE /* Timerity WatchKit Extension */,
+				4D0A16411A33E06A001BF0BE /* Timerity Watch App */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4D0A16051A33E051001BF0BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D0A16121A33E051001BF0BE /* Main.storyboard in Resources */,
+				4D0A16171A33E051001BF0BE /* LaunchScreen.xib in Resources */,
+				4D0A16141A33E051001BF0BE /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D0A161A1A33E051001BF0BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D0A162E1A33E06A001BF0BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D0A16431A33E06A001BF0BE /* Timerity Watch App.app in Resources */,
+				4D0A163F1A33E06A001BF0BE /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D0A16401A33E06A001BF0BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D0A164A1A33E06A001BF0BE /* Interface.storyboard in Resources */,
+				4D0A164C1A33E06A001BF0BE /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4D0A16031A33E051001BF0BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D0A160F1A33E051001BF0BE /* ViewController.swift in Sources */,
+				4D0A160D1A33E051001BF0BE /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D0A16181A33E051001BF0BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D0A16231A33E051001BF0BE /* TimerityTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D0A162C1A33E06A001BF0BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D0A163B1A33E06A001BF0BE /* NotificationController.swift in Sources */,
+				4D0A16391A33E06A001BF0BE /* InterfaceController.swift in Sources */,
+				4D0A163D1A33E06A001BF0BE /* GlanceController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4D0A161E1A33E051001BF0BE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4D0A16061A33E051001BF0BE /* Timerity */;
+			targetProxy = 4D0A161D1A33E051001BF0BE /* PBXContainerItemProxy */;
+		};
+		4D0A16451A33E06A001BF0BE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4D0A16411A33E06A001BF0BE /* Timerity Watch App */;
+			targetProxy = 4D0A16441A33E06A001BF0BE /* PBXContainerItemProxy */;
+		};
+		4D0A164E1A33E06A001BF0BE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4D0A162F1A33E06A001BF0BE /* Timerity WatchKit Extension */;
+			targetProxy = 4D0A164D1A33E06A001BF0BE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		4D0A16101A33E051001BF0BE /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4D0A16111A33E051001BF0BE /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		4D0A16151A33E051001BF0BE /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4D0A16161A33E051001BF0BE /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4D0A16241A33E051001BF0BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4D0A16251A33E051001BF0BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4D0A16271A33E051001BF0BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				INFOPLIST_FILE = Timerity/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		4D0A16281A33E051001BF0BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				INFOPLIST_FILE = Timerity/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		4D0A162A1A33E051001BF0BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = TimerityTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Timerity.app/Timerity";
+			};
+			name = Debug;
+		};
+		4D0A162B1A33E051001BF0BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = TimerityTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Timerity.app/Timerity";
+			};
+			name = Release;
+		};
+		4D0A16511A33E06A001BF0BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IBSC_MODULE = Timerity_WatchKit_Extension;
+				INFOPLIST_FILE = "Timerity Watch App/Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Debug;
+		};
+		4D0A16521A33E06A001BF0BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				IBSC_MODULE = Timerity_WatchKit_Extension;
+				INFOPLIST_FILE = "Timerity Watch App/Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Release;
+		};
+		4D0A16541A33E06A001BF0BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Timerity WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		4D0A16551A33E06A001BF0BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "Timerity WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4D0A16021A33E051001BF0BE /* Build configuration list for PBXProject "Timerity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4D0A16241A33E051001BF0BE /* Debug */,
+				4D0A16251A33E051001BF0BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4D0A16261A33E051001BF0BE /* Build configuration list for PBXNativeTarget "Timerity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4D0A16271A33E051001BF0BE /* Debug */,
+				4D0A16281A33E051001BF0BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		4D0A16291A33E051001BF0BE /* Build configuration list for PBXNativeTarget "TimerityTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4D0A162A1A33E051001BF0BE /* Debug */,
+				4D0A162B1A33E051001BF0BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		4D0A16501A33E06A001BF0BE /* Build configuration list for PBXNativeTarget "Timerity Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4D0A16511A33E06A001BF0BE /* Debug */,
+				4D0A16521A33E06A001BF0BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		4D0A16531A33E06A001BF0BE /* Build configuration list for PBXNativeTarget "Timerity WatchKit Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4D0A16541A33E06A001BF0BE /* Debug */,
+				4D0A16551A33E06A001BF0BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4D0A15FF1A33E051001BF0BE /* Project object */;
+}
