@@ -13,8 +13,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        let settings = UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil)
+        application.registerUserNotificationSettings(settings)
         // Override point for customization after application launch.
         return true
     }
@@ -41,6 +42,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
+    func application(application: UIApplication!, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]!, reply: (([NSObject : AnyObject]!) -> Void)!) {
+        // CCC, 12/10/2014. This schedules a notification, but we also have to handle the case where the app is foregrounded when the notification expires.
+        let notification = UILocalNotification()
+        let oneMinuteHence = NSDate().dateByAddingTimeInterval(60.0)
+        notification.fireDate = oneMinuteHence
+        notification.alertTitle = "Fire!"
+        notification.alertBody = "Release all zigs"
+        application.scheduleLocalNotification(notification)
+        
+        let result: [NSObject: AnyObject] = ["fireDate": oneMinuteHence]
+        reply(result)
+    }
 }
 
