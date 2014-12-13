@@ -10,12 +10,53 @@
             <objects>
                 <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="Timerity_Watch_App" customModuleProvider="target">
                     <items>
-                        <button width="1" alignment="left" title="Tap Me!" id="iG4-vW-dWy">
-                            <connections>
-                                <action selector="buttonTapped" destination="AgC-eL-Hgc" id="8NO-5d-L6F"/>
-                            </connections>
-                        </button>
+                        <table alignment="left" layout="vertical" id="96D-Sp-Sfr">
+                            <items>
+                                <tableRow identifier="TimerRow" id="81L-PO-Hek" customClass="TimerTableRowController" customModule="Timerity_WatchKit_Extension">
+                                    <group key="rootItem" width="1" alignment="left" id="C7D-SN-DHO">
+                                        <items>
+                                            <imageView width="30" height="30" alignment="left" verticalAlignment="center" image="InactiveTimer" id="QiI-m1-2fV"/>
+                                            <group width="0.80000000000000004" alignment="left" verticalAlignment="center" layout="vertical" spacing="0.0" id="99D-Ii-H9e">
+                                                <items>
+                                                    <label alignment="left" text="Timer Name" id="VFq-2l-a8D"/>
+                                                    <group width="1" alignment="left" id="XBJ-sl-TfD">
+                                                        <items>
+                                                            <label alignment="left" text="3m" id="8rZ-AT-VLj">
+                                                                <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                                            </label>
+                                                            <timer alignment="left" previewedSeconds="180" id="qWR-1B-4zy">
+                                                                <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                                            </timer>
+                                                        </items>
+                                                    </group>
+                                                </items>
+                                            </group>
+                                        </items>
+                                    </group>
+                                </tableRow>
+                                <tableRow identifier="AddButton" id="HL0-K1-vQs" customClass="ActionTableRowController" customModule="Timerity_WatchKit_Extension">
+                                    <group key="rootItem" width="1" alignment="left" layout="vertical" id="X7D-Qd-kR5">
+                                        <items>
+                                            <separator alignment="left" id="4CK-Gb-LZF">
+                                                <color key="color" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            </separator>
+                                            <button alignment="center" verticalAlignment="center" id="Hsu-SH-9u3">
+                                                <group key="contentGroup" width="1" alignment="left" id="WeX-NR-wRh">
+                                                    <items>
+                                                        <imageView alignment="left" image="Plus" id="053-QQ-cQh"/>
+                                                        <label alignment="left" text="Add Timer" id="NlN-HP-Wm5"/>
+                                                    </items>
+                                                </group>
+                                            </button>
+                                        </items>
+                                    </group>
+                                </tableRow>
+                            </items>
+                        </table>
                     </items>
+                    <connections>
+                        <outlet property="table" destination="96D-Sp-Sfr" id="raX-5a-m3d"/>
+                    </connections>
                 </controller>
             </objects>
             <point key="canvasLocation" x="235" y="347"/>

@@ -48,5 +48,12 @@ public struct TimerInformation {
     }
 }
 
-// CCC, 12/7/2014. Need functions to get [TimerInformation] from a given URL and to write [TimerInformation] to a given URL
+public func timersFromURL(url: NSURL) -> [TimerInformation] {
+// CCC, 12/12/2014. stub in to return test data
+// CCC, 12/12/2014. implement
+}
+
+public func writeTimers(timers: [TimerInformation], #url: NSURL) {
+// CCC, 12/12/2014. implement
+}
 

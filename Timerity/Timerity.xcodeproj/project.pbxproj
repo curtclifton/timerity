@@ -26,6 +26,8 @@
 		4D0A16671A353216001BF0BE /* TimerityData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D0A165C1A353216001BF0BE /* TimerityData.framework */; };
 		4D0A166E1A353216001BF0BE /* TimerityDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A166D1A353216001BF0BE /* TimerityDataTests.swift */; };
 		4D0A16761A35328F001BF0BE /* TimerInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A16751A35328F001BF0BE /* TimerInformation.swift */; };
+		4D1D5FDE1A3C08D30060598C /* TimerTableRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1D5FDD1A3C08D30060598C /* TimerTableRowController.swift */; };
+		4D1D5FE01A3C09070060598C /* ActionTableRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1D5FDF1A3C09070060598C /* ActionTableRowController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +105,8 @@
 		4D0A166C1A353216001BF0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4D0A166D1A353216001BF0BE /* TimerityDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerityDataTests.swift; sourceTree = "<group>"; };
 		4D0A16751A35328F001BF0BE /* TimerInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerInformation.swift; sourceTree = "<group>"; };
+		4D1D5FDD1A3C08D30060598C /* TimerTableRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerTableRowController.swift; sourceTree = "<group>"; };
+		4D1D5FDF1A3C09070060598C /* ActionTableRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionTableRowController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,11 +226,13 @@
 		4D0A16341A33E06A001BF0BE /* Timerity WatchKit Extension */ = {
 			isa = PBXGroup;
 			children = (
-				4D0A16381A33E06A001BF0BE /* InterfaceController.swift */,
-				4D0A163A1A33E06A001BF0BE /* NotificationController.swift */,
 				4D0A163C1A33E06A001BF0BE /* GlanceController.swift */,
 				4D0A163E1A33E06A001BF0BE /* Images.xcassets */,
+				4D0A16381A33E06A001BF0BE /* InterfaceController.swift */,
+				4D0A163A1A33E06A001BF0BE /* NotificationController.swift */,
 				4D0A16351A33E06A001BF0BE /* Supporting Files */,
+				4D1D5FDD1A3C08D30060598C /* TimerTableRowController.swift */,
+				4D1D5FDF1A3C09070060598C /* ActionTableRowController.swift */,
 			);
 			path = "Timerity WatchKit Extension";
 			sourceTree = "<group>";
@@ -541,8 +547,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D0A163B1A33E06A001BF0BE /* NotificationController.swift in Sources */,
+				4D1D5FDE1A3C08D30060598C /* TimerTableRowController.swift in Sources */,
 				4D0A16391A33E06A001BF0BE /* InterfaceController.swift in Sources */,
 				4D0A163D1A33E06A001BF0BE /* GlanceController.swift in Sources */,
+				4D1D5FE01A3C09070060598C /* ActionTableRowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -928,6 +936,7 @@
 				4D0A16701A353216001BF0BE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4D0A16741A353216001BF0BE /* Build configuration list for PBXNativeTarget "TimerityDataTests" */ = {
 			isa = XCConfigurationList;
@@ -936,6 +945,7 @@
 				4D0A16721A353216001BF0BE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
