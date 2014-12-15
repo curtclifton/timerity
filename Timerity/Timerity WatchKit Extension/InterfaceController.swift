@@ -8,7 +8,7 @@
 
 import WatchKit
 import Foundation
-
+import TimerityData
 
 class InterfaceController: WKInterfaceController {
     struct RowTypes {
@@ -18,8 +18,10 @@ class InterfaceController: WKInterfaceController {
     
     @IBOutlet var table: WKInterfaceTable!
     
+    var timerDB: TimerData
+    
     override init() {
-        // Initialize variables here.
+        timerDB = TimerData.fromURL(NSURL()) // CCC, 12/14/2014. Shared URL
         super.init()
         
         // Configure interface objects here.
@@ -27,13 +29,16 @@ class InterfaceController: WKInterfaceController {
     }
 
     override func awakeWithContext(context: AnyObject!) {
-        var rowTypes: [String] = []
-        // CCC, 12/10/2014. Should get actual timers and iterate (up to 19 of) them. If there are more than 19, then just include 18 and replace the 19th with "and X more"
-        for i in 1...5 {
-            rowTypes.append(RowTypes.Timer)
+        let numberOfTimers = timerDB.timers.count <= 19 ? timerDB.timers.count : 18 // leave space for a row saying "and X more"
+        table?.setNumberOfRows(numberOfTimers, withRowType: RowTypes.Timer) // CCC, 12/14/2014. Should get actual timers and iterate (up to 19 of) them. If there are more than 19, then just include 18 and replace the 19th with "and X more"
+        let lastRow = NSIndexSet(index: numberOfTimers)
+        table?.insertRowsAtIndexes(lastRow, withRowType: RowTypes.AddButton)
+        
+        for i in 0 ..< numberOfTimers {
+            if let timerRowController = table?.rowControllerAtIndex(i) as? TimerTableRowController {
+                timerRowController.name?.setText(timerDB.timers[i].name)
+            }
         }
-        rowTypes.append(RowTypes.AddButton)
-        table?.setRowTypes(rowTypes)
     }
     
     override func willActivate() {

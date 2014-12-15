@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D013BE21A3EA61200228BBF /* TimerityData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D0A165C1A353216001BF0BE /* TimerityData.framework */; };
 		4D0A160D1A33E051001BF0BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A160C1A33E051001BF0BE /* AppDelegate.swift */; };
 		4D0A160F1A33E051001BF0BE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A160E1A33E051001BF0BE /* ViewController.swift */; };
 		4D0A16121A33E051001BF0BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D0A16101A33E051001BF0BE /* Main.storyboard */; };
@@ -31,6 +32,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4D013BE31A3EA62000228BBF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4D0A15FF1A33E051001BF0BE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4D0A165B1A353216001BF0BE;
+			remoteInfo = TimerityData;
+		};
 		4D0A161D1A33E051001BF0BE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4D0A15FF1A33E051001BF0BE /* Project object */;
@@ -128,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D013BE21A3EA61200228BBF /* TimerityData.framework in Frameworks */,
 				4D0A16331A33E06A001BF0BE /* WatchKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -361,6 +370,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				4D013BE41A3EA62000228BBF /* PBXTargetDependency */,
 				4D0A16451A33E06A001BF0BE /* PBXTargetDependency */,
 			);
 			name = "Timerity WatchKit Extension";
@@ -573,6 +583,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4D013BE41A3EA62000228BBF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4D0A165B1A353216001BF0BE /* TimerityData */;
+			targetProxy = 4D013BE31A3EA62000228BBF /* PBXContainerItemProxy */;
+		};
 		4D0A161E1A33E051001BF0BE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4D0A16061A33E051001BF0BE /* Timerity */;

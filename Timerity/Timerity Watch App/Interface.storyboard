@@ -33,6 +33,9 @@
                                             </group>
                                         </items>
                                     </group>
+                                    <connections>
+                                        <outlet property="name" destination="VFq-2l-a8D" id="nAl-nX-BTv"/>
+                                    </connections>
                                 </tableRow>
                                 <tableRow identifier="AddButton" id="HL0-K1-vQs" customClass="ActionTableRowController" customModule="Timerity_WatchKit_Extension">
                                     <group key="rootItem" width="1" alignment="left" layout="vertical" id="X7D-Qd-kR5">
