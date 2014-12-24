@@ -51,10 +51,10 @@ public struct TimerInformation {
 // CCC, 12/23/2014. Gross hack box of buggy IR gen
 public struct Box<T> {
     private var valueInABox: [T]
-    init(value: T) {
-        valueInABox = [value]
+    init(wrap: T) {
+        valueInABox = [wrap]
     }
-    var value: T {
+    public var unwrapped: T {
         return valueInABox.first!
     }
 }
@@ -65,6 +65,7 @@ public enum Either<T,U> {
 }
 
 public typealias TimerChangeCallback = TimerInformation -> () // CCC, 12/23/2014. might want Either<TimerInformation, Bool> here to signal deletion
+public typealias TimerError = String // CCC, 12/23/2014. want an enum here
 
 public struct TimerChangeCallbackID {
     let value: Int
@@ -76,6 +77,8 @@ public class TimerData {
     private var nextCallbackID = 0
     private var callbacks: [Int: TimerChangeCallback] = [:] // CCC, 12/23/2014. We'll also need a mapping from timer identifiers to registered callbacks
 
+    
+    //MARK: - Initialization
     public class func fromURL(url: NSURL) -> TimerData {
         var timers: [TimerInformation] = []
 
@@ -100,26 +103,26 @@ public class TimerData {
         self.timers = []
     }
     
+    //MARK: - Mutation
     public func writeToURL(url: NSURL) { // CCC, 12/14/2014. return a success code, error?
         // CCC, 12/14/2014. implement
     }
 
+    // CCC, 12/23/2014. Need API for telling the database that a timer changed
+
+    //MARK: - Callbacks
     //! If there exists a timer wtih the given identifier, then callback function is invoked immediately and whenever the given timer changes in the database. The return value is either a unique integer that can be used to de-register the callback or else an error.
-    public func registerCallbackForTimer(#identifier: String, callback: TimerChangeCallback) -> Either<TimerChangeCallbackID, String> {
-        let matchingTimers = timers.filter {
-            timer in timer.id == identifier
-        }
-        switch matchingTimers.count {
-        case 0:
-            return Either.right(value: Box(value: "no timer with id \(identifier)"))
-        case 1:
+    public func registerCallbackForTimer(#identifier: String, callback: TimerChangeCallback) -> Either<TimerChangeCallbackID, TimerError> {
+        switch _timerWithIdentifier(identifier) {
+        case .left(let timerBox):
             let callbackID = nextCallbackID
             ++nextCallbackID
             callbacks[callbackID] = callback
-            callback(matchingTimers.first!)
-            return Either.left(value: Box(value: TimerChangeCallbackID(value: callbackID)))
-        default:
-            return Either.right(value: Box(value: "mulitple timers with id \(identifier)"))
+            let timerInfo = timerBox.value.unwrapped
+            callback(timerInfo)
+            return Either.left(value: Box(wrap: TimerChangeCallbackID(value: callbackID)))
+        case .right(let errorBox):
+            return Either.right(value: errorBox)
         }
     }
 
@@ -127,8 +130,22 @@ public class TimerData {
         callbacks[identifier.value] = nil
     }
     
-    // CCC, 12/23/2014. Need API for telling the database that a timer changed
     // CCC, 12/23/2014. Need code to call all the callbacks
+    
+    //MARK: - Private API
+    private func _timerWithIdentifier(identifier: String) -> Either<TimerInformation, TimerError> {
+        let matchingTimers = timers.filter {
+            timer in timer.id == identifier
+        }
+        switch matchingTimers.count {
+        case 0:
+            return Either.right(value: Box(wrap: "no timer with id \(identifier)"))
+        case 1:
+            return Either.left(value: Box(wrap: matchingTimers.first!))
+        default:
+            return Either.right(value: Box(wrap: "mulitple timers with id \(identifier)"))
+        }
+    }
 }
 
 extension TimerInformation: Printable, DebugPrintable {
