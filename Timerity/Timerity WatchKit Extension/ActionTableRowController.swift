@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 curtclifton.net. All rights reserved.
 //
 
-import UIKit
+import WatchKit
 
 class ActionTableRowController: NSObject {
    

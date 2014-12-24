@@ -21,7 +21,7 @@ class GlanceController: WKInterfaceController {
     }
 
     override func awakeWithContext(context: AnyObject!) {
-        // CCC, 12/10/2014.
+        // CCC, 12/10/2014. implement glance
     }
     
     override func willActivate() {

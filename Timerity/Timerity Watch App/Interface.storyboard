@@ -10,7 +10,7 @@
             <objects>
                 <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="Timerity_Watch_App" customModuleProvider="target">
                     <items>
-                        <table alignment="left" layout="vertical" id="96D-Sp-Sfr">
+                        <table alignment="left" id="96D-Sp-Sfr">
                             <items>
                                 <tableRow identifier="TimerRow" id="81L-PO-Hek" customClass="TimerTableRowController" customModule="Timerity_WatchKit_Extension">
                                     <group key="rootItem" width="1" alignment="left" id="C7D-SN-DHO">
@@ -34,7 +34,22 @@
                                         </items>
                                     </group>
                                     <connections>
-                                        <outlet property="name" destination="VFq-2l-a8D" id="nAl-nX-BTv"/>
+                                        <outlet property="countdownTimer" destination="qWR-1B-4zy" id="WCP-BC-wMB"/>
+                                        <outlet property="nameLabel" destination="VFq-2l-a8D" id="gwL-Si-gzz"/>
+                                        <outlet property="totalTimeLabel" destination="8rZ-AT-VLj" id="wsc-Q9-hHI"/>
+                                    </connections>
+                                </tableRow>
+                                <tableRow identifier="LabelRow" selectable="NO" id="isl-pQ-d74" customClass="LabelRowController" customModule="Timerity_WatchKit_Extension">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" id="uxs-rv-FM6">
+                                        <items>
+                                            <label alignment="center" verticalAlignment="center" text="Label" textAlignment="center" id="dHx-Ph-YJ4">
+                                                <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
+                                            </label>
+                                        </items>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    </group>
+                                    <connections>
+                                        <outlet property="label" destination="dHx-Ph-YJ4" id="DZO-Ee-dXf"/>
                                     </connections>
                                 </tableRow>
                                 <tableRow identifier="AddButton" id="HL0-K1-vQs" customClass="ActionTableRowController" customModule="Timerity_WatchKit_Extension">

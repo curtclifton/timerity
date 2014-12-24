@@ -10,33 +10,50 @@ import WatchKit
 import Foundation
 import TimerityData
 
+let MaxRows = 20
+
 class InterfaceController: WKInterfaceController {
     struct RowTypes {
         static let Timer = "TimerRow"
+        static let AndNMoreLabelRow = "LabelRow"
         static let AddButton = "AddButton"
     }
     
     @IBOutlet var table: WKInterfaceTable!
     
-    var timerDB: TimerData
-    
     override init() {
-        timerDB = TimerData.fromURL(NSURL()) // CCC, 12/14/2014. Shared URL
-        super.init()
-        
         // Configure interface objects here.
-        NSLog("%@ init", self)
     }
 
     override func awakeWithContext(context: AnyObject!) {
-        let numberOfTimers = timerDB.timers.count <= 19 ? timerDB.timers.count : 18 // leave space for a row saying "and X more"
-        table?.setNumberOfRows(numberOfTimers, withRowType: RowTypes.Timer) // CCC, 12/14/2014. Should get actual timers and iterate (up to 19 of) them. If there are more than 19, then just include 18 and replace the 19th with "and X more"
-        let lastRow = NSIndexSet(index: numberOfTimers)
+        let numberOfTimersShown = timerDB.timers.count <= (MaxRows - 1) ? timerDB.timers.count : (MaxRows - 2) // leave space for a row saying "and X more"
+        let isShowingAllTImers = (numberOfTimersShown == timerDB.timers.count)
+
+        // create rows for all the visible timers
+        table?.setNumberOfRows(numberOfTimersShown, withRowType: RowTypes.Timer)
+
+        var nextRow = numberOfTimersShown
+        
+        // create row for the "And n more" row if needed
+        if !isShowingAllTImers {
+            let nMoreRow = NSIndexSet(index: nextRow)
+            table?.insertRowsAtIndexes(nMoreRow, withRowType: RowTypes.AndNMoreLabelRow)
+            if let nMoreRowController = table?.rowControllerAtIndex(nextRow) as? LabelRowController {
+                let countOfElided = timerDB.timers.count - numberOfTimersShown
+                let elidedAsString = countOfElided.description
+                let labelText = NSString(format: NSLocalizedString("And %@ more", comment: "and N more"), elidedAsString)
+                nMoreRowController.label?.setText(labelText)
+            }
+            ++nextRow
+        }
+        
+        // create row for the Add Timer button
+        let lastRow = NSIndexSet(index: nextRow)
         table?.insertRowsAtIndexes(lastRow, withRowType: RowTypes.AddButton)
         
-        for i in 0 ..< numberOfTimers {
+        for i in 0 ..< numberOfTimersShown {
             if let timerRowController = table?.rowControllerAtIndex(i) as? TimerTableRowController {
-                timerRowController.name?.setText(timerDB.timers[i].name)
+                timerRowController.timerID = timerDB.timers[i].id
             }
         }
     }

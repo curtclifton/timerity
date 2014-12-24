@@ -48,17 +48,47 @@ public struct TimerInformation {
     }
 }
 
-//! The global timer database.
-// CCC, 12/14/2014. Does this really need to be a global?
+// CCC, 12/23/2014. Gross hack box of buggy IR gen
+public struct Box<T> {
+    private var valueInABox: [T]
+    init(value: T) {
+        valueInABox = [value]
+    }
+    var value: T {
+        return valueInABox.first!
+    }
+}
+
+public enum Either<T,U> {
+    case left(value: Box<T>) // CCC, 12/23/2014. Box is a hack. oh, swift
+    case right(value: Box<U>)
+}
+
+public typealias TimerChangeCallback = TimerInformation -> () // CCC, 12/23/2014. might want Either<TimerInformation, Bool> here to signal deletion
+
+public struct TimerChangeCallbackID {
+    let value: Int
+}
+
+//! Mutable timer database.
 public class TimerData {
     public var timers: [TimerInformation]
-    
+    private var nextCallbackID = 0
+    private var callbacks: [Int: TimerChangeCallback] = [:] // CCC, 12/23/2014. We'll also need a mapping from timer identifiers to registered callbacks
+
     public class func fromURL(url: NSURL) -> TimerData {
-        // CCC, 12/14/2014. stub in to return test data
         var timers: [TimerInformation] = []
+
+        var activeTimer = TimerInformation(name: "Break Time", duration: Duration(hours: 1, minutes: 3))
+        activeTimer.isActive = true
+        activeTimer.timeRemaining = activeTimer.duration
+        let fireDate = NSDate(timeIntervalSinceNow: Double(activeTimer.duration.seconds))
+        activeTimer.fireDate = fireDate
+        
+        timers.append(activeTimer)
         timers.append(TimerInformation(name: "Tea", duration: Duration(minutes: 3)))
         timers.append(TimerInformation(name: "Power Nap", duration: Duration(minutes: 20)))
-        // CCC, 12/14/2014. implement for reals
+        // CCC, 12/14/2014. implement for reals. Need to do file coordination on the file and call the registered callbacks as needed
         return TimerData(timers: timers)
     }
     
@@ -66,9 +96,39 @@ public class TimerData {
         self.timers = timers
     }
     
+    public init() {
+        self.timers = []
+    }
+    
     public func writeToURL(url: NSURL) { // CCC, 12/14/2014. return a success code, error?
         // CCC, 12/14/2014. implement
     }
+
+    //! If there exists a timer wtih the given identifier, then callback function is invoked immediately and whenever the given timer changes in the database. The return value is either a unique integer that can be used to de-register the callback or else an error.
+    public func registerCallbackForTimer(#identifier: String, callback: TimerChangeCallback) -> Either<TimerChangeCallbackID, String> {
+        let matchingTimers = timers.filter {
+            timer in timer.id == identifier
+        }
+        switch matchingTimers.count {
+        case 0:
+            return Either.right(value: Box(value: "no timer with id \(identifier)"))
+        case 1:
+            let callbackID = nextCallbackID
+            ++nextCallbackID
+            callbacks[callbackID] = callback
+            callback(matchingTimers.first!)
+            return Either.left(value: Box(value: TimerChangeCallbackID(value: callbackID)))
+        default:
+            return Either.right(value: Box(value: "mulitple timers with id \(identifier)"))
+        }
+    }
+
+    public func unregisterCallback(#identifier: TimerChangeCallbackID) {
+        callbacks[identifier.value] = nil
+    }
+    
+    // CCC, 12/23/2014. Need API for telling the database that a timer changed
+    // CCC, 12/23/2014. Need code to call all the callbacks
 }
 
 extension TimerInformation: Printable, DebugPrintable {
@@ -122,3 +182,4 @@ extension TimerData: Printable, DebugPrintable {
         }
     }
 }
+
