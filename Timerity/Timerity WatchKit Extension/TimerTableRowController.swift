@@ -11,6 +11,7 @@ import TimerityData
 
 class TimerTableRowController: NSObject {
     private var timer: TimerInformation?
+    private var timerUpdateCallbackID: TimerChangeCallbackID?
     
     // outlets
     @IBOutlet var nameLabel: WKInterfaceLabel?
@@ -22,15 +23,24 @@ class TimerTableRowController: NSObject {
             return timer?.id
         }
         set {
-            // CCC, 12/23/2014. clear current callback
+            if let currentCallbackID = timerUpdateCallbackID {
+                timerDB.unregisterCallback(identifier: currentCallbackID)
+                timerUpdateCallbackID = nil
+            }
             if let value = newValue {
-                // CCC, 12/23/2014. get timer and register a call back
-                timerDB.registerCallbackForTimer(identifier: value) {
+                let registrationResult = timerDB.registerCallbackForTimer(identifier: value) {
                     newTimer in self.timer = newTimer
                     self.updateUserInterface()
                 }
-            } else {
-                // CCC, 12/23/2014. anything?
+                switch registrationResult {
+                case .left(let callbackIDBox):
+                    timerUpdateCallbackID = callbackIDBox.unwrapped
+                    break;
+                case .right(let errorBox):
+                    println("Error getting information for timer: \(errorBox.unwrapped)")
+                    timer = nil
+                    break;
+                }
             }
         }
     }
@@ -40,7 +50,6 @@ class TimerTableRowController: NSObject {
             println("yay! \(timer)");
             nameLabel!.setText(timer.name)
             if (timer.isActive) {
-                // CCC, 12/23/2014. set fire time of countdownTimer
                 if let fireDate = timer.fireDate {
                     countdownTimer!.setDate(fireDate)
                     countdownTimer!.start()
@@ -54,6 +63,9 @@ class TimerTableRowController: NSObject {
             }
         } else {
             println("Eep, no timer")
+            totalTimeLabel!.setHidden(true)
+            countdownTimer!.setHidden(true)
+            nameLabel!.setText(NSLocalizedString("Missing timer", comment: "missing timer row label"))
         }
     }
     

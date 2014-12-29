@@ -48,7 +48,7 @@ public struct TimerInformation {
     }
 }
 
-// CCC, 12/23/2014. Gross hack box of buggy IR gen
+// TODO: Lose this gross hack once Swift's IR gen is fixed. (See Either<T,U> below)
 public struct Box<T> {
     private var valueInABox: [T]
     init(wrap: T) {
@@ -60,8 +60,8 @@ public struct Box<T> {
 }
 
 public enum Either<T,U> {
-    case left(value: Box<T>) // CCC, 12/23/2014. Box is a hack. oh, swift
-    case right(value: Box<U>)
+    case left(Box<T>) // TODO: Lose this wrapping box that's here to hack around Swift's "Unimplemented IR generation feature non-fixed multi-payload enum layout" bug.
+    case right(Box<U>)
 }
 
 public typealias TimerChangeCallback = TimerInformation -> () // CCC, 12/23/2014. might want Either<TimerInformation, Bool> here to signal deletion
@@ -77,7 +77,6 @@ public class TimerData {
     private var nextCallbackID = 0
     private var callbacks: [Int: TimerChangeCallback] = [:] // CCC, 12/23/2014. We'll also need a mapping from timer identifiers to registered callbacks
 
-    
     //MARK: - Initialization
     public class func fromURL(url: NSURL) -> TimerData {
         var timers: [TimerInformation] = []
@@ -118,11 +117,11 @@ public class TimerData {
             let callbackID = nextCallbackID
             ++nextCallbackID
             callbacks[callbackID] = callback
-            let timerInfo = timerBox.value.unwrapped
+            let timerInfo = timerBox.unwrapped // CCC, 12/24/2014. This seems wrong. Why do you need the .value accessor? timerBox should be unwrappable already
             callback(timerInfo)
-            return Either.left(value: Box(wrap: TimerChangeCallbackID(value: callbackID)))
+            return Either.left(Box(wrap: TimerChangeCallbackID(value: callbackID)))
         case .right(let errorBox):
-            return Either.right(value: errorBox)
+            return Either.right(errorBox)
         }
     }
 
@@ -139,11 +138,11 @@ public class TimerData {
         }
         switch matchingTimers.count {
         case 0:
-            return Either.right(value: Box(wrap: "no timer with id \(identifier)"))
+            return Either.right(Box(wrap: "no timer with id \(identifier)"))
         case 1:
-            return Either.left(value: Box(wrap: matchingTimers.first!))
+            return Either.left(Box(wrap: matchingTimers.first!))
         default:
-            return Either.right(value: Box(wrap: "mulitple timers with id \(identifier)"))
+            return Either.right(Box(wrap: "mulitple timers with id \(identifier)"))
         }
     }
 }
