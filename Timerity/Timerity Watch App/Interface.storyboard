@@ -82,17 +82,17 @@
             <objects>
                 <controller id="Y2x-Di-sE3" customClass="SingleTimerInterfaceController" customModule="Timerity_WatchKit_Extension">
                     <items>
-                        <group width="1" alignment="left" id="HZ9-Yu-mYx">
-                            <items>
-                                <imageView alignment="left" image="InactiveTimer" id="r4h-qp-cEa"/>
-                                <label alignment="left" text="Label" numberOfLines="3" id="zBi-AH-jvx">
-                                    <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
-                                </label>
-                            </items>
-                        </group>
+                        <imageView alignment="left" image="InactiveTimer" id="r4h-qp-cEa"/>
+                        <label alignment="left" text="Label" numberOfLines="3" id="zBi-AH-jvx">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
                         <timer alignment="left" id="hHW-64-QfX"/>
                         <label alignment="left" text="3h 20m 10s" id="dut-gg-Csd"/>
-                        <button width="1" alignment="left" title="Start" id="cwc-jM-PQY"/>
+                        <button width="1" alignment="left" title="Start" id="cwc-jM-PQY">
+                            <connections>
+                                <action selector="_buttonPressed" destination="Y2x-Di-sE3" id="UBF-3l-uOS"/>
+                            </connections>
+                        </button>
                     </items>
                     <connections>
                         <outlet property="countdownTimer" destination="hHW-64-QfX" id="sF4-rs-4Dy"/>

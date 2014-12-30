@@ -10,7 +10,7 @@ import WatchKit
 import TimerityData
 
 struct SingleTimerController {
-    private var timer: TimerInformation?
+    var timer: TimerInformation?
     private var timerUpdateCallbackID: TimerChangeCallbackID?
     
     // outlets

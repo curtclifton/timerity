@@ -28,6 +28,7 @@ class SingleTimerInterfaceController: WKInterfaceController {
         if let timerID = context as? String {
             timerController = SingleTimerController(nameLabel: nameLabel!, totalTimeLabel: totalTimeLabel!, countdownTimer: countdownTimer!, startButton: startButton)
             timerController!.setTimerID(timerID)
+            setTitle(timerController?.timer?.name)
         } else {
             assert(false, "unexpected context \(context)")
         }
@@ -37,7 +38,6 @@ class SingleTimerInterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
         NSLog("%@ will activate", self)
-        // CCC, 12/29/2014. HERE: set up action handling for start button
     }
     
     override func didDeactivate() {
@@ -54,5 +54,7 @@ class SingleTimerInterfaceController: WKInterfaceController {
         timerController = nil
     }
     
-    
+    @IBAction private func _buttonPressed() {
+        println("ow!")
+    }
 }
