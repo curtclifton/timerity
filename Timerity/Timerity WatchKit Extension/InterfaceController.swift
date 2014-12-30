@@ -44,8 +44,8 @@ class InterfaceController: WKInterfaceController {
             table?.insertRowsAtIndexes(nMoreRow, withRowType: RowTypes.AndNMoreLabelRow)
             if let nMoreRowController = table?.rowControllerAtIndex(nextRow) as? LabelRowController {
                 let countOfElided = timerDB.timers.count - numberOfTimersShown
-                let elidedAsString = countOfElided.description
-                let labelText = NSString(format: NSLocalizedString("And %@ more", comment: "and N more"), elidedAsString)
+                let countOfElidedAsString = countOfElided.description
+                let labelText = NSString(format: NSLocalizedString("And %@ more", comment: "and N more"), countOfElidedAsString)
                 nMoreRowController.label?.setText(labelText)
             }
             ++nextRow
@@ -57,7 +57,7 @@ class InterfaceController: WKInterfaceController {
         
         for i in 0 ..< numberOfTimersShown {
             if let timerRowController = table?.rowControllerAtIndex(i) as? TimerTableRowController {
-                timerRowController.timerID = timerDB.timers[i].id
+                timerRowController.setTimerID(timerDB.timers[i].id)
             }
         }
     }

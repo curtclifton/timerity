@@ -32,6 +32,7 @@
 		4D20F8AE1A4A213E00754D4C /* TimerDatabaseWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D20F8AD1A4A213E00754D4C /* TimerDatabaseWrapper.swift */; };
 		4D20F8B01A4A554900754D4C /* LabelRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D20F8AF1A4A554900754D4C /* LabelRowController.swift */; };
 		4DB48B951A5216580031DECD /* SingleTimerInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */; };
+		4DB48B971A5232A20031DECD /* SingleTimerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B961A5232A20031DECD /* SingleTimerController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,6 +122,7 @@
 		4D20F8AD1A4A213E00754D4C /* TimerDatabaseWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerDatabaseWrapper.swift; sourceTree = "<group>"; };
 		4D20F8AF1A4A554900754D4C /* LabelRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelRowController.swift; sourceTree = "<group>"; };
 		4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleTimerInterfaceController.swift; sourceTree = "<group>"; };
+		4DB48B961A5232A20031DECD /* SingleTimerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleTimerController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -251,6 +253,7 @@
 				4D20F8AD1A4A213E00754D4C /* TimerDatabaseWrapper.swift */,
 				4D20F8AF1A4A554900754D4C /* LabelRowController.swift */,
 				4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */,
+				4DB48B961A5232A20031DECD /* SingleTimerController.swift */,
 			);
 			path = "Timerity WatchKit Extension";
 			sourceTree = "<group>";
@@ -572,6 +575,7 @@
 				4D0A16391A33E06A001BF0BE /* InterfaceController.swift in Sources */,
 				4D0A163D1A33E06A001BF0BE /* GlanceController.swift in Sources */,
 				4D1D5FE01A3C09070060598C /* ActionTableRowController.swift in Sources */,
+				4DB48B971A5232A20031DECD /* SingleTimerController.swift in Sources */,
 				4DB48B951A5216580031DECD /* SingleTimerInterfaceController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
