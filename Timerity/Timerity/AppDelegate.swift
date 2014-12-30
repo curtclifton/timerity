@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TimerityData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -43,6 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication!, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]!, reply: (([NSObject : AnyObject]!) -> Void)!) {
+        // CCC, 12/30/2014. See TimerCommand for userInfo values
         // CCC, 12/10/2014. This schedules a notification, but we also have to handle the case where the app is foregrounded when the notification expires.
         let notification = UILocalNotification()
         let oneMinuteHence = NSDate().dateByAddingTimeInterval(60.0)

@@ -33,6 +33,7 @@
 		4D20F8B01A4A554900754D4C /* LabelRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D20F8AF1A4A554900754D4C /* LabelRowController.swift */; };
 		4DB48B951A5216580031DECD /* SingleTimerInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */; };
 		4DB48B971A5232A20031DECD /* SingleTimerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B961A5232A20031DECD /* SingleTimerController.swift */; };
+		4DB48B991A5337100031DECD /* TimerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B981A5337100031DECD /* TimerCommand.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,6 +124,7 @@
 		4D20F8AF1A4A554900754D4C /* LabelRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelRowController.swift; sourceTree = "<group>"; };
 		4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleTimerInterfaceController.swift; sourceTree = "<group>"; };
 		4DB48B961A5232A20031DECD /* SingleTimerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleTimerController.swift; sourceTree = "<group>"; };
+		4DB48B981A5337100031DECD /* TimerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerCommand.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +293,7 @@
 				4D0A16601A353216001BF0BE /* TimerityData.h */,
 				4D0A165E1A353216001BF0BE /* Supporting Files */,
 				4D0A16751A35328F001BF0BE /* TimerInformation.swift */,
+				4DB48B981A5337100031DECD /* TimerCommand.swift */,
 			);
 			path = TimerityData;
 			sourceTree = "<group>";
@@ -585,6 +588,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D0A16761A35328F001BF0BE /* TimerInformation.swift in Sources */,
+				4DB48B991A5337100031DECD /* TimerCommand.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

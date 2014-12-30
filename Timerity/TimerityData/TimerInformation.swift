@@ -46,6 +46,32 @@ public struct TimerInformation {
         self.duration = duration
         id = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault))
     }
+    
+    public mutating func start() {
+        if isPaused {
+            resume()
+        }
+        isActive = true
+        timeRemaining = duration
+        fireDate = NSDate(timeIntervalSinceNow: Double(duration.seconds))
+    }
+    
+    public mutating func resume() {
+        // CCC, 12/29/2014. implement
+        assert(false)
+    }
+    
+    public mutating func pause() {
+        // CCC, 12/29/2014. implement
+        assert(false)
+    }
+    
+    public mutating func reset() {
+        isActive = false
+        isPaused = false
+        timeRemaining = Duration()
+        fireDate = nil
+    }
 }
 
 // TODO: Lose this gross hack once Swift's IR gen is fixed. (See Either<T,U> below)
@@ -59,6 +85,7 @@ public struct Box<T> {
     }
 }
 
+// CCC, 12/29/2014. sides should be uppercase
 public enum Either<T,U> {
     case left(Box<T>) // TODO: Lose this wrapping box that's here to hack around Swift's "Unimplemented IR generation feature non-fixed multi-payload enum layout" bug.
     case right(Box<U>)
@@ -74,8 +101,14 @@ public struct TimerChangeCallbackID {
 //! Mutable timer database.
 public class TimerData {
     public var timers: [TimerInformation]
+    /// maps timer IDs to indices in the timers array
+    private var timerIndex: [String: Int]
+    
+    private var originalURL: NSURL?
+    
     private var nextCallbackID = 0
-    private var callbacks: [Int: TimerChangeCallback] = [:] // CCC, 12/23/2014. We'll also need a mapping from timer identifiers to registered callbacks
+    private var callbacksByCallbackID: [Int: TimerChangeCallback] = [:]
+    private var callbackIDsByTimerID: [String: [Int]] = [:]
 
     //MARK: - Initialization
     public class func fromURL(url: NSURL) -> TimerData {
@@ -91,32 +124,55 @@ public class TimerData {
         timers.append(TimerInformation(name: "Tea", duration: Duration(minutes: 3)))
         timers.append(TimerInformation(name: "Power Nap", duration: Duration(minutes: 20)))
         // CCC, 12/14/2014. implement for reals. Need to do file coordination on the file and call the registered callbacks as needed
-        return TimerData(timers: timers)
+        return TimerData(timers: timers, url: url)
     }
     
-    private init(timers: [TimerInformation]) {
+    private init(timers: [TimerInformation], url: NSURL? = nil) {
+        originalURL = url
         self.timers = timers
+        timerIndex = [:]
+        for (index, timer) in enumerate(timers) {
+            assert(timerIndex[timer.id] == nil, "timer IDs must be unique, \(timer.id) is not.")
+            timerIndex[timer.id] = index
+        }
     }
     
     public init() {
-        self.timers = []
+        timers = []
+        timerIndex = [:]
     }
     
     //MARK: - Mutation
     public func writeToURL(url: NSURL) { // CCC, 12/14/2014. return a success code, error?
-        // CCC, 12/14/2014. implement
+        // CCC, 12/30/2014. be sure that this atomically and synchronously updates the data file (else use CPS)
     }
 
-    // CCC, 12/23/2014. Need API for telling the database that a timer changed
+    public func updateTimer(timer: TimerInformation) {
+        if let index = timerIndex[timer.id] {
+            timers[index] = timer
+            if let url = originalURL {
+                self.writeToURL(url)
+            }
+            _invokeCallbacks(timer: timer)
+        } else {
+            assert(false, "no existing timer with id \(timer.id)")
+        }
+    }
 
     //MARK: - Callbacks
-    //! If there exists a timer wtih the given identifier, then callback function is invoked immediately and whenever the given timer changes in the database. The return value is either a unique integer that can be used to de-register the callback or else an error.
+    /// If there exists a timer wtih the given identifier, then callback function is invoked immediately and whenever the given timer changes in the database. The return value is either a unique integer that can be used to de-register the callback or else an error.
     public func registerCallbackForTimer(#identifier: String, callback: TimerChangeCallback) -> Either<TimerChangeCallbackID, TimerError> {
-        switch _timerWithIdentifier(identifier) {
+        switch _timer(identifier: identifier) {
         case .left(let timerBox):
             let callbackID = nextCallbackID
             ++nextCallbackID
-            callbacks[callbackID] = callback
+            callbacksByCallbackID[callbackID] = callback
+            if var callbacksForTimer = callbackIDsByTimerID[identifier] {
+                callbacksForTimer.append(callbackID)
+                callbackIDsByTimerID[identifier] = callbacksForTimer
+            } else {
+                callbackIDsByTimerID[identifier] = [callbackID]
+            }
             let timerInfo = timerBox.unwrapped
             callback(timerInfo)
             return Either.left(Box(wrap: TimerChangeCallbackID(value: callbackID)))
@@ -126,26 +182,34 @@ public class TimerData {
     }
 
     public func unregisterCallback(#identifier: TimerChangeCallbackID) {
-        callbacks[identifier.value] = nil
+        callbacksByCallbackID[identifier.value] = nil
+        // we wait until invocation time to clean up callbackIDsByTimerID
     }
     
-    // CCC, 12/23/2014. Need code to call all the callbacks
-    
     //MARK: - Private API
-    private func _timerWithIdentifier(identifier: String) -> Either<TimerInformation, TimerError> {
-        let matchingTimers = timers.filter {
-            timer in timer.id == identifier
+    private func _invokeCallbacks(#timer: TimerInformation) {
+        if let callbackIDs = callbackIDsByTimerID[timer.id] {
+            var validCallbackIDs:[Int] = []
+            for callbackID in callbackIDs {
+                if let callback = callbacksByCallbackID[callbackID] {
+                    validCallbackIDs.append(callbackID)
+                    callback(timer)
+                }
+            }
+            callbackIDsByTimerID[timer.id] = validCallbackIDs
         }
-        switch matchingTimers.count {
-        case 0:
+    }
+    
+    private func _timer(#identifier: String) -> Either<TimerInformation, TimerError> {
+        if let index = timerIndex[identifier] {
+            return Either.left(Box(wrap: timers[index]))
+        } else {
             return Either.right(Box(wrap: "no timer with id \(identifier)"))
-        case 1:
-            return Either.left(Box(wrap: matchingTimers.first!))
-        default:
-            return Either.right(Box(wrap: "mulitple timers with id \(identifier)"))
         }
     }
 }
+
+// MARK: Printable, DebugPrintable extensions
 
 extension TimerInformation: Printable, DebugPrintable {
     public var description: String {
@@ -160,8 +224,6 @@ extension TimerInformation: Printable, DebugPrintable {
         }
     }
 }
-
-// MARK: Printable, DebugPrintable extensions
 
 extension Duration: Printable, DebugPrintable {
     public var description: String {

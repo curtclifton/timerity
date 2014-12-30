@@ -21,4 +21,5 @@ func spinUpTimerDB() -> TimerData {
     }
 }
 
+/// Lazily loaded global timer database
 let timerDB = spinUpTimerDB()

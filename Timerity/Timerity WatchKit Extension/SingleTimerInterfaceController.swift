@@ -55,6 +55,6 @@ class SingleTimerInterfaceController: WKInterfaceController {
     }
     
     @IBAction private func _buttonPressed() {
-        println("ow!")
+        timerController?.startTimer()
     }
 }

@@ -26,6 +26,7 @@ struct SingleTimerController {
         self.startButton = startButton
     }
     
+    // CCC, 12/29/2014. Maybe this should be setTimer. Is there any advantage in exposing the timerID? Why not just pass around timers?
     mutating func setTimerID(timerID: String) {
         _clearCurrentTimerCallback()
         let registrationResult = timerDB.registerCallbackForTimer(identifier: timerID) { newTimer in
@@ -40,6 +41,15 @@ struct SingleTimerController {
             println("Error getting information for timer: \(errorBox.unwrapped)")
             timer = nil
             break;
+        }
+    }
+    
+    mutating func startTimer() {
+        if var timer = self.timer {
+            timer.start()
+            timerDB.updateTimer(timer) // triggers a callback that updates the UI
+            let startCommand = TimerCommand.Start
+            startCommand.send(timer)
         }
     }
     
