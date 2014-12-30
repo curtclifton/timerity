@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 curtclifton.net. All rights reserved.
 //
 
-import WatchKit
 import Foundation
 import TimerityData
+import WatchKit
 
 let MaxRows = 20
 
@@ -30,6 +30,8 @@ class InterfaceController: WKInterfaceController {
     }
 
     override func awakeWithContext(context: AnyObject!) {
+        setTitle(NSLocalizedString("Timerity", comment: "App title"))
+        
         let numberOfTimersShown = timerDB.timers.count <= (MaxRows - 1) ? timerDB.timers.count : (MaxRows - 2) // leave space for a row saying "and X more"
         let isShowingAllTImers = (numberOfTimersShown == timerDB.timers.count)
 
