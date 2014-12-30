@@ -32,4 +32,11 @@ class TimerTableRowController: NSObject {
         timerController!.setTimerID(timerID)
     }
     
+    func willActivate() {
+        timerController?.willActivate()
+    }
+    
+    func didDeactivate() {
+        timerController?.didDeactivate()
+    }
 }

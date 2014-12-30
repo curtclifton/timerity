@@ -9,9 +9,11 @@
 import WatchKit
 import TimerityData
 
-struct SingleTimerController {
+class SingleTimerController {
     var timer: TimerInformation?
     private var timerUpdateCallbackID: TimerChangeCallbackID?
+    private var isActive = true // we assume that we're initially active so that loading into an already loaded UI causes an update
+    private var needsUpdate = false
     
     // outlets
     var nameLabel: WKInterfaceLabel
@@ -26,12 +28,22 @@ struct SingleTimerController {
         self.startButton = startButton
     }
     
+    func willActivate() {
+        isActive = true
+        updateIfNeeded()
+    }
+    
+    func didDeactivate() {
+        isActive = false
+    }
+    
     // CCC, 12/29/2014. Maybe this should be setTimer. Is there any advantage in exposing the timerID? Why not just pass around timers?
-    mutating func setTimerID(timerID: String) {
+    func setTimerID(timerID: String) {
         _clearCurrentTimerCallback()
         let registrationResult = timerDB.registerCallbackForTimer(identifier: timerID) { newTimer in
             self.timer = newTimer
-            self.timerDidUpdate()
+            self.needsUpdate = true
+            self.updateIfNeeded()
         }
         switch registrationResult {
         case .left(let callbackIDBox):
@@ -44,7 +56,7 @@ struct SingleTimerController {
         }
     }
     
-    mutating func startTimer() {
+    func startTimer() {
         if var timer = self.timer {
             timer.start()
             timerDB.updateTimer(timer) // triggers a callback that updates the UI
@@ -53,12 +65,15 @@ struct SingleTimerController {
         }
     }
     
-    mutating func clearTimerID() {
+    func clearTimerID() {
         _clearCurrentTimerCallback()
         timer = nil
     }
     
-    private func timerDidUpdate() {
+    private func updateIfNeeded() {
+        if !needsUpdate || !isActive {
+            return;
+        }
         if let timer = self.timer {
             println("yay! \(timer)");
             nameLabel.setText(timer.name)
@@ -83,9 +98,10 @@ struct SingleTimerController {
             countdownTimer.setHidden(true)
             startButton?.setHidden(true)
         }
+        needsUpdate = false
     }
 
-    private mutating func _clearCurrentTimerCallback() {
+    private func _clearCurrentTimerCallback() {
         if let currentCallbackID = timerUpdateCallbackID {
             timerDB.unregisterCallback(identifier: currentCallbackID)
             timerUpdateCallbackID = nil

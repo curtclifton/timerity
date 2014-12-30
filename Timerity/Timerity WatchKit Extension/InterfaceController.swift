@@ -66,11 +66,21 @@ class InterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
         NSLog("%@ will activate", self)
+        _forEachRowController() { rowController in
+            if let timerRowController = rowController as? TimerTableRowController {
+                timerRowController.willActivate()
+            }
+        }
     }
 
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         NSLog("%@ did deactivate", self)
+        _forEachRowController() { rowController in
+            if let timerRowController = rowController as? TimerTableRowController {
+                timerRowController.didDeactivate()
+            }
+        }
         super.didDeactivate()
     }
 
@@ -88,18 +98,12 @@ class InterfaceController: WKInterfaceController {
     
     // CCC, 12/12/2014. All mutation of existing timers should be sent as commands to the iPhone app so it can reschedule timers and atomically rewrite the shared data store. Watch app should update its in-memory data, but not update the file. It should only read from the file.
     
-    // CCC, 12/10/2014. Testing:
-    @IBAction func buttonTapped() {
-        NSLog("tapping");
-        // CCC, 12/12/2014. Should be using an enum and associated values to fling the data to and fro
-        InterfaceController.openParentApplication([:]) { result, error in
-            if let fireDate = result["fireDate"] as? NSDate {
-                NSLog("got call back with payload: %@", fireDate);
-            } else {
-                NSLog("got call back sans payload");
+    //MARK: - Private API
+    func _forEachRowController(block: (AnyObject) -> ()) {
+        for index in 0..<table!.numberOfRows {
+            if let rowController: AnyObject = table!.rowControllerAtIndex(index) {
+                block(rowController)
             }
         }
-        NSLog("waiting for call back");
     }
-    
 }

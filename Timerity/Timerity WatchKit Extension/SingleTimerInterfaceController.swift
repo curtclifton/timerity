@@ -38,11 +38,13 @@ class SingleTimerInterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
         NSLog("%@ will activate", self)
+        timerController?.willActivate()
     }
     
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         NSLog("%@ did deactivate", self)
+        timerController?.didDeactivate()
         super.didDeactivate()
     }
 
