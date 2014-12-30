@@ -117,7 +117,7 @@ public class TimerData {
             let callbackID = nextCallbackID
             ++nextCallbackID
             callbacks[callbackID] = callback
-            let timerInfo = timerBox.unwrapped // CCC, 12/24/2014. This seems wrong. Why do you need the .value accessor? timerBox should be unwrappable already
+            let timerInfo = timerBox.unwrapped
             callback(timerInfo)
             return Either.left(Box(wrap: TimerChangeCallbackID(value: callbackID)))
         case .right(let errorBox):
