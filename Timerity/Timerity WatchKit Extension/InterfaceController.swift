@@ -19,6 +19,10 @@ class InterfaceController: WKInterfaceController {
         static let AddButton = "AddButton"
     }
     
+    struct SegueIdentifiers {
+        static let PushTimer = "PushTimer"
+    }
+    
     @IBOutlet var table: WKInterfaceTable!
     
     override init() {
@@ -70,6 +74,16 @@ class InterfaceController: WKInterfaceController {
         super.didDeactivate()
     }
 
+    override func contextForSegueWithIdentifier(segueIdentifier: String, inTable table: WKInterfaceTable, rowIndex: Int) -> AnyObject? {
+        if (segueIdentifier == SegueIdentifiers.PushTimer) {
+            println("getting context for seque \(segueIdentifier) and row \(rowIndex)")
+            return timerDB.timers[rowIndex].id
+        } else {
+            println("unexpected seque identifier \(segueIdentifier)")
+            return nil
+        }
+    }
+    
     // MARK: Actions
     
     // CCC, 12/12/2014. All mutation of existing timers should be sent as commands to the iPhone app so it can reschedule timers and atomically rewrite the shared data store. Watch app should update its in-memory data, but not update the file. It should only read from the file.

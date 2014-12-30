@@ -37,6 +37,7 @@
                                         <outlet property="countdownTimer" destination="qWR-1B-4zy" id="WCP-BC-wMB"/>
                                         <outlet property="nameLabel" destination="VFq-2l-a8D" id="gwL-Si-gzz"/>
                                         <outlet property="totalTimeLabel" destination="8rZ-AT-VLj" id="wsc-Q9-hHI"/>
+                                        <segue destination="Y2x-Di-sE3" kind="push" identifier="PushTimer" id="c8b-aN-gqq"/>
                                     </connections>
                                 </tableRow>
                                 <tableRow identifier="LabelRow" selectable="NO" id="isl-pQ-d74" customClass="LabelRowController" customModule="Timerity_WatchKit_Extension">
@@ -55,9 +56,6 @@
                                 <tableRow identifier="AddButton" id="HL0-K1-vQs" customClass="ActionTableRowController" customModule="Timerity_WatchKit_Extension">
                                     <group key="rootItem" width="1" alignment="left" layout="vertical" id="X7D-Qd-kR5">
                                         <items>
-                                            <separator alignment="left" id="4CK-Gb-LZF">
-                                                <color key="color" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                            </separator>
                                             <button alignment="center" verticalAlignment="center" id="Hsu-SH-9u3">
                                                 <group key="contentGroup" width="1" alignment="left" id="WeX-NR-wRh">
                                                     <items>
@@ -78,6 +76,33 @@
                 </controller>
             </objects>
             <point key="canvasLocation" x="235" y="347"/>
+        </scene>
+        <!--Single Timer Interface Controller-->
+        <scene sceneID="Dah-W6-cuO">
+            <objects>
+                <controller id="Y2x-Di-sE3" customClass="SingleTimerInterfaceController" customModule="Timerity_WatchKit_Extension">
+                    <items>
+                        <group width="1" alignment="left" id="HZ9-Yu-mYx">
+                            <items>
+                                <imageView alignment="left" image="InactiveTimer" id="r4h-qp-cEa"/>
+                                <label alignment="left" text="Label" numberOfLines="3" id="zBi-AH-jvx">
+                                    <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                </label>
+                            </items>
+                        </group>
+                        <timer alignment="left" id="hHW-64-QfX"/>
+                        <label alignment="left" text="3h 20m 10s" id="dut-gg-Csd"/>
+                        <button width="1" alignment="left" title="Start" id="cwc-jM-PQY"/>
+                    </items>
+                    <connections>
+                        <outlet property="countdownTimer" destination="hHW-64-QfX" id="sF4-rs-4Dy"/>
+                        <outlet property="nameLabel" destination="zBi-AH-jvx" id="Raa-yl-bmb"/>
+                        <outlet property="startButton" destination="cwc-jM-PQY" id="3zL-Mg-6cH"/>
+                        <outlet property="totalTimeLabel" destination="dut-gg-Csd" id="txC-gO-iMH"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="465" y="347"/>
         </scene>
         <!--Glance Interface Controller-->
         <scene sceneID="BOz-TT-tkC">

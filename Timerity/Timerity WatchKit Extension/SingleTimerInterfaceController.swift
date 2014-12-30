@@ -1,16 +1,16 @@
 //
-//  TimerTableRowController.swift
+//  SingleTimerInterfaceController.swift
 //  Timerity
 //
-//  Created by Curt Clifton on 12/12/14.
+//  Created by Curt Clifton on 12/29/14.
 //  Copyright (c) 2014 curtclifton.net. All rights reserved.
 //
 
 import WatchKit
 import TimerityData
 
-// CCC, 12/29/2014. This shares most of its guts with SingleTimerInterfaceController. Need to eliminate that duplication.
-class TimerTableRowController: NSObject {
+// CCC, 12/29/2014. This shares most of its guts with TimerTableRowController. Need to eliminate that duplication.
+class SingleTimerInterfaceController: WKInterfaceController {
     private var timer: TimerInformation?
     private var timerUpdateCallbackID: TimerChangeCallbackID?
     
@@ -18,7 +18,30 @@ class TimerTableRowController: NSObject {
     @IBOutlet var nameLabel: WKInterfaceLabel?
     @IBOutlet var totalTimeLabel: WKInterfaceLabel?
     @IBOutlet var countdownTimer: WKInterfaceTimer?
+    @IBOutlet var startButton: WKInterfaceButton? // CCC, 12/29/2014. not in the row controller
     
+    //MARK: WKInterfaceController subclass
+    override func awakeWithContext(context: AnyObject!) {
+        // CCC, 12/29/2014. HERE
+        println("\(self) did awakeWithContext \(context)")
+        if let timerID = context as? String {
+            self.timerID = timerID
+        }
+    }
+    
+    override func willActivate() {
+        // This method is called when watch view controller is about to be visible to user
+        super.willActivate()
+        NSLog("%@ will activate", self)
+    }
+    
+    override func didDeactivate() {
+        // This method is called when watch view controller is no longer visible
+        NSLog("%@ did deactivate", self)
+        super.didDeactivate()
+    }
+
+    //MARK: Package API
     var timerID: String? {
         get {
             return timer?.id
@@ -54,16 +77,19 @@ class TimerTableRowController: NSObject {
                 }
                 totalTimeLabel!.setHidden(true)
                 countdownTimer!.setHidden(false)
+                startButton!.setHidden(true) // CCC, 12/29/2014. not in the row controller
             } else {
                 totalTimeLabel!.setText(timer.duration.description) // CCC, 12/23/2014. add function for formatting a duration nicely
                 totalTimeLabel!.setHidden(false)
                 countdownTimer!.setHidden(true)
+                startButton!.setHidden(false) // CCC, 12/29/2014. not in the row controller
             }
         } else {
             println("Eep, no timer")
             nameLabel!.setText(NSLocalizedString("Missing timer", comment: "missing timer row label"))
             totalTimeLabel!.setHidden(true)
             countdownTimer!.setHidden(true)
+            startButton!.setHidden(true) // CCC, 12/29/2014. not in the row controller
         }
     }
     
@@ -71,7 +97,7 @@ class TimerTableRowController: NSObject {
         _clearCurrentTimerCallback()
     }
     
-//MARK: Private API
+    //MARK: Private API
     func _clearCurrentTimerCallback() {
         if let currentCallbackID = timerUpdateCallbackID {
             timerDB.unregisterCallback(identifier: currentCallbackID)
