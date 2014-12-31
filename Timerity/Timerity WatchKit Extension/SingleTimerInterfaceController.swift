@@ -16,7 +16,7 @@ class SingleTimerInterfaceController: WKInterfaceController {
     @IBOutlet var nameLabel: WKInterfaceLabel?
     @IBOutlet var totalTimeLabel: WKInterfaceLabel?
     @IBOutlet var countdownTimer: WKInterfaceTimer?
-    @IBOutlet var startButton: WKInterfaceButton?
+    @IBOutlet var button: WKInterfaceButton?
     
     deinit {
         _clearCurrentTimer()
@@ -26,7 +26,7 @@ class SingleTimerInterfaceController: WKInterfaceController {
     override func awakeWithContext(context: AnyObject!) {
         _clearCurrentTimer()
         if let timerID = context as? String {
-            timerController = SingleTimerController(nameLabel: nameLabel!, totalTimeLabel: totalTimeLabel!, countdownTimer: countdownTimer!, startButton: startButton)
+            timerController = SingleTimerController(nameLabel: nameLabel!, totalTimeLabel: totalTimeLabel!, countdownTimer: countdownTimer!, button: button)
             timerController!.setTimerID(timerID)
             setTitle(timerController?.timer?.name)
         } else {
@@ -57,6 +57,6 @@ class SingleTimerInterfaceController: WKInterfaceController {
     }
     
     @IBAction private func _buttonPressed() {
-        timerController?.startTimer()
+        timerController?.buttonPressed()
     }
 }

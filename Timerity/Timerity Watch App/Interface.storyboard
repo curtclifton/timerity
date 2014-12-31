@@ -95,9 +95,9 @@
                         </button>
                     </items>
                     <connections>
+                        <outlet property="button" destination="cwc-jM-PQY" id="bzW-Og-Cxb"/>
                         <outlet property="countdownTimer" destination="hHW-64-QfX" id="sF4-rs-4Dy"/>
                         <outlet property="nameLabel" destination="zBi-AH-jvx" id="Raa-yl-bmb"/>
-                        <outlet property="startButton" destination="cwc-jM-PQY" id="3zL-Mg-6cH"/>
                         <outlet property="totalTimeLabel" destination="dut-gg-Csd" id="txC-gO-iMH"/>
                     </connections>
                 </controller>

@@ -12,13 +12,14 @@ public struct Duration {
     private static let secondsPerHour: Int = 3600
     private static let secondsPerMinute: Int = 60
     
-    public let seconds: Int
+    public let seconds: Double
     
     public var hoursMinutesSeconds: (hours: Int, minutes: Int, seconds: Int) {
         get {
+            let totalSeconds = Int(floor(seconds))
             let fractionalHours = Double(seconds) / Double(Duration.secondsPerHour)
             let wholeHours = Int(floor(fractionalHours))
-            let secondsRemaining = seconds - wholeHours * Duration.secondsPerHour
+            let secondsRemaining = totalSeconds - wholeHours * Duration.secondsPerHour
             let fractionalMinutes = Double(secondsRemaining) / Double(Duration.secondsPerMinute)
             let wholeMinutes = Int(floor(fractionalMinutes))
             let wholeSeconds = secondsRemaining - wholeMinutes * Duration.secondsPerMinute
@@ -27,19 +28,39 @@ public struct Duration {
     }
     
     public init(hours : Int = 0, minutes: Int = 0, seconds: Int = 0) {
-        self.seconds = hours * Duration.secondsPerHour + minutes * Duration.secondsPerMinute + seconds
-        assert(self.seconds >= 0, "cannot have a negative duration")
+        self.init(seconds: Double(hours * Duration.secondsPerHour + minutes * Duration.secondsPerMinute + seconds))
     }
+    
+    public init(seconds: Double) {
+        assert(seconds >= 0, "cannot have a negative duration")
+        self.seconds = seconds
+    }
+}
+
+public enum TimerState {
+    case Active(fireDate: NSDate)
+    case Paused(timeRemaining: Duration)
+    case Inactive
 }
 
 public struct TimerInformation {
     public var name: String
     public var duration: Duration
-    public var isActive: Bool = false
+    private var isActive: Bool = false
     public var timeRemaining: Duration = Duration()
-    public var isPaused: Bool = false
+    private var isPaused: Bool = false
     public var fireDate: NSDate?
     public let id: String
+    
+    public var state: TimerState {
+        if isActive {
+            return TimerState.Active(fireDate: fireDate!)
+        } else if isPaused {
+            return TimerState.Paused(timeRemaining: timeRemaining)
+        } else {
+            return TimerState.Inactive
+        }
+    }
     
     init(name: String, duration: Duration) {
         self.name = name
@@ -48,29 +69,35 @@ public struct TimerInformation {
     }
     
     public mutating func start() {
-        if isPaused {
-            resume()
-        }
+        assert(!isPaused && !isActive)
         isActive = true
+        isPaused = false
+        fireDate = NSDate(timeIntervalSinceNow: duration.seconds)
         timeRemaining = duration
-        fireDate = NSDate(timeIntervalSinceNow: Double(duration.seconds))
     }
     
     public mutating func resume() {
-        // CCC, 12/29/2014. implement
-        assert(false)
+        assert(isPaused && !isActive)
+        isActive = true
+        isPaused = false
+        fireDate = NSDate(timeIntervalSinceNow: timeRemaining.seconds)
+        timeRemaining = Duration()
     }
     
     public mutating func pause() {
-        // CCC, 12/29/2014. implement
-        assert(false)
+        assert(!isPaused && isActive)
+        let timeUntilFireDate = fireDate!.timeIntervalSinceNow
+        isActive = false
+        isPaused = true
+        fireDate = nil
+        timeRemaining = Duration(seconds: timeUntilFireDate)
     }
     
     public mutating func reset() {
         isActive = false
         isPaused = false
-        timeRemaining = Duration()
         fireDate = nil
+        timeRemaining = Duration()
     }
 }
 
