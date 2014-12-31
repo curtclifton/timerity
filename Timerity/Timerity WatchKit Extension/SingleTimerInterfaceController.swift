@@ -26,7 +26,7 @@ class SingleTimerInterfaceController: WKInterfaceController {
     override func awakeWithContext(context: AnyObject!) {
         _clearCurrentTimer()
         if let timerID = context as? String {
-            timerController = SingleTimerController(nameLabel: nameLabel!, totalTimeLabel: totalTimeLabel!, countdownTimer: countdownTimer!, button: button)
+            timerController = SingleTimerController(nameLabel: nameLabel!, totalTimeLabel: totalTimeLabel!, countdownTimer: countdownTimer!, button: button, menuItemPresenter: self)
             timerController!.setTimerID(timerID)
             setTitle(timerController?.timer?.name)
         } else {
@@ -58,5 +58,38 @@ class SingleTimerInterfaceController: WKInterfaceController {
     
     @IBAction private func _buttonPressed() {
         timerController?.buttonPressed()
+    }
+}
+
+extension SingleTimerInterfaceController: MenuItemPresenter {
+    func configureMenuForState(timerState: TimerState) {
+        clearAllMenuItems()
+        switch timerState {
+        case .Active:
+            // no menu items here
+            break;
+        case .Paused:
+            addMenuItemWithItemIcon(WKMenuItemIcon.Decline, title: NSLocalizedString("Reset Timer", comment: "reset timer menu item title"), action: "resetMenuItemPressed")
+            break;
+        case .Inactive:
+            addMenuItemWithItemIcon(WKMenuItemIcon.Info, title: NSLocalizedString("Edit Timer", comment: "edit timer menu item title"), action: "editMenuItemPressed")
+            addMenuItemWithItemIcon(WKMenuItemIcon.Trash, title: NSLocalizedString("Delete Timer", comment: "delete timer menu item title"), action: "deleteMenuItemPressed")
+            break;
+        }
+    }
+    
+    func resetMenuItemPressed() {
+        // CCC, 12/30/2014. implement
+        println("reset the thing")
+    }
+    
+    func editMenuItemPressed() {
+        // CCC, 12/30/2014. implement
+        println("edit the thing")
+    }
+    
+    func deleteMenuItemPressed() {
+        // CCC, 12/30/2014. implement
+        println("delete the thing")
     }
 }

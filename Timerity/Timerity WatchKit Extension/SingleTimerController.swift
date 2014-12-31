@@ -9,23 +9,28 @@
 import WatchKit
 import TimerityData
 
+protocol MenuItemPresenter {
+    func configureMenuForState(timerState: TimerState)
+}
+
 class SingleTimerController {
     var timer: TimerInformation?
     private var timerUpdateCallbackID: TimerChangeCallbackID?
     private var isActive = true // we assume that we're initially active so that loading into an already loaded UI causes an update
     private var needsUpdate = false
     
-    // outlets
-    var nameLabel: WKInterfaceLabel
-    var totalTimeLabel: WKInterfaceLabel
-    var countdownTimer: WKInterfaceTimer
-    var button: WKInterfaceButton?
+    private var nameLabel: WKInterfaceLabel
+    private var totalTimeLabel: WKInterfaceLabel
+    private var countdownTimer: WKInterfaceTimer
+    private var button: WKInterfaceButton?
+    private var menuItemPresenter: MenuItemPresenter?
     
-    init(nameLabel: WKInterfaceLabel, totalTimeLabel: WKInterfaceLabel, countdownTimer: WKInterfaceTimer, button: WKInterfaceButton? = nil) {
+    init(nameLabel: WKInterfaceLabel, totalTimeLabel: WKInterfaceLabel, countdownTimer: WKInterfaceTimer, button: WKInterfaceButton? = nil, menuItemPresenter: MenuItemPresenter? = nil) {
         self.nameLabel = nameLabel
         self.totalTimeLabel = totalTimeLabel
         self.countdownTimer = countdownTimer
         self.button = button
+        self.menuItemPresenter = menuItemPresenter
     }
     
     //MARK: - Package API
@@ -120,6 +125,7 @@ class SingleTimerController {
                 button?.setHidden(false)
                 break;
             }
+            menuItemPresenter?.configureMenuForState(timer.state)
         } else {
             println("Eep, no timer")
             nameLabel.setText(NSLocalizedString("Missing timer", comment: "missing timer row label"))
