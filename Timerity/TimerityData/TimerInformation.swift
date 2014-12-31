@@ -176,12 +176,16 @@ public class TimerData {
 
     public func updateTimer(timer: TimerInformation) {
         if let index = timerIndex[timer.id] {
+            // CCC, 12/30/2014. Decide what sort of operation this is, pass the appropriate command to the main app. Let the write back trigger the UI update.
+//            let startCommand = TimerCommand.Start
+//            startCommand.send(timer)
             timers[index] = timer
             if let url = originalURL {
                 self.writeToURL(url)
             }
             _invokeCallbacks(timer: timer)
         } else {
+            // CCC, 12/30/2014. This should probably just add the new timer.
             assert(false, "no existing timer with id \(timer.id)")
         }
     }

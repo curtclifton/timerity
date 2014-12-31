@@ -79,8 +79,10 @@ extension SingleTimerInterfaceController: MenuItemPresenter {
     }
     
     func resetMenuItemPressed() {
-        // CCC, 12/30/2014. implement
-        println("reset the thing")
+        if var timer = timerController?.timer {
+            timer.reset()
+            timerDB.updateTimer(timer)
+        }
     }
     
     func editMenuItemPressed() {

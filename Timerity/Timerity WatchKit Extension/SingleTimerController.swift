@@ -68,23 +68,15 @@ class SingleTimerController {
             case .Active(fireDate: let fireDate):
                 countdownTimer.stop() // the countdown will be removed by the callback, but lets not let the count drop below the cached time remaining
                 timer.pause()
-                timerDB.updateTimer(timer) // triggers a callback that updates the UI
-                let startCommand = TimerCommand.Start // CCC, 12/30/2014. should the actual start command be sent by timerDB? Seems likely. Then the callback should be triggered when the main app updates the file on disk, prompting the DB to reload thanks to file coordination.
-                startCommand.send(timer)
                 break;
             case .Paused(timeRemaining: let timeRemaining):
                 timer.resume()
-                timerDB.updateTimer(timer) // triggers a callback that updates the UI
-                let startCommand = TimerCommand.Start // CCC, 12/30/2014. should the actual start command be sent by timerDB? Seems likely. Then the callback should be triggered when the main app updates the file on disk, prompting the DB to reload thanks to file coordination.
-                startCommand.send(timer)
                 break;
             case .Inactive:
                 timer.start()
-                timerDB.updateTimer(timer) // triggers a callback that updates the UI
-                let startCommand = TimerCommand.Start // CCC, 12/30/2014. should the actual start command be sent by timerDB? Seems likely. Then the callback should be triggered when the main app updates the file on disk, prompting the DB to reload thanks to file coordination.
-                startCommand.send(timer)
                 break;
             }
+            timerDB.updateTimer(timer) // triggers a callback that updates the UI
         }
     }
     
