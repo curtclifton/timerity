@@ -89,6 +89,9 @@ extension SingleTimerInterfaceController: MenuItemPresenter {
     func editMenuItemPressed() {
         // CCC, 12/30/2014. implement
         println("editting")
+        if var timer = timerController?.timer {
+            presentControllerWithName(InterfaceControllerIdentifier.TimerEditingController, context: timer.id)
+        }
     }
     
     func deleteMenuItemPressed() {

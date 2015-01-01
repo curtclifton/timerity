@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="3735"/>
     </dependencies>
     <scenes>
-        <!--Interface Controller-->
+        <!--AllTimersController-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="Timerity_Watch_App" customModuleProvider="target">
+                <controller identifier="AllTimersController" id="AgC-eL-Hgc" customClass="InterfaceController" customModule="Timerity_Watch_App" customModuleProvider="target">
                     <items>
                         <table alignment="left" id="96D-Sp-Sfr">
                             <items>
@@ -80,10 +80,10 @@
             </objects>
             <point key="canvasLocation" x="235" y="347"/>
         </scene>
-        <!--Single Timer Interface Controller-->
+        <!--SingleTimerController-->
         <scene sceneID="Dah-W6-cuO">
             <objects>
-                <controller id="Y2x-Di-sE3" customClass="SingleTimerInterfaceController" customModule="Timerity_WatchKit_Extension">
+                <controller identifier="SingleTimerController" id="Y2x-Di-sE3" customClass="SingleTimerInterfaceController" customModule="Timerity_WatchKit_Extension">
                     <items>
                         <imageView alignment="left" image="InactiveTimer" id="r4h-qp-cEa"/>
                         <label alignment="left" text="Label" numberOfLines="3" id="zBi-AH-jvx">
@@ -107,10 +107,10 @@
             </objects>
             <point key="canvasLocation" x="465" y="347"/>
         </scene>
-        <!--Interface Controller-->
+        <!--TimerEditingController-->
         <scene sceneID="s2P-PN-TAJ">
             <objects>
-                <controller id="J6s-Lj-uhv">
+                <controller identifier="TimerEditingController" id="J6s-Lj-uhv">
                     <items>
                         <label alignment="left" text="Unnamed" id="Hy5-KC-Wrr"/>
                         <button width="1" alignment="left" title="Set Name" id="6VE-ho-4vt"/>
@@ -124,7 +124,7 @@
                     </items>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="465" y="717.5"/>
+            <point key="canvasLocation" x="465" y="738.25"/>
         </scene>
         <!--Glance Interface Controller-->
         <scene sceneID="BOz-TT-tkC">
@@ -137,7 +137,7 @@
                     <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="14"/>
                 </glanceController>
             </objects>
-            <point key="canvasLocation" x="235" y="672"/>
+            <point key="canvasLocation" x="240" y="1019"/>
         </scene>
         <!--Static Notification Interface Controller-->
         <scene sceneID="AEw-b0-oYE">
@@ -153,14 +153,14 @@
                     </connections>
                 </notificationController>
             </objects>
-            <point key="canvasLocation" x="235" y="1001"/>
+            <point key="canvasLocation" x="240" y="1348"/>
         </scene>
         <!--Notification Controller-->
         <scene sceneID="KIl-fV-djm">
             <objects>
                 <controller id="gdX-wl-uQE" customClass="NotificationController" customModule="Timerity_Watch_App" customModuleProvider="target"/>
             </objects>
-            <point key="canvasLocation" x="553" y="1001"/>
+            <point key="canvasLocation" x="465" y="1348"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.44484919309616089" green="1" blue="0.31143206357955933" alpha="1" colorSpace="calibratedRGB"/>

@@ -12,6 +12,12 @@ import WatchKit
 
 let MaxRows = 20
 
+struct InterfaceControllerIdentifier {
+    static let AllTimersController = "AllTimersController"
+    static let SingleTimerController = "SingleTimerController"
+    static let TimerEditingController = "TimerEditingController"
+}
+
 class InterfaceController: WKInterfaceController {
     struct RowTypes {
         static let Timer = "TimerRow"
