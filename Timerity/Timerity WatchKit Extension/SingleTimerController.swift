@@ -46,10 +46,15 @@ class SingleTimerController {
     // CCC, 12/29/2014. Maybe this should be setTimer. Is there any advantage in exposing the timerID? Why not just pass around timers?
     func setTimerID(timerID: String) {
         _clearCurrentTimerCallback()
-        let registrationResult = timerDB.registerCallbackForTimer(identifier: timerID) { newTimer in
-            self.timer = newTimer
-            self.needsUpdate = true
-            self._updateIfNeeded()
+        let registrationResult = timerDB.registerCallbackForTimer(identifier: timerID) { maybeNewTimer in
+            if let newTimer = maybeNewTimer {
+                self.timer = newTimer
+                self.needsUpdate = true
+                self._updateIfNeeded()
+            } else {
+                self.timer = nil
+                self.needsUpdate = true
+            }
         }
         switch registrationResult {
         case .left(let callbackIDBox):

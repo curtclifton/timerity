@@ -27,6 +27,7 @@
 		4D0A16671A353216001BF0BE /* TimerityData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D0A165C1A353216001BF0BE /* TimerityData.framework */; };
 		4D0A166E1A353216001BF0BE /* TimerityDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A166D1A353216001BF0BE /* TimerityDataTests.swift */; };
 		4D0A16761A35328F001BF0BE /* TimerInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A16751A35328F001BF0BE /* TimerInformation.swift */; };
+		4D0F81891A54D2E40000CDC2 /* Set.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F81881A54D2E40000CDC2 /* Set.swift */; };
 		4D1D5FDE1A3C08D30060598C /* TimerTableRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1D5FDD1A3C08D30060598C /* TimerTableRowController.swift */; };
 		4D1D5FE01A3C09070060598C /* ActionTableRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1D5FDF1A3C09070060598C /* ActionTableRowController.swift */; };
 		4D20F8AE1A4A213E00754D4C /* TimerDatabaseWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D20F8AD1A4A213E00754D4C /* TimerDatabaseWrapper.swift */; };
@@ -118,6 +119,7 @@
 		4D0A166C1A353216001BF0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4D0A166D1A353216001BF0BE /* TimerityDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerityDataTests.swift; sourceTree = "<group>"; };
 		4D0A16751A35328F001BF0BE /* TimerInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerInformation.swift; sourceTree = "<group>"; };
+		4D0F81881A54D2E40000CDC2 /* Set.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Set.swift; sourceTree = "<group>"; };
 		4D1D5FDD1A3C08D30060598C /* TimerTableRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerTableRowController.swift; sourceTree = "<group>"; };
 		4D1D5FDF1A3C09070060598C /* ActionTableRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionTableRowController.swift; sourceTree = "<group>"; };
 		4D20F8AD1A4A213E00754D4C /* TimerDatabaseWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerDatabaseWrapper.swift; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 				4D0A165E1A353216001BF0BE /* Supporting Files */,
 				4D0A16751A35328F001BF0BE /* TimerInformation.swift */,
 				4DB48B981A5337100031DECD /* TimerCommand.swift */,
+				4D0F81881A54D2E40000CDC2 /* Set.swift */,
 			);
 			path = TimerityData;
 			sourceTree = "<group>";
@@ -589,6 +592,7 @@
 			files = (
 				4D0A16761A35328F001BF0BE /* TimerInformation.swift in Sources */,
 				4DB48B991A5337100031DECD /* TimerCommand.swift in Sources */,
+				4D0F81891A54D2E40000CDC2 /* Set.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

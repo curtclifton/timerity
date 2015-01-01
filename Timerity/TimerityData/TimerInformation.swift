@@ -118,7 +118,7 @@ public enum Either<T,U> {
     case right(Box<U>)
 }
 
-public typealias TimerChangeCallback = TimerInformation -> () // CCC, 12/23/2014. might want Either<TimerInformation, Bool> here to signal deletion
+public typealias TimerChangeCallback = TimerInformation? -> ()
 public typealias TimerError = String // CCC, 12/23/2014. want an enum here
 
 public struct TimerChangeCallbackID {
@@ -157,16 +157,11 @@ public class TimerData {
     private init(timers: [TimerInformation], url: NSURL? = nil) {
         originalURL = url
         self.timers = timers
-        timerIndex = [:]
-        for (index, timer) in enumerate(timers) {
-            assert(timerIndex[timer.id] == nil, "timer IDs must be unique, \(timer.id) is not.")
-            timerIndex[timer.id] = index
-        }
+        timerIndex = TimerData._rebuiltTimerIndex(timers)
     }
     
-    public init() {
-        timers = []
-        timerIndex = [:]
+    public convenience init() {
+        self.init(timers: [], url: nil)
     }
     
     //MARK: - Mutation
@@ -176,7 +171,7 @@ public class TimerData {
 
     public func updateTimer(timer: TimerInformation) {
         if let index = timerIndex[timer.id] {
-            // CCC, 12/30/2014. Decide what sort of operation this is, pass the appropriate command to the main app. Let the write back trigger the UI update.
+            // CCC, 12/30/2014. Decide what sort of operation this is, pass the appropriate command to the main app. Let the write back trigger the database and UI update.
 //            let startCommand = TimerCommand.Start
 //            startCommand.send(timer)
             timers[index] = timer
@@ -190,6 +185,20 @@ public class TimerData {
         }
     }
 
+    public func deleteTimer(timer: TimerInformation) {
+        if let index = timerIndex[timer.id] {
+            // CCC, 12/30/2014. Pass delete command to the main app. Let the write back trigger the database and UI update.
+            //            let startCommand = Delete
+            //            deleteCommand.send(timer)
+            timers.removeAtIndex(index)
+            timerIndex = TimerData._rebuiltTimerIndex(timers)
+            if let url = originalURL {
+                self.writeToURL(url)
+            }
+            _invokeCallbacks(timer: timer, isDeleted: true)
+        }
+    }
+    
     //MARK: - Callbacks
     /// If there exists a timer wtih the given identifier, then callback function is invoked immediately and whenever the given timer changes in the database. The return value is either a unique integer that can be used to de-register the callback or else an error.
     public func registerCallbackForTimer(#identifier: String, callback: TimerChangeCallback) -> Either<TimerChangeCallbackID, TimerError> {
@@ -218,16 +227,28 @@ public class TimerData {
     }
     
     //MARK: - Private API
-    private func _invokeCallbacks(#timer: TimerInformation) {
+    private class func _rebuiltTimerIndex(timers: [TimerInformation]) -> [String: Int] {
+        var newTimerIndex: [String: Int] = [:]
+        for (index, timer) in enumerate(timers) {
+            assert(newTimerIndex[timer.id] == nil, "timer IDs must be unique, \(timer.id) is not.")
+            newTimerIndex[timer.id] = index
+        }
+        return newTimerIndex
+    }
+    
+    private func _invokeCallbacks(#timer: TimerInformation, isDeleted deleted: Bool = false) {
         if let callbackIDs = callbackIDsByTimerID[timer.id] {
             var validCallbackIDs:[Int] = []
             for callbackID in callbackIDs {
                 if let callback = callbacksByCallbackID[callbackID] {
                     validCallbackIDs.append(callbackID)
-                    callback(timer)
+                    callback(deleted ? nil : timer)
+                    if deleted {
+                        callbacksByCallbackID[callbackID] = nil
+                    }
                 }
             }
-            callbackIDsByTimerID[timer.id] = validCallbackIDs
+            callbackIDsByTimerID[timer.id] = deleted ? nil : validCallbackIDs
         }
     }
     

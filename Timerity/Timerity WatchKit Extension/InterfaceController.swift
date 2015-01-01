@@ -24,7 +24,10 @@ class InterfaceController: WKInterfaceController {
     }
     
     @IBOutlet var table: WKInterfaceTable!
-    
+
+    // we need to collect the set of rows to delete, since removing from the table when the table isn't active is a no-op
+    private var _controllersToDelete: Set<TimerTableRowController> = Set()
+
     override init() {
         // Configure interface objects here.
     }
@@ -59,7 +62,13 @@ class InterfaceController: WKInterfaceController {
         
         for i in 0 ..< numberOfTimersShown {
             if let timerRowController = table?.rowControllerAtIndex(i) as? TimerTableRowController {
-                timerRowController.setTimerID(timerDB.timers[i].id)
+                let timer = timerDB.timers[i]
+                timerRowController.setTimerID(timer.id)
+                timerDB.registerCallbackForTimer(identifier: timer.id) { maybeTimer in
+                    if maybeTimer == nil {
+                        self._deleteRowWithController(timerRowController)
+                    }
+                }
             }
         }
     }
@@ -68,6 +77,7 @@ class InterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
         NSLog("%@ will activate", self)
+        _processPendingRowDeletions()
         _forEachRowController() { rowController in
             if let timerRowController = rowController as? TimerTableRowController {
                 timerRowController.willActivate()
@@ -89,7 +99,8 @@ class InterfaceController: WKInterfaceController {
     override func contextForSegueWithIdentifier(segueIdentifier: String, inTable table: WKInterfaceTable, rowIndex: Int) -> AnyObject? {
         if (segueIdentifier == SegueIdentifiers.PushTimer) {
             println("getting context for seque \(segueIdentifier) and row \(rowIndex)")
-            return timerDB.timers[rowIndex].id
+            let timers = timerDB.timers
+            return timers[rowIndex].id
         } else {
             println("unexpected seque identifier \(segueIdentifier)")
             return nil
@@ -107,5 +118,28 @@ class InterfaceController: WKInterfaceController {
                 block(rowController)
             }
         }
+    }
+    
+    func _processPendingRowDeletions() {
+        if _controllersToDelete.count == 0 {
+            return;
+        }
+        let rowsToDelete = filter(0..<table!.numberOfRows) { rowIndex in
+            if let currentController = self.table!.rowControllerAtIndex(rowIndex) as? TimerTableRowController {
+                return self._controllersToDelete.contains(currentController)
+            } else {
+                return false
+            }
+        }
+
+        rowsToDelete.reverse().map() { rowToDelete in
+            self.table!.removeRowsAtIndexes(NSIndexSet(index: rowToDelete))
+        }
+
+        _controllersToDelete = Set()
+    }
+    
+    func _deleteRowWithController(controller: TimerTableRowController) {
+        _controllersToDelete.add(controller)
     }
 }
