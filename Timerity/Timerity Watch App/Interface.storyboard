@@ -110,7 +110,7 @@
         <!--TimerEditingController-->
         <scene sceneID="s2P-PN-TAJ">
             <objects>
-                <controller identifier="TimerEditingController" id="J6s-Lj-uhv">
+                <controller identifier="TimerEditingController" id="J6s-Lj-uhv" customClass="TimerEditingInterfaceController" customModule="Timerity_WatchKit_Extension">
                     <items>
                         <label alignment="left" text="Unnamed" id="Hy5-KC-Wrr"/>
                         <button width="1" alignment="left" title="Set Name" id="6VE-ho-4vt"/>
@@ -120,8 +120,15 @@
                         <slider width="1" alignment="left" maximum="60" steps="60" id="LQS-Ni-tLL"/>
                         <label alignment="left" text="0s" id="4bX-p4-pRT"/>
                         <slider width="1" alignment="left" maximum="60" steps="60" id="4t3-Il-YSD"/>
-                        <button width="1" alignment="left" title="Done" id="Se6-Ob-iAH"/>
+                        <button width="1" alignment="left" title="Done" id="Se6-Ob-iAH">
+                            <connections>
+                                <action selector="doneButtonPressed" destination="J6s-Lj-uhv" id="lS6-wA-zya"/>
+                            </connections>
+                        </button>
                     </items>
+                    <connections>
+                        <outlet property="doneButton" destination="Se6-Ob-iAH" id="MHZ-xN-Vm1"/>
+                    </connections>
                 </controller>
             </objects>
             <point key="canvasLocation" x="465" y="738.25"/>

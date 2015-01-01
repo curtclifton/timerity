@@ -68,6 +68,10 @@ public struct TimerInformation {
         id = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault))
     }
     
+    public init() {
+        self.init(name: NSLocalizedString("Unnamed", comment: "name for unnamed timer"), duration: Duration())
+    }
+    
     public mutating func start() {
         assert(!isPaused && !isActive)
         isActive = true
