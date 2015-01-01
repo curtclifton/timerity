@@ -112,8 +112,11 @@
             <objects>
                 <controller identifier="TimerEditingController" id="J6s-Lj-uhv" customClass="TimerEditingInterfaceController" customModule="Timerity_WatchKit_Extension">
                     <items>
-                        <label alignment="left" text="Unnamed" id="Hy5-KC-Wrr"/>
-                        <button width="1" alignment="left" title="Set Name" id="6VE-ho-4vt"/>
+                        <button width="1" alignment="left" title="Set Name" id="6VE-ho-4vt">
+                            <connections>
+                                <action selector="nameButtonPressed" destination="J6s-Lj-uhv" id="ZmB-oE-khE"/>
+                            </connections>
+                        </button>
                         <label alignment="left" text="0h" id="onh-SU-Azu"/>
                         <slider width="1" alignment="left" maximum="24" steps="24" id="CKW-hr-neE"/>
                         <label alignment="left" text="0m" id="lKG-n6-blR"/>
@@ -128,6 +131,7 @@
                     </items>
                     <connections>
                         <outlet property="doneButton" destination="Se6-Ob-iAH" id="MHZ-xN-Vm1"/>
+                        <outlet property="nameButton" destination="6VE-ho-4vt" id="efK-EI-52d"/>
                     </connections>
                 </controller>
             </objects>
