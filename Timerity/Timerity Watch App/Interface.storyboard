@@ -63,6 +63,9 @@
                                                         <label alignment="left" text="Add Timer" id="NlN-HP-Wm5"/>
                                                     </items>
                                                 </group>
+                                                <connections>
+                                                    <segue destination="J6s-Lj-uhv" kind="modal" id="2xR-T4-X3A"/>
+                                                </connections>
                                             </button>
                                         </items>
                                     </group>
@@ -103,6 +106,25 @@
                 </controller>
             </objects>
             <point key="canvasLocation" x="465" y="347"/>
+        </scene>
+        <!--Interface Controller-->
+        <scene sceneID="s2P-PN-TAJ">
+            <objects>
+                <controller id="J6s-Lj-uhv">
+                    <items>
+                        <label alignment="left" text="Unnamed" id="Hy5-KC-Wrr"/>
+                        <button width="1" alignment="left" title="Set Name" id="6VE-ho-4vt"/>
+                        <label alignment="left" text="0h" id="onh-SU-Azu"/>
+                        <slider width="1" alignment="left" maximum="24" steps="24" id="CKW-hr-neE"/>
+                        <label alignment="left" text="0m" id="lKG-n6-blR"/>
+                        <slider width="1" alignment="left" maximum="60" steps="60" id="LQS-Ni-tLL"/>
+                        <label alignment="left" text="0s" id="4bX-p4-pRT"/>
+                        <slider width="1" alignment="left" maximum="60" steps="60" id="4t3-Il-YSD"/>
+                        <button width="1" alignment="left" title="Done" id="Se6-Ob-iAH"/>
+                    </items>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="465" y="717.5"/>
         </scene>
         <!--Glance Interface Controller-->
         <scene sceneID="BOz-TT-tkC">
