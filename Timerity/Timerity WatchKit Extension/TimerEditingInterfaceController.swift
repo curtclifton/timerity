@@ -9,6 +9,9 @@
 import TimerityData
 import WatchKit
 
+// TODO: really should localize these and read them from a configuration file
+let defaultTimerNames = ["Tea", "Power Nap", "Brownies", "Egg", "Tempo Run"]
+
 class TimerEditingInterfaceController: WKInterfaceController {
     private lazy var timer = TimerInformation()
     private var isChanged = false
@@ -77,8 +80,17 @@ class TimerEditingInterfaceController: WKInterfaceController {
     //MARK: - Actions
 
     @IBAction func nameButtonPressed() {
-        // CCC, 1/1/2015. if the timer is named, then include the name as a choice here
-        presentTextInputControllerWithSuggestions(["Tea", "Power Nap"], allowedInputMode: WKTextInputMode.Plain) { maybeInputText in
+        let timerNameSuggestions = (timer.name.isEmpty ? [] : [timer.name]) + defaultTimerNames
+        var nameSuggestionSet: Set<String> = Set()
+        let filteredNameSuggestions = timerNameSuggestions.filter() { name in
+            if nameSuggestionSet.contains(name) {
+                return false
+            }
+            nameSuggestionSet.add(name)
+            return true
+        }
+        
+        presentTextInputControllerWithSuggestions(filteredNameSuggestions, allowedInputMode: WKTextInputMode.Plain) { maybeInputText in
             if let textInput = maybeInputText?.first as? String {
                 if !textInput.isEmpty {
                     self.timer.name = textInput
@@ -102,7 +114,6 @@ class TimerEditingInterfaceController: WKInterfaceController {
     }
     
     @IBAction func doneButtonPressed() {
-        // CCC, 12/31/2014. need some mechanism for adding the row to the top-level listing. Probably give a way to register a timer-added callback on the database
         dismissController()
         timerDB.updateTimer(timer)
     }
@@ -168,7 +179,11 @@ class TimerEditingInterfaceController: WKInterfaceController {
             return
         }
 
-        nameButton!.setTitle(timer.name)
+        if timer.name.isEmpty {
+            nameButton.setTitle(NSLocalizedString("Unnamed", comment: "unnmaed timer placeholder"))
+        } else {
+            nameButton!.setTitle(timer.name)
+        }
         _updateDurationLabel()
 
         let (hours, minutes, seconds) = timer.duration.hoursMinutesSeconds

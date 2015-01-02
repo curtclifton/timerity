@@ -72,7 +72,7 @@ public struct TimerInformation {
     }
     
     public init() {
-        self.init(name: NSLocalizedString("Unnamed", comment: "name for unnamed timer"), duration: Duration())
+        self.init(name: "", duration: Duration())
     }
     
     public mutating func start() {
