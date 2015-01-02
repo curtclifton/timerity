@@ -11,13 +11,17 @@ import WatchKit
 
 class TimerEditingInterfaceController: WKInterfaceController {
     private var timer: TimerInformation?
-    private var isUnedited = true
+    private var isChanged = false
     private var needsUpdate = true
     private var isActive = true
 
     // outlets
     @IBOutlet var doneButton: WKInterfaceButton?
     @IBOutlet var nameButton: WKInterfaceButton?
+    @IBOutlet var durationLabel: WKInterfaceLabel?
+    @IBOutlet var hoursSlider: WKInterfaceSlider?
+    @IBOutlet var minutesSlider: WKInterfaceSlider?
+    @IBOutlet var secondsSlider: WKInterfaceSlider?
     
     override func awakeWithContext(context: AnyObject?) {
         if let timerID = context as? String {
@@ -35,6 +39,8 @@ class TimerEditingInterfaceController: WKInterfaceController {
         } else {
             assert(false, "Unexpected context \(context)")
         }
+        
+        // CCC, 1/1/2015. Consider setting a color on the sliders and using an attributed string to put corresponding colors on the label fields.
     }
     
     override func willActivate() {
@@ -55,10 +61,23 @@ class TimerEditingInterfaceController: WKInterfaceController {
             if let textInput = maybeInputText?.first as? String {
                 if !textInput.isEmpty {
                     self.timer!.name = textInput
+                    self.isChanged = true
                     self._update()
                 }
             }
         }
+    }
+
+    @IBAction func hoursSliderChanged(value: Float) {
+        _changedSlider(.Hours, value: value)
+    }
+    
+    @IBAction func minutesSliderChanged(value: Float) {
+        _changedSlider(.Minutes, value: value)
+    }
+    
+    @IBAction func secondsSliderChanged(value: Float) {
+        _changedSlider(.Seconds, value: value)
     }
     
     @IBAction func doneButtonPressed() {
@@ -69,6 +88,37 @@ class TimerEditingInterfaceController: WKInterfaceController {
     
     //MARK: - Private API
 
+    private enum Slider: Int {
+        case Hours = 0
+        case Minutes = 1
+        case Seconds = 2
+    }
+    
+    private func _changedSlider(slider: Slider, value newValue: Float) {
+        let (hours, minutes, seconds) = timer!.duration.hoursMinutesSeconds
+        var times = [hours, minutes, seconds]
+        let newValue = Int(round(newValue))
+
+        if newValue == times[slider.rawValue] {
+            return
+        }
+        times[slider.rawValue] = newValue
+        let newDuration = Duration(hours: times[0], minutes: times[1], seconds: times[2])
+        timer!.duration = newDuration
+        isChanged = true
+        _updateDurationLabel()
+        _updateDoneButton()
+    }
+    
+    private func _updateDurationLabel() {
+        let duration = timer!.duration
+        durationLabel!.setText(duration.description) // CCC, 1/1/2015. add function for formatting a duration nicely
+    }
+    
+    private func _updateDoneButton() {
+        doneButton!.setHidden(!isChanged)
+    }
+    
     // CCC, 1/1/2015. Does it make sense to make a WKInterfaceController subclass or a helper object to handle the delayed update tap dance?
     private func _setNeedsUpdate() {
         needsUpdate = true
@@ -78,9 +128,16 @@ class TimerEditingInterfaceController: WKInterfaceController {
         if (!needsUpdate) {
             return
         }
-        // CCC, 12/31/2014. implement
+
         nameButton!.setTitle(timer!.name)
-        doneButton!.setHidden(isUnedited)
+        _updateDurationLabel()
+
+        let (hours, minutes, seconds) = timer!.duration.hoursMinutesSeconds
+        hoursSlider!.setValue(Float(hours))
+        minutesSlider!.setValue(Float(minutes))
+        secondsSlider!.setValue(Float(seconds))
+        
+        _updateDoneButton()
         needsUpdate = false
     }
     
