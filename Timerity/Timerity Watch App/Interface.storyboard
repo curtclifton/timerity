@@ -113,22 +113,23 @@
                 <controller identifier="TimerEditingController" id="J6s-Lj-uhv" customClass="TimerEditingInterfaceController" customModule="Timerity_WatchKit_Extension">
                     <items>
                         <button width="1" alignment="left" title="Set Name" id="6VE-ho-4vt">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                             <connections>
                                 <action selector="nameButtonPressed" destination="J6s-Lj-uhv" id="ZmB-oE-khE"/>
                             </connections>
                         </button>
                         <label alignment="center" text="0h 0m 0s" textAlignment="center" id="onh-SU-Azu"/>
-                        <slider width="1" alignment="left" maximum="24" steps="24" id="CKW-hr-neE">
+                        <slider width="1" alignment="left" accessibilityLabel="hours" maximum="24" steps="24" id="CKW-hr-neE">
                             <connections>
                                 <action selector="hoursSliderChanged:" destination="J6s-Lj-uhv" id="Yav-rY-J1b"/>
                             </connections>
                         </slider>
-                        <slider width="1" alignment="left" maximum="60" steps="60" id="LQS-Ni-tLL">
+                        <slider width="1" alignment="left" accessibilityLabel="minutes" maximum="60" steps="60" id="LQS-Ni-tLL">
                             <connections>
                                 <action selector="minutesSliderChanged:" destination="J6s-Lj-uhv" id="ofw-0i-SJe"/>
                             </connections>
                         </slider>
-                        <slider width="1" alignment="left" maximum="60" steps="60" id="4t3-Il-YSD">
+                        <slider width="1" alignment="left" accessibilityLabel="seconds" maximum="60" steps="60" id="4t3-Il-YSD">
                             <connections>
                                 <action selector="secondsSliderChanged:" destination="J6s-Lj-uhv" id="1rj-ZN-RQl"/>
                             </connections>

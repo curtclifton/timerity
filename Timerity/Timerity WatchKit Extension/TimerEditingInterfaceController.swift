@@ -41,6 +41,9 @@ class TimerEditingInterfaceController: WKInterfaceController {
         }
         
         // CCC, 1/1/2015. Consider setting a color on the sliders and using an attributed string to put corresponding colors on the label fields.
+        hoursSlider!.setColor(SliderColor.Hours.color)
+        minutesSlider!.setColor(SliderColor.Minutes.color)
+        secondsSlider!.setColor(SliderColor.Seconds.color)
     }
     
     override func willActivate() {
@@ -106,13 +109,59 @@ class TimerEditingInterfaceController: WKInterfaceController {
         let newDuration = Duration(hours: times[0], minutes: times[1], seconds: times[2])
         timer!.duration = newDuration
         isChanged = true
+        // We're assuming that the sliders can only change value when the interface is active and rely on the sliders updating themselves. If we call our regular _update method, we race the frameworks in updating the sliders and get flickering (at least in the simulator).
         _updateDurationLabel()
         _updateDoneButton()
     }
     
+    private enum SliderColor {
+        case Hours
+        case Minutes
+        case Seconds
+        
+        var color: UIColor {
+            switch self {
+            case .Hours:
+                return UIColor(hue: 108.0/360.0, saturation: 0.69, brightness: 1.0, alpha: 1.0)
+            case .Minutes:
+                return UIColor(hue: 220.0/360.0, saturation: 0.69, brightness: 1.0, alpha: 1.0)
+            case .Seconds:
+                return UIColor(white: 0.7, alpha: 1.0)
+            }
+        }
+        
+        static let attributedSpace = NSAttributedString(string: " ")
+        
+        var suffix: String {
+            switch self {
+            case .Hours:
+                return NSLocalizedString("h", comment: "units suffix denoting hours")
+            case .Minutes:
+                return NSLocalizedString("m", comment: "units suffix denoting minutes")
+            case .Seconds:
+                return NSLocalizedString("s", comment: "units suffix denoting seconds")
+            }
+        }
+        
+        func coloredStringForValue(value: Int) -> NSAttributedString {
+            return NSAttributedString(string: "\(value)\(suffix)", attributes: [NSForegroundColorAttributeName: color])
+        }
+    }
+
     private func _updateDurationLabel() {
         let duration = timer!.duration
-        durationLabel!.setText(duration.description) // CCC, 1/1/2015. add function for formatting a duration nicely
+        let (hours, minutes, seconds) = duration.hoursMinutesSeconds
+        let hoursString = SliderColor.Hours.coloredStringForValue(hours)
+        let minutesString = SliderColor.Minutes.coloredStringForValue(minutes)
+        let secondsString = SliderColor.Seconds.coloredStringForValue(seconds)
+        
+        var labelAttributedString = NSMutableAttributedString(attributedString: hoursString)
+        labelAttributedString.appendAttributedString(SliderColor.attributedSpace)
+        labelAttributedString.appendAttributedString(minutesString)
+        labelAttributedString.appendAttributedString(SliderColor.attributedSpace)
+        labelAttributedString.appendAttributedString(secondsString)
+        
+        durationLabel!.setAttributedText(labelAttributedString)
     }
     
     private func _updateDoneButton() {
