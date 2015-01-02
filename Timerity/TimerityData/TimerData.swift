@@ -39,8 +39,10 @@ public class TimerData {
     private var originalURL: NSURL?
     
     private var nextCallbackID = 0
+    // CCC, 1/1/2015. This probably leaks because callbacks retain their creators and the database instance is global. Could mitigate if we're faithful about unregister callbacks, but if we do that in deinit it will never happen.
     private var callbacksByCallbackID: [Int: TimerChangeCallback] = [:]
     private var callbackIDsByTimerID: [String: [Int]] = [:]
+    private var databaseChangeCallbacksByCallbackID: [Int: (() -> ())] = [:]
     
     //MARK: - Initialization
     public class func fromURL(url: NSURL) -> TimerData {
@@ -77,24 +79,30 @@ public class TimerData {
     public func updateTimer(timer: TimerInformation) {
         if let index = timerIndex[timer.id] {
             // CCC, 12/30/2014. Decide what sort of operation this is, pass the appropriate command to the main app. Let the write back trigger the database and UI update.
-            //            let startCommand = TimerCommand.Start
-            //            startCommand.send(timer)
+            //            let command = TimerCommand.Start
+            //            command.send(timer)
             timers[index] = timer
             if let url = originalURL {
                 self.writeToURL(url)
             }
             _invokeCallbacks(timer: timer)
         } else {
-            // CCC, 12/30/2014. This should probably just add the new timer.
-            assert(false, "no existing timer with id \(timer.id)")
+            // CCC, 12/30/2014. Pass Add command to the main app. Let the write back trigger the database and UI update.
+            //            let command = TimerCommend.Add
+            //            command.send(timer)
+            // Add the new timer to the head of the list
+            let newIndex = timers.count
+            timers.insert(timer, atIndex: 0)
+            timerIndex = TimerData._rebuiltTimerIndex(timers)
+            _invokeDatabaseReloadCallbacks()
         }
     }
     
     public func deleteTimer(timer: TimerInformation) {
         if let index = timerIndex[timer.id] {
-            // CCC, 12/30/2014. Pass delete command to the main app. Let the write back trigger the database and UI update.
-            //            let startCommand = Delete
-            //            deleteCommand.send(timer)
+            // CCC, 12/30/2014. Pass Delete command to the main app. Let the write back trigger the database and UI update.
+            //            let command = TimerCommend.Delete
+            //            command.send(timer)
             timers.removeAtIndex(index)
             timerIndex = TimerData._rebuiltTimerIndex(timers)
             if let url = originalURL {
@@ -129,6 +137,14 @@ public class TimerData {
     public func unregisterCallback(#identifier: TimerChangeCallbackID) {
         callbacksByCallbackID[identifier.value] = nil
         // we wait until invocation time to clean up callbackIDsByTimerID
+        databaseChangeCallbacksByCallbackID[identifier.value] = nil
+    }
+    
+    public func registerDatabaseReloadCallback(callback: () -> ()) -> TimerChangeCallbackID {
+        let callbackID = nextCallbackID
+        ++nextCallbackID
+        databaseChangeCallbacksByCallbackID[callbackID] = callback
+        return TimerChangeCallbackID(value: callbackID)
     }
     
     //MARK: - Private API
@@ -154,6 +170,12 @@ public class TimerData {
                 }
             }
             callbackIDsByTimerID[timer.id] = deleted ? nil : validCallbackIDs
+        }
+    }
+    
+    private func _invokeDatabaseReloadCallbacks() {
+        for callback in databaseChangeCallbacksByCallbackID.values {
+            callback()
         }
     }
     

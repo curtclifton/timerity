@@ -52,6 +52,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
     
     override func didDeactivate() {
         isActive = false
+        super.didDeactivate()
     }
     
     //MARK: - Actions
@@ -144,7 +145,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
     }
     
     private func _updateIfNeeded() {
-        if (!needsUpdate) {
+        if !needsUpdate {
             return
         }
 
@@ -163,7 +164,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
     /// If the interface is active, then updates the interface to match the state of the timer. Otherwise schedules an interface update for the next time the interface becomes active.
     private func _update() {
         _setNeedsUpdate()
-        if (isActive) {
+        if isActive {
             _updateIfNeeded()
         }
     }
