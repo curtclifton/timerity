@@ -57,10 +57,10 @@ class SingleTimerController {
             }
         }
         switch registrationResult {
-        case .left(let callbackIDBox):
+        case .Left(let callbackIDBox):
             timerUpdateCallbackID = callbackIDBox.unwrapped
             break;
-        case .right(let errorBox):
+        case .Right(let errorBox):
             println("Error getting information for timer: \(errorBox.unwrapped)")
             timer = nil
             break;

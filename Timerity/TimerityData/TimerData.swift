@@ -21,8 +21,8 @@ public struct Box<T> {
 
 // CCC, 12/29/2014. sides should be uppercase
 public enum Either<T,U> {
-    case left(Box<T>) // TODO: Lose this wrapping box that's here to hack around Swift's "Unimplemented IR generation feature non-fixed multi-payload enum layout" bug.
-    case right(Box<U>)
+    case Left(Box<T>) // TODO: Lose this wrapping box that's here to hack around Swift's "Unimplemented IR generation feature non-fixed multi-payload enum layout" bug.
+    case Right(Box<U>)
 }
 
 public typealias TimerChangeCallback = TimerInformation? -> ()
@@ -110,7 +110,7 @@ public class TimerData {
     /// If there exists a timer wtih the given identifier, then callback function is invoked immediately and whenever the given timer changes in the database. The return value is either a unique integer that can be used to de-register the callback or else an error.
     public func registerCallbackForTimer(#identifier: String, callback: TimerChangeCallback) -> Either<TimerChangeCallbackID, TimerError> {
         switch _timer(identifier: identifier) {
-        case .left(let timerBox):
+        case .Left(let timerBox):
             let callbackID = nextCallbackID
             ++nextCallbackID
             callbacksByCallbackID[callbackID] = callback
@@ -122,9 +122,9 @@ public class TimerData {
             }
             let timerInfo = timerBox.unwrapped
             callback(timerInfo)
-            return Either.left(Box(wrap: TimerChangeCallbackID(value: callbackID)))
-        case .right(let errorBox):
-            return Either.right(errorBox)
+            return Either.Left(Box(wrap: TimerChangeCallbackID(value: callbackID)))
+        case .Right(let errorBox):
+            return Either.Right(errorBox)
         }
     }
     
@@ -161,9 +161,9 @@ public class TimerData {
     
     private func _timer(#identifier: String) -> Either<TimerInformation, TimerError> {
         if let index = timerIndex[identifier] {
-            return Either.left(Box(wrap: timers[index]))
+            return Either.Left(Box(wrap: timers[index]))
         } else {
-            return Either.right(Box(wrap: "no timer with id \(identifier)"))
+            return Either.Right(Box(wrap: "no timer with id \(identifier)"))
         }
     }
 }
