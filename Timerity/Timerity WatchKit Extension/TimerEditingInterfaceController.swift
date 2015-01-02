@@ -10,18 +10,18 @@ import TimerityData
 import WatchKit
 
 class TimerEditingInterfaceController: WKInterfaceController {
-    private var timer: TimerInformation?
+    private lazy var timer = TimerInformation()
     private var isChanged = false
     private var needsUpdate = true
     private var isActive = true
 
     // outlets
-    @IBOutlet var doneButton: WKInterfaceButton?
-    @IBOutlet var nameButton: WKInterfaceButton?
-    @IBOutlet var durationLabel: WKInterfaceLabel?
-    @IBOutlet var hoursSlider: WKInterfaceSlider?
-    @IBOutlet var minutesSlider: WKInterfaceSlider?
-    @IBOutlet var secondsSlider: WKInterfaceSlider?
+    @IBOutlet var doneButton: WKInterfaceButton!
+    @IBOutlet var nameButton: WKInterfaceButton!
+    @IBOutlet var durationLabel: WKInterfaceLabel!
+    @IBOutlet var hoursSlider: WKInterfaceSlider!
+    @IBOutlet var minutesSlider: WKInterfaceSlider!
+    @IBOutlet var secondsSlider: WKInterfaceSlider!
     
     override func awakeWithContext(context: AnyObject?) {
         if let timerID = context as? String {
@@ -34,7 +34,6 @@ class TimerEditingInterfaceController: WKInterfaceController {
                 self._update()
             }
         } else if context == nil {
-            timer = TimerInformation()
             _update()
         } else {
             assert(false, "Unexpected context \(context)")
@@ -62,7 +61,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
         presentTextInputControllerWithSuggestions(["Tea", "Power Nap"], allowedInputMode: WKTextInputMode.Plain) { maybeInputText in
             if let textInput = maybeInputText?.first as? String {
                 if !textInput.isEmpty {
-                    self.timer!.name = textInput
+                    self.timer.name = textInput
                     self.isChanged = true
                     self._update()
                 }
@@ -85,7 +84,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
     @IBAction func doneButtonPressed() {
         // CCC, 12/31/2014. need some mechanism for adding the row to the top-level listing. Probably give a way to register a timer-added callback on the database
         dismissController()
-        timerDB.updateTimer(timer!)
+        timerDB.updateTimer(timer)
     }
     
     //MARK: - Private API
@@ -97,7 +96,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
     }
     
     private func _changedSlider(slider: Slider, value newValue: Float) {
-        let (hours, minutes, seconds) = timer!.duration.hoursMinutesSeconds
+        let (hours, minutes, seconds) = timer.duration.hoursMinutesSeconds
         var times = [hours, minutes, seconds]
         let newValue = Int(round(newValue))
 
@@ -106,7 +105,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
         }
         times[slider.rawValue] = newValue
         let newDuration = Duration(hours: times[0], minutes: times[1], seconds: times[2])
-        timer!.duration = newDuration
+        timer.duration = newDuration
         isChanged = true
         // We're assuming that the sliders can only change value when the interface is active and rely on the sliders updating themselves. If we call our regular _update method, we race the frameworks in updating the sliders and get flickering (at least in the simulator).
         _updateDurationLabel()
@@ -131,7 +130,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
     }
 
     private func _updateDurationLabel() {
-        let labelAttributedString = timer!.duration.formattedAtributedStringWithHoursColor(SliderColor.Hours.color, minutesColor: SliderColor.Minutes.color, secondsColor: SliderColor.Seconds.color)
+        let labelAttributedString = timer.duration.formattedAtributedStringWithHoursColor(SliderColor.Hours.color, minutesColor: SliderColor.Minutes.color, secondsColor: SliderColor.Seconds.color)
         durationLabel!.setAttributedText(labelAttributedString)
     }
     
@@ -149,10 +148,10 @@ class TimerEditingInterfaceController: WKInterfaceController {
             return
         }
 
-        nameButton!.setTitle(timer!.name)
+        nameButton!.setTitle(timer.name)
         _updateDurationLabel()
 
-        let (hours, minutes, seconds) = timer!.duration.hoursMinutesSeconds
+        let (hours, minutes, seconds) = timer.duration.hoursMinutesSeconds
         hoursSlider!.setValue(Float(hours))
         minutesSlider!.setValue(Float(minutes))
         secondsSlider!.setValue(Float(seconds))
