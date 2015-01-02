@@ -33,6 +33,10 @@ class SingleTimerController {
         self.menuItemPresenter = menuItemPresenter
     }
     
+    deinit {
+        _clearCurrentTimerCallback()
+    }
+    
     //MARK: - Package API
     func willActivate() {
         isActive = true
@@ -46,14 +50,16 @@ class SingleTimerController {
     // CCC, 12/29/2014. Maybe this should be setTimer. Is there any advantage in exposing the timerID? Why not just pass around timers? Can't pass a timer in a context to an interface controller. :-(
     func setTimerID(timerID: String) {
         _clearCurrentTimerCallback()
-        let registrationResult = timerDB.registerCallbackForTimer(identifier: timerID) { maybeNewTimer in
-            if let newTimer = maybeNewTimer {
-                self.timer = newTimer
-                self.needsUpdate = true
-                self._updateIfNeeded()
-            } else {
-                self.timer = nil
-                self.needsUpdate = true
+        let registrationResult = timerDB.registerCallbackForTimer(identifier: timerID) { [weak self] maybeNewTimer in
+            if let strongSelf = self {
+                if let newTimer = maybeNewTimer {
+                    strongSelf.timer = newTimer
+                    strongSelf.needsUpdate = true
+                    strongSelf._updateIfNeeded()
+                } else {
+                    strongSelf.timer = nil
+                    strongSelf.needsUpdate = true
+                }
             }
         }
         switch registrationResult {

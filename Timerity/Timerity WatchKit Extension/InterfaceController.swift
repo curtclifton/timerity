@@ -49,8 +49,10 @@ class InterfaceController: WKInterfaceController {
     override func awakeWithContext(context: AnyObject!) {
         setTitle(NSLocalizedString("Timerity", comment: "App title"))
         _reloadTable()
-        databaseReloadCallbackID = timerDB.registerDatabaseReloadCallback() {
-            self._reloadTable()
+        databaseReloadCallbackID = timerDB.registerDatabaseReloadCallback() { [weak self] in
+            if let strongSelf = self { // TODO: should be able to just use self?, but there's a compiler erorr
+                strongSelf._reloadTable()
+            }
         }
     }
     
@@ -156,9 +158,11 @@ class InterfaceController: WKInterfaceController {
             if let timerRowController = table.rowControllerAtIndex(i) as? TimerTableRowController {
                 let timer = timerDB.timers[i]
                 timerRowController.setTimerID(timer.id)
-                let registrationResult = timerDB.registerCallbackForTimer(identifier: timer.id) { maybeTimer in
+                let registrationResult = timerDB.registerCallbackForTimer(identifier: timer.id) { [weak self] maybeTimer in
                     if maybeTimer == nil {
-                        self._deleteRowWithController(timerRowController)
+                        if let strongSelf = self {
+                            strongSelf._deleteRowWithController(timerRowController)
+                        }
                     }
                 }
                 switch registrationResult {

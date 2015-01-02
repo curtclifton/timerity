@@ -14,6 +14,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
     private var isChanged = false
     private var needsUpdate = true
     private var isActive = true
+    private var callbackIdentifier: TimerChangeCallbackID?
 
     // outlets
     @IBOutlet var doneButton: WKInterfaceButton!
@@ -23,15 +24,33 @@ class TimerEditingInterfaceController: WKInterfaceController {
     @IBOutlet var minutesSlider: WKInterfaceSlider!
     @IBOutlet var secondsSlider: WKInterfaceSlider!
     
+    deinit {
+        if let callbackIdentifier = self.callbackIdentifier {
+            timerDB.unregisterCallback(identifier: callbackIdentifier)
+            self.callbackIdentifier = nil
+        }
+    }
+    
     override func awakeWithContext(context: AnyObject?) {
         if let timerID = context as? String {
-            timerDB.registerCallbackForTimer(identifier: timerID) { maybeTimer in
-                if let timer = maybeTimer {
-                    self.timer = timer
-                } else {
-                    self.timer = TimerInformation()
+            let registrationResult = timerDB.registerCallbackForTimer(identifier: timerID) { [weak self] maybeTimer in
+                if let strongSelf = self {
+                    if let timer = maybeTimer {
+                        strongSelf.timer = timer
+                    } else {
+                        strongSelf.timer = TimerInformation()
+                    }
+                    strongSelf._update()
                 }
-                self._update()
+            }
+            
+            switch registrationResult {
+            case .Left(let callbackIdentifierBox):
+                callbackIdentifier = callbackIdentifierBox.unwrapped
+                break;
+            case .Right(let errorBox):
+                println("error registering timer: \(errorBox.unwrapped)")
+                break;
             }
         } else if context == nil {
             _update()

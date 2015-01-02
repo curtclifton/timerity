@@ -39,7 +39,6 @@ public class TimerData {
     private var originalURL: NSURL?
     
     private var nextCallbackID = 0
-    // CCC, 1/1/2015. This probably leaks because callbacks retain their creators and the database instance is global. Could mitigate if we're faithful about unregister callbacks, but if we do that in deinit it will never happen.
     private var callbacksByCallbackID: [Int: TimerChangeCallback] = [:]
     private var callbackIDsByTimerID: [String: [Int]] = [:]
     private var databaseChangeCallbacksByCallbackID: [Int: (() -> ())] = [:]
