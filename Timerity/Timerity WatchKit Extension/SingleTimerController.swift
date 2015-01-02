@@ -9,7 +9,7 @@
 import WatchKit
 import TimerityData
 
-protocol MenuItemPresenter {
+protocol MenuItemPresenter: class {
     func configureMenuForState(timerState: TimerState)
 }
 
@@ -23,7 +23,7 @@ class SingleTimerController {
     private var totalTimeLabel: WKInterfaceLabel
     private var countdownTimer: WKInterfaceTimer
     private var button: WKInterfaceButton?
-    private var menuItemPresenter: MenuItemPresenter?
+    private weak var menuItemPresenter: MenuItemPresenter?
     
     init(nameLabel: WKInterfaceLabel, totalTimeLabel: WKInterfaceLabel, countdownTimer: WKInterfaceTimer, button: WKInterfaceButton? = nil, menuItemPresenter: MenuItemPresenter? = nil) {
         self.nameLabel = nameLabel
