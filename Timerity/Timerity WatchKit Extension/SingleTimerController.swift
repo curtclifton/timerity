@@ -43,7 +43,7 @@ class SingleTimerController {
         isActive = false
     }
     
-    // CCC, 12/29/2014. Maybe this should be setTimer. Is there any advantage in exposing the timerID? Why not just pass around timers?
+    // CCC, 12/29/2014. Maybe this should be setTimer. Is there any advantage in exposing the timerID? Why not just pass around timers? Can't pass a timer in a context to an interface controller. :-(
     func setTimerID(timerID: String) {
         _clearCurrentTimerCallback()
         let registrationResult = timerDB.registerCallbackForTimer(identifier: timerID) { maybeNewTimer in
@@ -108,14 +108,14 @@ class SingleTimerController {
                 button?.setHidden(false)
                 break;
             case .Paused(timeRemaining: let timeRemaining):
-                totalTimeLabel.setText(timeRemaining.description) // CCC, 12/23/2014. add function for formatting a duration nicely
+                totalTimeLabel.setText(timeRemaining.formattedString)
                 totalTimeLabel.setHidden(false)
                 countdownTimer.setHidden(true)
                 button?.setTitle(NSLocalizedString("Resume", comment: "resume button label"))
                 button?.setHidden(false)
                 break;
             case .Inactive:
-                totalTimeLabel.setText(timer.duration.description) // CCC, 12/23/2014. add function for formatting a duration nicely
+                totalTimeLabel.setText(timer.duration.formattedString)
                 totalTimeLabel.setHidden(false)
                 countdownTimer.setHidden(true)
                 button?.setTitle(NSLocalizedString("Start", comment: "start button label"))

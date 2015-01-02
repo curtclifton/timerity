@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 public struct Duration {
     private static let secondsPerHour: Int = 3600
@@ -107,7 +108,53 @@ public struct TimerInformation {
     }
 }
 
-// MARK: Printable, DebugPrintable extensions
+//MARK: - Formatting
+extension Duration {
+    private enum TimeUnits {
+        case Hours
+        case Minutes
+        case Seconds
+        
+        var suffix: String {
+            switch self {
+            case .Hours:
+                return NSLocalizedString("h", comment: "units suffix denoting hours")
+            case .Minutes:
+                return NSLocalizedString("m", comment: "units suffix denoting minutes")
+            case .Seconds:
+                return NSLocalizedString("s", comment: "units suffix denoting seconds")
+            }
+        }
+        
+        func coloredStringForValue(value: Int, color: UIColor) -> NSAttributedString {
+            return NSAttributedString(string: "\(value)\(suffix)", attributes: [NSForegroundColorAttributeName: color])
+        }
+    }
+    
+    private static let attributedSpace = NSAttributedString(string: " ")
+
+    public var formattedString: String {
+        let (hours, minutes, seconds) = hoursMinutesSeconds
+        return "\(hours)\(TimeUnits.Hours.suffix) \(minutes)\(TimeUnits.Minutes.suffix) \(seconds)\(TimeUnits.Seconds.suffix)"
+    }
+    
+    public func formattedAtributedStringWithHoursColor(hoursColor: UIColor, minutesColor: UIColor, secondsColor: UIColor) -> NSAttributedString {
+        let (hours, minutes, seconds) = hoursMinutesSeconds
+        let hoursString = TimeUnits.Hours.coloredStringForValue(hours, color: hoursColor)
+        let minutesString = TimeUnits.Minutes.coloredStringForValue(minutes, color: minutesColor)
+        let secondsString = TimeUnits.Seconds.coloredStringForValue(seconds, color: secondsColor)
+
+        var labelAttributedString = NSMutableAttributedString(attributedString: hoursString)
+        labelAttributedString.appendAttributedString(Duration.attributedSpace)
+        labelAttributedString.appendAttributedString(minutesString)
+        labelAttributedString.appendAttributedString(Duration.attributedSpace)
+        labelAttributedString.appendAttributedString(secondsString)
+        
+        return labelAttributedString
+    }
+}
+
+//MARK: Printable, DebugPrintable extensions
 
 extension TimerInformation: Printable, DebugPrintable {
     public var description: String {

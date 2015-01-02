@@ -40,7 +40,6 @@ class TimerEditingInterfaceController: WKInterfaceController {
             assert(false, "Unexpected context \(context)")
         }
         
-        // CCC, 1/1/2015. Consider setting a color on the sliders and using an attributed string to put corresponding colors on the label fields.
         hoursSlider!.setColor(SliderColor.Hours.color)
         minutesSlider!.setColor(SliderColor.Minutes.color)
         secondsSlider!.setColor(SliderColor.Seconds.color)
@@ -129,38 +128,10 @@ class TimerEditingInterfaceController: WKInterfaceController {
                 return UIColor(white: 0.7, alpha: 1.0)
             }
         }
-        
-        static let attributedSpace = NSAttributedString(string: " ")
-        
-        var suffix: String {
-            switch self {
-            case .Hours:
-                return NSLocalizedString("h", comment: "units suffix denoting hours")
-            case .Minutes:
-                return NSLocalizedString("m", comment: "units suffix denoting minutes")
-            case .Seconds:
-                return NSLocalizedString("s", comment: "units suffix denoting seconds")
-            }
-        }
-        
-        func coloredStringForValue(value: Int) -> NSAttributedString {
-            return NSAttributedString(string: "\(value)\(suffix)", attributes: [NSForegroundColorAttributeName: color])
-        }
     }
 
     private func _updateDurationLabel() {
-        let duration = timer!.duration
-        let (hours, minutes, seconds) = duration.hoursMinutesSeconds
-        let hoursString = SliderColor.Hours.coloredStringForValue(hours)
-        let minutesString = SliderColor.Minutes.coloredStringForValue(minutes)
-        let secondsString = SliderColor.Seconds.coloredStringForValue(seconds)
-        
-        var labelAttributedString = NSMutableAttributedString(attributedString: hoursString)
-        labelAttributedString.appendAttributedString(SliderColor.attributedSpace)
-        labelAttributedString.appendAttributedString(minutesString)
-        labelAttributedString.appendAttributedString(SliderColor.attributedSpace)
-        labelAttributedString.appendAttributedString(secondsString)
-        
+        let labelAttributedString = timer!.duration.formattedAtributedStringWithHoursColor(SliderColor.Hours.color, minutesColor: SliderColor.Minutes.color, secondsColor: SliderColor.Seconds.color)
         durationLabel!.setAttributedText(labelAttributedString)
     }
     
