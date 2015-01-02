@@ -25,7 +25,6 @@ public enum Either<T,U> {
 }
 
 public typealias TimerChangeCallback = TimerInformation? -> ()
-public typealias TimerError = String // CCC, 12/23/2014. want an enum here
 
 public struct TimerChangeCallbackID {
     let value: Int
@@ -162,7 +161,7 @@ public class TimerData {
         if let index = timerIndex[identifier] {
             return Either.Left(Box(wrap: timers[index]))
         } else {
-            return Either.Right(Box(wrap: "no timer with id \(identifier)"))
+            return Either.Right(Box(wrap: TimerError.MissingIdentifier(identifier)))
         }
     }
 }

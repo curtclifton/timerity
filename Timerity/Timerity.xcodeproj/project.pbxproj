@@ -34,6 +34,7 @@
 		4D1D5FE01A3C09070060598C /* ActionTableRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1D5FDF1A3C09070060598C /* ActionTableRowController.swift */; };
 		4D20F8AE1A4A213E00754D4C /* TimerDatabaseWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D20F8AD1A4A213E00754D4C /* TimerDatabaseWrapper.swift */; };
 		4D20F8B01A4A554900754D4C /* LabelRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D20F8AF1A4A554900754D4C /* LabelRowController.swift */; };
+		4D2ED75F1A563C3A003F163E /* TimerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2ED75E1A563C3A003F163E /* TimerError.swift */; };
 		4DB48B951A5216580031DECD /* SingleTimerInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */; };
 		4DB48B971A5232A20031DECD /* SingleTimerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B961A5232A20031DECD /* SingleTimerController.swift */; };
 		4DB48B991A5337100031DECD /* TimerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B981A5337100031DECD /* TimerCommand.swift */; };
@@ -128,6 +129,7 @@
 		4D1D5FDF1A3C09070060598C /* ActionTableRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionTableRowController.swift; sourceTree = "<group>"; };
 		4D20F8AD1A4A213E00754D4C /* TimerDatabaseWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerDatabaseWrapper.swift; sourceTree = "<group>"; };
 		4D20F8AF1A4A554900754D4C /* LabelRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelRowController.swift; sourceTree = "<group>"; };
+		4D2ED75E1A563C3A003F163E /* TimerError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerError.swift; sourceTree = "<group>"; };
 		4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleTimerInterfaceController.swift; sourceTree = "<group>"; };
 		4DB48B961A5232A20031DECD /* SingleTimerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleTimerController.swift; sourceTree = "<group>"; };
 		4DB48B981A5337100031DECD /* TimerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerCommand.swift; sourceTree = "<group>"; };
@@ -303,6 +305,7 @@
 				4DB48B981A5337100031DECD /* TimerCommand.swift */,
 				4D0F81881A54D2E40000CDC2 /* Set.swift */,
 				4D0F818C1A5633DE0000CDC2 /* TimerData.swift */,
+				4D2ED75E1A563C3A003F163E /* TimerError.swift */,
 			);
 			path = TimerityData;
 			sourceTree = "<group>";
@@ -601,6 +604,7 @@
 				4D0F818D1A5633DE0000CDC2 /* TimerData.swift in Sources */,
 				4DB48B991A5337100031DECD /* TimerCommand.swift in Sources */,
 				4D0F81891A54D2E40000CDC2 /* Set.swift in Sources */,
+				4D2ED75F1A563C3A003F163E /* TimerError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
