@@ -57,13 +57,15 @@ public class TimerData {
         timers.append(TimerInformation(name: "Tea", duration: Duration(minutes: 3)))
         timers.append(TimerInformation(name: "Power Nap", duration: Duration(minutes: 20)))
         // CCC, 12/14/2014. implement for reals. Need to do file coordination on the file and call the registered callbacks as needed
+        // CCC, 1/2/2015. On initial load, sort with active timers first, by least time remaining. Sort the rest of the timers by last modified date.
+        // CCC, 1/2/2015. On reload via file coordination, maintain the original order, but insert any new timers at the start?
         return TimerData(timers: timers, url: url)
     }
     
     private init(timers: [TimerInformation], url: NSURL? = nil) {
         originalURL = url
         self.timers = timers
-        timerIndex = TimerData._rebuiltTimerIndex(timers)
+        timerIndex = TimerData._rebuiltIndexForTimers(timers)
     }
     
     public convenience init() {
@@ -92,7 +94,10 @@ public class TimerData {
             // Add the new timer to the head of the list
             let newIndex = timers.count
             timers.insert(timer, atIndex: 0)
-            timerIndex = TimerData._rebuiltTimerIndex(timers)
+            timerIndex = TimerData._rebuiltIndexForTimers(timers)
+            if let url = originalURL {
+                self.writeToURL(url)
+            }
             _invokeDatabaseReloadCallbacks()
         }
     }
@@ -103,7 +108,7 @@ public class TimerData {
             //            let command = TimerCommend.Delete
             //            command.send(timer)
             timers.removeAtIndex(index)
-            timerIndex = TimerData._rebuiltTimerIndex(timers)
+            timerIndex = TimerData._rebuiltIndexForTimers(timers)
             if let url = originalURL {
                 self.writeToURL(url)
             }
@@ -147,7 +152,7 @@ public class TimerData {
     }
     
     //MARK: - Private API
-    private class func _rebuiltTimerIndex(timers: [TimerInformation]) -> [String: Int] {
+    private class func _rebuiltIndexForTimers(timers: [TimerInformation]) -> [String: Int] {
         var newTimerIndex: [String: Int] = [:]
         for (index, timer) in enumerate(timers) {
             assert(newTimerIndex[timer.id] == nil, "timer IDs must be unique, \(timer.id) is not.")

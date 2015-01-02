@@ -48,6 +48,7 @@ public struct TimerInformation {
     public var name: String
     public var duration: Duration
     public let id: String
+    public var lastModified: NSDate
 
     var isActive: Bool = false
     var isPaused: Bool = false
@@ -65,9 +66,12 @@ public struct TimerInformation {
         }
     }
     
+    // CCC, 1/2/2015. we'll need a private initializer that sets all the fields maintaining lastModified date
+    
     init(name: String, duration: Duration) {
         self.name = name
         self.duration = duration
+        lastModified = NSDate()
         id = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault))
     }
     
@@ -75,12 +79,14 @@ public struct TimerInformation {
         self.init(name: "", duration: Duration())
     }
     
+    //MARK: - Public API
     public mutating func start() {
         assert(!isPaused && !isActive)
         isActive = true
         isPaused = false
         fireDate = NSDate(timeIntervalSinceNow: duration.seconds)
         timeRemaining = duration
+        _justModified()
     }
     
     public mutating func resume() {
@@ -89,6 +95,7 @@ public struct TimerInformation {
         isPaused = false
         fireDate = NSDate(timeIntervalSinceNow: timeRemaining.seconds)
         timeRemaining = Duration()
+        _justModified()
     }
     
     public mutating func pause() {
@@ -98,6 +105,7 @@ public struct TimerInformation {
         isPaused = true
         fireDate = nil
         timeRemaining = Duration(seconds: timeUntilFireDate)
+        _justModified()
     }
     
     public mutating func reset() {
@@ -105,6 +113,12 @@ public struct TimerInformation {
         isPaused = false
         fireDate = nil
         timeRemaining = Duration()
+        _justModified()
+    }
+    
+    //MARK: - Private API
+    private mutating func _justModified() {
+        lastModified = NSDate()
     }
 }
 
