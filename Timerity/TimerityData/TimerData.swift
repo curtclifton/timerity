@@ -19,7 +19,6 @@ public struct Box<T> {
     }
 }
 
-// CCC, 12/29/2014. sides should be uppercase
 public enum Either<T,U> {
     case Left(Box<T>) // TODO: Lose this wrapping box that's here to hack around Swift's "Unimplemented IR generation feature non-fixed multi-payload enum layout" bug.
     case Right(Box<U>)
