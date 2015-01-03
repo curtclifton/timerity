@@ -75,6 +75,9 @@ public class TimerData {
     //MARK: - Mutation
     public func writeToURL(url: NSURL) { // CCC, 12/14/2014. return a success code, error?
         // CCC, 12/30/2014. be sure that this atomically and synchronously updates the data file (else use CPS)
+        // CCC, 1/2/2015. do a coordinated write to the file
+        // CCC, 1/2/2015. convert the timers array to JSON
+        
     }
     
     public func updateTimer(timer: TimerInformation) {

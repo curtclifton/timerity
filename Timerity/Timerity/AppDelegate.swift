@@ -18,6 +18,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let settings = UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil)
         application.registerUserNotificationSettings(settings)
         // Override point for customization after application launch.
+        
+        // NOTE: We can get a WKInterfaceDevice instance, but if we try to use it we crash:
+        //        let device = WKInterfaceDevice.currentDevice()
+        //        println(device.description)
+        //        if let plusImage = UIImage(named: "Plus") {
+        //            println("image: \(plusImage)")
+        //            let isCached = device.addCachedImage(plusImage, name: "Plus")
+        //            println("cached: \(isCached)")
+        //        }
+        
         return true
     }
 

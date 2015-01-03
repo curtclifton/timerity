@@ -67,6 +67,7 @@ extension SingleTimerInterfaceController: MenuItemPresenter {
         switch timerState {
         case .Active:
             // no menu items here
+            // CCC, 1/2/2015. Is this OK? We'll train users that the menu is unreliable. Maybe allow reset when active also? Maybe alway include all the buttons? Restart?
             break;
         case .Paused:
             addMenuItemWithItemIcon(WKMenuItemIcon.Decline, title: NSLocalizedString("Reset Timer", comment: "reset timer menu item title"), action: "resetMenuItemPressed")
