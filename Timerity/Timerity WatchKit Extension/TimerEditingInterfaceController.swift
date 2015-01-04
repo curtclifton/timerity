@@ -115,6 +115,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
     
     @IBAction func doneButtonPressed() {
         dismissController()
+        timer.lastModified = NSDate()
         timerDB.updateTimer(timer)
     }
     

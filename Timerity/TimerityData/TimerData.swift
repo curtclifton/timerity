@@ -110,24 +110,22 @@ public class TimerData {
     }
     
     public func updateTimer(timer: TimerInformation) {
-        var timeStampedTimer = timer
-        timeStampedTimer.lastModified = NSDate()
         if let index = timerIndex[timer.id] {
             // CCC, 12/30/2014. Decide what sort of operation this is, pass the appropriate command to the main app. Let the write back trigger the database and UI update.
             //            let command = TimerCommand.Start
             //            command.send(timer)
-            timers[index] = timeStampedTimer
+            timers[index] = timer
             if let url = originalURL {
                 self.writeToURL(url)
             }
-            _invokeCallbacks(timer: timeStampedTimer)
+            _invokeCallbacks(timer: timer)
         } else {
             // CCC, 12/30/2014. Pass Add command to the main app. Let the write back trigger the database and UI update.
             //            let command = TimerCommend.Add
             //            command.send(timer)
             // Add the new timer to the head of the list
             let newIndex = timers.count
-            timers.insert(timeStampedTimer, atIndex: 0)
+            timers.insert(timer, atIndex: 0)
             timerIndex = TimerData._rebuiltIndexForTimers(timers)
             if let url = originalURL {
                 self.writeToURL(url)
