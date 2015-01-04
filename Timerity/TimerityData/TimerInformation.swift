@@ -75,6 +75,8 @@ public struct TimerInformation {
         self.duration = duration
         lastModified = NSDate()
         id = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault))
+
+        // CCC, 1/4/2015. Need to maintain a timer to transition out of active state at the fireDate
     }
     
     private init(name: String, durationInSeconds: Double, id: String, lastModified: NSDate, state: TimerState) {
@@ -84,20 +86,28 @@ public struct TimerInformation {
         self.lastModified = lastModified
         switch state {
         case .Active(fireDate: let fireDate):
-            isActive = true
-            isPaused = false
-            self.fireDate = fireDate
-            break;
+            if fireDate.timeIntervalSinceNow < 0 {
+                // already expired so make inactive
+                isActive = false
+                isPaused = false
+            } else {
+                isActive = true
+                isPaused = false
+                self.fireDate = fireDate
+            }
+            break
         case .Paused(timeRemaining: let timeRemaining):
             isActive = false
             isPaused = true
             self.timeRemaining = timeRemaining
-            break;
+            break
         case .Inactive:
             isActive = false
             isPaused = false
-            break;
+            break
         }
+        
+        // CCC, 1/4/2015. Need to maintain a timer to transition out of active state at the fireDate
     }
     
     //MARK: - Public API
@@ -215,36 +225,79 @@ extension TimerInformation: JSONEncodable {
     }
 }
 
-// CCC, 1/4/2015. implement un-archiving:     private init(name: String, durationInSeconds: Double, id: String, lastModified: NSDate, state: TimerState) {
+extension TimerInformation: JSONDecodable {
+    typealias ResultType = TimerInformation
+    static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL? = nil) -> Either<TimerInformation, TimerError> {
+        let maybeEncodedTimer: AnyObject? = jsonData[JSONKey.TimerInformation]
+        if let encodedTimer = maybeEncodedTimer as? [String: AnyObject] {
+            // TODO: This is pretty hideous with all the error handling Swift requires. See 	SwiftyJSON https://github.com/SwiftyJSON/SwiftyJSON or this Haskell-style: http://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics approach for alternatives.
+            var lastCheckedProperty: String
+            lastCheckedProperty = "id"
+            if let id = encodedTimer[lastCheckedProperty] as? String {
+                lastCheckedProperty = "name"
+                if let name = encodedTimer[lastCheckedProperty] as? String {
+                    lastCheckedProperty = "duration"
+                    if let durationNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
+                        lastCheckedProperty = "lastModified"
+                        if let lastModifiedNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
+                            lastCheckedProperty = "isActive"
+                            if let isActiveNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
+                                lastCheckedProperty = "isPaused"
+                                if let isPausedNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
+                                    let isActive = isActiveNumber.boolValue
+                                    let isPaused = isPausedNumber.boolValue
+                                    switch (isActive, isPaused) {
+                                    case (true, true):
+                                        return Either.Right(Box(wrap: TimerError.Decoding("unexpected timer state, cannot be both active and paused")))
+                                    case (true, false):
+                                        lastCheckedProperty = "fireDate"
+                                        if let fireDateNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
+                                            return Either.Left(Box(wrap: TimerInformation(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Active(fireDate: NSDate(timeIntervalSince1970: fireDateNumber.doubleValue)))))
+                                        }
+                                        break;
+                                    case (false, true):
+                                        lastCheckedProperty = "timeRemaining"
+                                        if let timeRemainingNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
+                                            return Either.Left(Box(wrap: TimerInformation(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Paused(timeRemaining: Duration(seconds: timeRemainingNumber.doubleValue)))))
+                                        }
+                                        break;
+                                    default:
+                                        return Either.Left(Box(wrap: TimerInformation(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Inactive)))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return Either.Right(Box(wrap: TimerError.Decoding("invalid timer data, missing \(lastCheckedProperty): \(encodedTimer)")))
+        } else {
+            return Either.Right(Box(wrap: TimerError.Decoding("missing timer data")))
+        }
+    }
+}
 
 //MARK: Printable, DebugPrintable extensions
 
 extension TimerInformation: Printable, DebugPrintable {
     public var description: String {
-        get {
-            return "name:\(name), duration: \(duration.description)"
-        }
+        return "name:\(name), duration: \(duration.description)"
     }
     
     public var debugDescription: String {
-        get {
-            return description
-        }
+        return description
     }
 }
 
 extension Duration: Printable, DebugPrintable {
     public var description: String {
-        get {
-            let hms = hoursMinutesSeconds
-            return "\(hms.hours)h \(hms.minutes)m \(hms.seconds)s"
-        }
+        let hms = hoursMinutesSeconds
+        return "\(hms.hours)h \(hms.minutes)m \(hms.seconds)s"
     }
     
     public var debugDescription: String {
-        get {
-            return "Duration: \(seconds) seconds"
-        }
+        return "Duration: \(seconds) seconds"
     }
 }
 

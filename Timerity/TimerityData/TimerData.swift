@@ -35,6 +35,11 @@ protocol JSONEncodable {
     func encode() -> [String: AnyObject]
 }
 
+protocol JSONDecodable {
+    typealias ResultType
+    class func decodeJSONData(jsonData: [String:AnyObject], sourceURL: NSURL?) -> Either<ResultType, TimerError>
+}
+
 struct JSONKey {
     static let TimerData = "TimerData"
     static let TimerInformation = "TimerInformation"
@@ -54,22 +59,25 @@ public class TimerData {
     private var databaseChangeCallbacksByCallbackID: [Int: (() -> ())] = [:]
     
     //MARK: - Initialization
-    public class func fromURL(url: NSURL) -> TimerData {
-        var timers: [TimerInformation] = []
-        
-        var activeTimer = TimerInformation(name: "Break Time", duration: Duration(hours: 1, minutes: 3))
-        activeTimer.isActive = true
-        activeTimer.timeRemaining = activeTimer.duration
-        let fireDate = NSDate(timeIntervalSinceNow: Double(activeTimer.duration.seconds))
-        activeTimer.fireDate = fireDate
-        
-        timers.append(activeTimer)
-        timers.append(TimerInformation(name: "Tea", duration: Duration(minutes: 3)))
-        timers.append(TimerInformation(name: "Power Nap", duration: Duration(minutes: 20)))
-        // CCC, 12/14/2014. implement for reals. Need to do file coordination on the file and call the registered callbacks as needed
-        // CCC, 1/2/2015. On initial load, sort with active timers first, by least time remaining. Sort the rest of the timers by last modified date.
+    public class func fromURL(url: NSURL) -> Either<TimerData, TimerError> {
+        // CCC, 12/14/2014. Need to do file coordination on the file and call the registered callbacks as needed
         // CCC, 1/2/2015. On reload via file coordination, maintain the original order, but insert any new timers at the start?
-        return TimerData(timers: timers, url: url)
+        var error: NSError?
+        let maybeRawData = NSData(contentsOfURL: url, options: nil, error: &error)
+        if let rawData = maybeRawData {
+            let maybeJSONData: AnyObject? = NSJSONSerialization.JSONObjectWithData(rawData, options: nil, error: &error)
+            if let jsonData: AnyObject = maybeJSONData {
+                if let jsonDictionary = jsonData as? [String:AnyObject] {
+                    return TimerData.decodeJSONData(jsonDictionary, sourceURL: url)
+                } else {
+                    return Either.Right(Box(wrap: TimerError.Decoding("invalid data file contents, expected top-level dictionary, got \(jsonData)")))
+                }
+            } else {
+                return Either.Right(Box(wrap: TimerError.FileError(error!)))
+            }
+        } else {
+            return Either.Right(Box(wrap: TimerError.FileError(error!)))
+        }
     }
     
     private init(timers: [TimerInformation], url: NSURL? = nil) {
@@ -102,22 +110,24 @@ public class TimerData {
     }
     
     public func updateTimer(timer: TimerInformation) {
+        var timeStampedTimer = timer
+        timeStampedTimer.lastModified = NSDate()
         if let index = timerIndex[timer.id] {
             // CCC, 12/30/2014. Decide what sort of operation this is, pass the appropriate command to the main app. Let the write back trigger the database and UI update.
             //            let command = TimerCommand.Start
             //            command.send(timer)
-            timers[index] = timer
+            timers[index] = timeStampedTimer
             if let url = originalURL {
                 self.writeToURL(url)
             }
-            _invokeCallbacks(timer: timer)
+            _invokeCallbacks(timer: timeStampedTimer)
         } else {
             // CCC, 12/30/2014. Pass Add command to the main app. Let the write back trigger the database and UI update.
             //            let command = TimerCommend.Add
             //            command.send(timer)
             // Add the new timer to the head of the list
             let newIndex = timers.count
-            timers.insert(timer, atIndex: 0)
+            timers.insert(timeStampedTimer, atIndex: 0)
             timerIndex = TimerData._rebuiltIndexForTimers(timers)
             if let url = originalURL {
                 self.writeToURL(url)
@@ -220,6 +230,70 @@ extension TimerData: JSONEncodable {
     func encode() -> [String : AnyObject] {
         let encodedTimers = timers.map() { $0.encode() }
         return [JSONKey.TimerData: encodedTimers]
+    }
+}
+
+private extension Array {
+    func emap<U>(f: T -> Either<U, TimerError>) -> Either<[U], TimerError> {
+        var resultArray: [U] = []
+        for element in self {
+            let maybeResult = f(element)
+            switch maybeResult {
+            case .Left(let resultBox):
+                resultArray.append(resultBox.unwrapped)
+                break;
+            case .Right(let errorBox):
+                return .Right(errorBox)
+            }
+        }
+        return Either.Left(Box(wrap: resultArray))
+    }
+}
+
+extension TimerData: JSONDecodable {
+    typealias ResultType = TimerData
+    class func decodeJSONData(jsonData: [String:AnyObject], sourceURL: NSURL? = nil) -> Either<TimerData, TimerError> {
+        let maybeEncodedTimers: AnyObject? = jsonData[JSONKey.TimerData]
+        if let encodedTimers = maybeEncodedTimers as? [[String: AnyObject]] {
+            let maybeTimers = encodedTimers.emap() { TimerInformation.decodeJSONData($0) }
+            switch maybeTimers {
+            case .Left(let timersBox):
+                let timers = timersBox.unwrapped
+                let sortedTimers = timers.sorted() { left, right in
+                    var result: Bool
+                    switch (left.state, right.state) {
+                    case (.Active(fireDate: let leftFireDate), .Active(fireDate: let rightFireDate)):
+                        println("comparing: \(left.name) firing at \(leftFireDate)")
+                        println("           with: \(right.name) firing at \(rightFireDate)")
+                        result = leftFireDate.compare(rightFireDate) == NSComparisonResult.OrderedAscending
+                        break
+                    case (.Active, _):
+                        println("comparing: \(left.name) which is active (\(left.isActive))")
+                        println("           with: \(right.name) which is not (\(right.isActive))")
+                        result = true
+                        break
+                    case (_, .Active):
+                        println("comparing: \(left.name) which is not active (\(left.isActive))")
+                        println("           with: \(right.name) which is (\(right.isActive))")
+                        result = false
+                        break
+                    default:
+                        println("comparing: \(left.name) last modified on \(left.lastModified)")
+                        println("           with: \(right.name) last modified on \(right.lastModified)")
+                        result = left.lastModified.compare(right.lastModified) == NSComparisonResult.OrderedAscending
+                        break;
+                    }
+                    let modifier = result ? "" : "not "
+                    println("left is \(modifier)ordered before right")
+                    return result
+                }
+                return .Left(Box(wrap:TimerData(timers: sortedTimers, url: sourceURL)))
+            case .Right(let timerErrorBox):
+                return .Right(timerErrorBox)
+            }
+        } else {
+            return Either.Right(Box(wrap: TimerError.Decoding("missing all timer data")))
+        }
     }
 }
 
