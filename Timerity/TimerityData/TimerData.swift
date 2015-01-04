@@ -30,6 +30,16 @@ public struct TimerChangeCallbackID {
     let value: Int
 }
 
+protocol JSONEncodable {
+    /// Result strings should be unique tags for each saved typed. Result values should be encodable per NSJSONSerialization
+    func encode() -> [String: AnyObject]
+}
+
+struct JSONKey {
+    static let TimerData = "TimerData"
+    static let TimerInformation = "TimerInformation"
+}
+
 //! Mutable timer database.
 public class TimerData {
     public var timers: [TimerInformation]
@@ -73,11 +83,22 @@ public class TimerData {
     }
     
     //MARK: - Mutation
-    public func writeToURL(url: NSURL) { // CCC, 12/14/2014. return a success code, error?
-        // CCC, 12/30/2014. be sure that this atomically and synchronously updates the data file (else use CPS)
-        // CCC, 1/2/2015. do a coordinated write to the file
-        // CCC, 1/2/2015. convert the timers array to JSON
-        
+    public func writeToURL(url: NSURL) -> NSError? {
+        let dataDictionary = self.encode()
+        var error: NSError?
+        let maybeJSONData = NSJSONSerialization.dataWithJSONObject(dataDictionary, options: NSJSONWritingOptions.PrettyPrinted, error: &error)
+        if let jsonData = maybeJSONData {
+            // CCC, 1/2/2015. do a coordinated write to the file
+            if jsonData.writeToURL(url, options: NSDataWritingOptions.DataWritingAtomic, error: &error) {
+                return nil
+            } else {
+                println("error writing JSON to file: \(error)")
+                return error
+            }
+        } else {
+            println("error encoding JSON data: \(error)")
+            return error
+        }
     }
     
     public func updateTimer(timer: TimerInformation) {
@@ -192,6 +213,13 @@ public class TimerData {
         } else {
             return Either.Right(Box(wrap: TimerError.MissingIdentifier(identifier)))
         }
+    }
+}
+
+extension TimerData: JSONEncodable {
+    func encode() -> [String : AnyObject] {
+        let encodedTimers = timers.map() { $0.encode() }
+        return [JSONKey.TimerData: encodedTimers]
     }
 }
 

@@ -9,16 +9,11 @@
 import Foundation
 import TimerityData
 
-// CCC, 12/23/2014. fix this constant
-let timerDatabaseURL = NSURL(fileURLWithPath: "/example.txt", isDirectory: false)
+let groupURL = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.net.curtclifton.Timerity")
+let timerDatabaseURL = groupURL!.URLByAppendingPathComponent("data.json", isDirectory: false)
 
 func spinUpTimerDB() -> TimerData {
-    if let url = timerDatabaseURL {
-        return TimerData.fromURL(url)
-    } else {
-        // CCC, 12/23/2014. handle error case
-        return TimerData()
-    }
+    return TimerData.fromURL(timerDatabaseURL)
 }
 
 /// Lazily loaded global timer database

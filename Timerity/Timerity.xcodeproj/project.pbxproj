@@ -133,6 +133,8 @@
 		4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleTimerInterfaceController.swift; sourceTree = "<group>"; };
 		4DB48B961A5232A20031DECD /* SingleTimerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleTimerController.swift; sourceTree = "<group>"; };
 		4DB48B981A5337100031DECD /* TimerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerCommand.swift; sourceTree = "<group>"; };
+		4DB54EC31A59C95B0005186A /* Timerity WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Timerity WatchKit Extension.entitlements"; sourceTree = "<group>"; };
+		4DB54EC41A59C9700005186A /* Timerity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Timerity.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,6 +209,7 @@
 		4D0A16091A33E051001BF0BE /* Timerity */ = {
 			isa = PBXGroup;
 			children = (
+				4DB54EC41A59C9700005186A /* Timerity.entitlements */,
 				4D0A160C1A33E051001BF0BE /* AppDelegate.swift */,
 				4D0A160E1A33E051001BF0BE /* ViewController.swift */,
 				4D0A16101A33E051001BF0BE /* Main.storyboard */,
@@ -253,6 +256,7 @@
 		4D0A16341A33E06A001BF0BE /* Timerity WatchKit Extension */ = {
 			isa = PBXGroup;
 			children = (
+				4DB54EC31A59C95B0005186A /* Timerity WatchKit Extension.entitlements */,
 				4D1D5FDF1A3C09070060598C /* ActionTableRowController.swift */,
 				4D0A163C1A33E06A001BF0BE /* GlanceController.swift */,
 				4D0A163E1A33E06A001BF0BE /* Images.xcassets */,
@@ -467,6 +471,12 @@
 				TargetAttributes = {
 					4D0A16061A33E051001BF0BE = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = H7G98VUF4H;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					4D0A161B1A33E051001BF0BE = {
 						CreatedOnToolsVersion = 6.2;
@@ -474,6 +484,12 @@
 					};
 					4D0A162F1A33E06A001BF0BE = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = H7G98VUF4H;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					4D0A16411A33E06A001BF0BE = {
 						CreatedOnToolsVersion = 6.2;
@@ -747,10 +763,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Timerity/Timerity.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Timerity/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -758,10 +778,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Timerity/Timerity.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Timerity/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -834,6 +858,9 @@
 		4D0A16541A33E06A001BF0BE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Timerity WatchKit Extension/Timerity WatchKit Extension.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -841,6 +868,7 @@
 				INFOPLIST_FILE = "Timerity WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -848,9 +876,13 @@
 		4D0A16551A33E06A001BF0BE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Timerity WatchKit Extension/Timerity WatchKit Extension.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Timerity WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

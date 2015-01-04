@@ -66,7 +66,9 @@ public struct TimerInformation {
         }
     }
     
-    // CCC, 1/2/2015. we'll need a private initializer that sets all the fields maintaining lastModified date
+    public init() {
+        self.init(name: "", duration: Duration())
+    }
     
     init(name: String, duration: Duration) {
         self.name = name
@@ -75,8 +77,27 @@ public struct TimerInformation {
         id = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault))
     }
     
-    public init() {
-        self.init(name: "", duration: Duration())
+    private init(name: String, durationInSeconds: Double, id: String, lastModified: NSDate, state: TimerState) {
+        self.name = name
+        self.duration = Duration(seconds: durationInSeconds)
+        self.id = id
+        self.lastModified = lastModified
+        switch state {
+        case .Active(fireDate: let fireDate):
+            isActive = true
+            isPaused = false
+            self.fireDate = fireDate
+            break;
+        case .Paused(timeRemaining: let timeRemaining):
+            isActive = false
+            isPaused = true
+            self.timeRemaining = timeRemaining
+            break;
+        case .Inactive:
+            isActive = false
+            isPaused = false
+            break;
+        }
     }
     
     //MARK: - Public API
@@ -167,6 +188,34 @@ extension Duration {
         return labelAttributedString
     }
 }
+
+//MARK: JSON encoding and decoding
+
+extension TimerInformation: JSONEncodable {
+    func encode() -> [String : AnyObject] {
+        var informationDictionary = [
+            "id": id,
+            "name": name,
+            "duration": NSNumber(double: duration.seconds),
+            "lastModified": NSNumber(double: lastModified.timeIntervalSince1970),
+            "isActive": NSNumber(bool: isActive),
+            "isPaused": NSNumber(bool: isPaused),
+        ]
+        switch state {
+        case .Active(fireDate: let fireDate):
+            informationDictionary["fireDate"] = NSNumber(double: fireDate.timeIntervalSince1970)
+            break;
+        case .Paused(timeRemaining: let timeRemaining):
+            informationDictionary["timeRemaining"] = NSNumber(double: timeRemaining.seconds)
+            break;
+        case .Inactive:
+            break;
+        }
+        return [JSONKey.TimerInformation: informationDictionary]
+    }
+}
+
+// CCC, 1/4/2015. implement un-archiving:     private init(name: String, durationInSeconds: Double, id: String, lastModified: NSDate, state: TimerState) {
 
 //MARK: Printable, DebugPrintable extensions
 
