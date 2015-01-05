@@ -93,10 +93,6 @@ class InterfaceController: WKInterfaceController {
         }
     }
     
-    // MARK: Actions
-    
-    // CCC, 12/12/2014. All mutation of existing timers should be sent as commands to the iPhone app so it can reschedule timers and atomically rewrite the shared data store. Watch app should update its in-memory data, but not update the file. It should only read from the file.
-    
     //MARK: - Private API
     private func _unregisterRowCallbacks() {
         for callbackID in rowCallbackIDs {

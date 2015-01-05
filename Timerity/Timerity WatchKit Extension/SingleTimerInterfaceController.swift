@@ -97,7 +97,7 @@ extension SingleTimerInterfaceController: MenuItemPresenter {
     func deleteMenuItemPressed() {
         println("deleting")
         if var timer = timerController?.timer {
-            // CCC, 12/30/2014. Do we need to get confirmation from the user before deleting?
+            // TODO: Do we need to get confirmation from the user before deleting?
             _clearCurrentTimer()
             popController()
             timerDB.deleteTimer(timer)

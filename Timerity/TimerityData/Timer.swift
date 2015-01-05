@@ -56,7 +56,7 @@ public struct Timer {
     var timeRemaining: Duration = Duration()
     var fireDate: NSDate?
     
-    // CCC, 1/4/2015. May want a "Going Off" state to deal with an expired timer while running the watch app. Or will a notification pull the wearer out of the watch app and into the notification interface?
+    // TODO: May want a "Going Off" state to deal with an expired timer while running the watch app. Or will a notification pull the wearer out of the watch app and into the notification interface?
     public var state: TimerState {
         if isActive {
             return TimerState.Active(fireDate: fireDate!)
@@ -198,7 +198,6 @@ extension Duration {
 
 //MARK: JSON encoding and decoding
 
-// CCC, 1/4/2015. Rename to Timer
 extension Timer: JSONEncodable {
     func encode() -> [String : AnyObject] {
         var informationDictionary = [

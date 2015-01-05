@@ -170,7 +170,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
         doneButton!.setHidden(!isChanged)
     }
     
-    // CCC, 1/1/2015. Does it make sense to make a WKInterfaceController subclass or a helper object to handle the delayed update tap dance?
+    // TODO: Does it make sense to make a WKInterfaceController subclass or a helper object to handle the delayed update tap dance?
     private func _setNeedsUpdate() {
         needsUpdate = true
     }
