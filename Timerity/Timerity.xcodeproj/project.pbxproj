@@ -38,6 +38,7 @@
 		4DB48B951A5216580031DECD /* SingleTimerInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */; };
 		4DB48B971A5232A20031DECD /* SingleTimerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B961A5232A20031DECD /* SingleTimerController.swift */; };
 		4DB48B991A5337100031DECD /* TimerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B981A5337100031DECD /* TimerCommand.swift */; };
+		4DB54EC61A5A01940005186A /* NSTimerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB54EC51A5A01940005186A /* NSTimerExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -135,6 +136,7 @@
 		4DB48B981A5337100031DECD /* TimerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerCommand.swift; sourceTree = "<group>"; };
 		4DB54EC31A59C95B0005186A /* Timerity WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Timerity WatchKit Extension.entitlements"; sourceTree = "<group>"; };
 		4DB54EC41A59C9700005186A /* Timerity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Timerity.entitlements; sourceTree = "<group>"; };
+		4DB54EC51A5A01940005186A /* NSTimerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSTimerExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -303,13 +305,14 @@
 		4D0A165D1A353216001BF0BE /* TimerityData */ = {
 			isa = PBXGroup;
 			children = (
-				4D0A16601A353216001BF0BE /* TimerityData.h */,
-				4D0A165E1A353216001BF0BE /* Supporting Files */,
-				4D0A16751A35328F001BF0BE /* TimerInformation.swift */,
-				4DB48B981A5337100031DECD /* TimerCommand.swift */,
+				4DB54EC51A5A01940005186A /* NSTimerExtensions.swift */,
 				4D0F81881A54D2E40000CDC2 /* Set.swift */,
+				4D0A165E1A353216001BF0BE /* Supporting Files */,
+				4DB48B981A5337100031DECD /* TimerCommand.swift */,
 				4D0F818C1A5633DE0000CDC2 /* TimerData.swift */,
 				4D2ED75E1A563C3A003F163E /* TimerError.swift */,
+				4D0A16751A35328F001BF0BE /* TimerInformation.swift */,
+				4D0A16601A353216001BF0BE /* TimerityData.h */,
 			);
 			path = TimerityData;
 			sourceTree = "<group>";
@@ -616,6 +619,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DB54EC61A5A01940005186A /* NSTimerExtensions.swift in Sources */,
 				4D0A16761A35328F001BF0BE /* TimerInformation.swift in Sources */,
 				4D0F818D1A5633DE0000CDC2 /* TimerData.swift in Sources */,
 				4DB48B991A5337100031DECD /* TimerCommand.swift in Sources */,

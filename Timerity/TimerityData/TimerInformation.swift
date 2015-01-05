@@ -56,6 +56,7 @@ public struct TimerInformation {
     var timeRemaining: Duration = Duration()
     var fireDate: NSDate?
     
+    // CCC, 1/4/2015. May want a "Going Off" state to deal with an expired timer while running the watch app. Or will a notification pull the wearer out of the watch app and into the notification interface?
     public var state: TimerState {
         if isActive {
             return TimerState.Active(fireDate: fireDate!)
@@ -75,8 +76,6 @@ public struct TimerInformation {
         self.duration = duration
         lastModified = NSDate()
         id = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault))
-
-        // CCC, 1/4/2015. Need to maintain a timer to transition out of active state at the fireDate
     }
     
     private init(name: String, durationInSeconds: Double, id: String, lastModified: NSDate, state: TimerState) {
@@ -106,8 +105,6 @@ public struct TimerInformation {
             isPaused = false
             break
         }
-        
-        // CCC, 1/4/2015. Need to maintain a timer to transition out of active state at the fireDate
     }
     
     //MARK: - Public API

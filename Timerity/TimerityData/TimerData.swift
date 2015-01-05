@@ -50,6 +50,8 @@ public class TimerData {
     public var timers: [TimerInformation]
     /// maps timer IDs to indices in the timers array
     private var timerIndex: [String: Int]
+    /// A sparse "array" of NSTimer instances counting down with the active timers, used to update timer state when timers expire.
+    private var timerTimers: [Int: NSTimer] = [:]
     
     private var originalURL: NSURL?
     
@@ -84,6 +86,20 @@ public class TimerData {
         originalURL = url
         self.timers = timers
         timerIndex = TimerData._rebuiltIndexForTimers(timers)
+        for (index, timer) in enumerate(timers) {
+            switch timer.state {
+            case .Active(fireDate: let fireDate):
+                if fireDate.timeIntervalSinceNow < 0 {
+                    // Oops. Already expired. Since no call-backs can be registered yet, just reset the timer.
+                    self.timers[index].reset()
+                } else {
+                    timerTimers[index] = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(index))
+                }
+                break;
+            default:
+                break;
+            }
+        }
     }
     
     public convenience init() {
@@ -109,11 +125,26 @@ public class TimerData {
         }
     }
     
-    public func updateTimer(timer: TimerInformation) {
+    public func updateTimer(var timer: TimerInformation) {
         if let index = timerIndex[timer.id] {
-            // CCC, 12/30/2014. Decide what sort of operation this is, pass the appropriate command to the main app. Let the write back trigger the database and UI update.
+            // CCC, 12/30/2014. Decide what sort of operation this is, pass the appropriate command to the main app. Let the write back trigger the database update and callbacks.
             //            let command = TimerCommand.Start
             //            command.send(timer)
+            if let timerTimer = timerTimers[index] {
+                timerTimer.invalidate()
+                timerTimers[index] = nil
+            }
+            switch timer.state {
+            case .Active(fireDate: let fireDate):
+                if fireDate.timeIntervalSinceNow < 0 {
+                    timer.reset()
+                } else {
+                    timerTimers[index] = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(index))
+                }
+                break;
+            default:
+                break;
+            }
             timers[index] = timer
             if let url = originalURL {
                 self.writeToURL(url)
@@ -124,6 +155,23 @@ public class TimerData {
             //            let command = TimerCommend.Add
             //            command.send(timer)
             // Add the new timer to the head of the list
+            switch timer.state {
+            case .Active(fireDate: let fireDate):
+                if fireDate.timeIntervalSinceNow < 0 {
+                    timer.reset()
+                } else {
+                    let timerTimer = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(0))
+                    var timerTimers: [Int: NSTimer] = [:]
+                    for oldIndex in self.timerTimers.keys {
+                        timerTimers[oldIndex + 1] = self.timerTimers[oldIndex]
+                    }
+                    timerTimers[0] = timerTimer
+                    self.timerTimers = timerTimers
+                }
+                break;
+            default:
+                break;
+            }
             let newIndex = timers.count
             timers.insert(timer, atIndex: 0)
             timerIndex = TimerData._rebuiltIndexForTimers(timers)
@@ -140,6 +188,19 @@ public class TimerData {
             //            let command = TimerCommend.Delete
             //            command.send(timer)
             timers.removeAtIndex(index)
+
+            if let timerTimer = self.timerTimers[index] {
+                timerTimer.invalidate()
+                self.timerTimers[index] = nil
+            }
+            var timerTimers: [Int: NSTimer] = [:]
+            for oldIndex in self.timerTimers.keys {
+                if oldIndex >= index {
+                    timerTimers[oldIndex - 1] = self.timerTimers[oldIndex]
+                }
+            }
+            self.timerTimers = timerTimers
+
             timerIndex = TimerData._rebuiltIndexForTimers(timers)
             if let url = originalURL {
                 self.writeToURL(url)
@@ -220,6 +281,16 @@ public class TimerData {
             return Either.Left(Box(wrap: timers[index]))
         } else {
             return Either.Right(Box(wrap: TimerError.MissingIdentifier(identifier)))
+        }
+    }
+    
+    private func _timerExpirationHandlerForIndex(index: Int) -> (NSTimer! -> Void) {
+        return { [weak self] scheduledTimer in
+            if let strongSelf = self {
+                var currentTimer = strongSelf.timers[index]
+                currentTimer.reset()
+                strongSelf.updateTimer(currentTimer)
+            }
         }
     }
 }
