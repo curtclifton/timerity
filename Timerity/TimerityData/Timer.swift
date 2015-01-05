@@ -198,6 +198,7 @@ extension Duration {
 
 //MARK: JSON encoding and decoding
 
+// CCC, 1/4/2015. Rename to Timer
 extension TimerInformation: JSONEncodable {
     func encode() -> [String : AnyObject] {
         var informationDictionary = [
