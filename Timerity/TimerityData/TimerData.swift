@@ -136,9 +136,9 @@ public class TimerData {
             }
             _invokeCallbacks(timer: timer)
         } else {
-            // CCC, 12/30/2014. Pass Add command to the main app. Let the write back trigger the database and UI update.
-            //            let command = TimerCommend.Add
-            //            command.send(timer)
+            let command = TimerCommand(commandType: TimerCommandType.Add, timer: timer)
+            command.send()
+            // CCC, 12/30/2014. Let the write-back trigger the database and UI update. That is, most of this should happen on the iOS app side.
             // Add the new timer to the head of the list
             switch timer.state {
             case .Active(fireDate: let fireDate):
@@ -334,7 +334,7 @@ extension TimerData: JSONDecodable {
                     default:
                         println("comparing: \(left.name) last modified on \(left.lastModified)")
                         println("           with: \(right.name) last modified on \(right.lastModified)")
-                        result = left.lastModified.compare(right.lastModified) == NSComparisonResult.OrderedAscending
+                        result = left.lastModified.compare(right.lastModified) == NSComparisonResult.OrderedDescending
                         break;
                     }
                     let modifier = result ? "" : "not "
