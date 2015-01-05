@@ -11,22 +11,22 @@ import TimerityData
 
 // TODO: This is just a bare skeleton iPhone app for demo purposes.
 
-//let groupURL = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.net.curtclifton.Timerity")
-//let timerDatabaseURL = groupURL!.URLByAppendingPathComponent("data.json", isDirectory: false)
-//
-//func spinUpTimerDB() -> TimerData {
-//    let maybeTimerData = TimerData.fromURL(timerDatabaseURL)
-//    switch maybeTimerData {
-//    case .Left(let timerDataBox):
-//        return timerDataBox.unwrapped
-//    case .Right(let error):
-//        println("error reading data file: \(error.unwrapped)")
-//        return TimerData()
-//    }
-//}
-//
-///// Lazily loaded global timer database
-//let timerDB = spinUpTimerDB()
+let groupURL = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.net.curtclifton.Timerity")
+let timerDatabaseURL = groupURL!.URLByAppendingPathComponent("data.json", isDirectory: false)
+
+func spinUpTimerDB() -> TimerData {
+    let maybeTimerData = TimerData.fromURL(timerDatabaseURL)
+    switch maybeTimerData {
+    case .Left(let timerDataBox):
+        return timerDataBox.unwrapped
+    case .Right(let error):
+        println("error reading data file: \(error.unwrapped)")
+        return TimerData()
+    }
+}
+
+/// Lazily loaded global timer database
+let timerDB = spinUpTimerDB()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         // CCC, 1/4/2015. testing
-//        println("Loaded timer database: \(timerDB.timers)")
+        println("Loaded timer database: \(timerDB.timers)")
         
         return true
     }
