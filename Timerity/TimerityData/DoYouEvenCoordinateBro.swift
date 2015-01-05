@@ -68,7 +68,7 @@ public class DoYouEvenCoordinateBro: NSObject {
         } else if let error = coordinationError {
             NSLog("Coordinated read error: %@", error);
         } else {
-            NSLog("WTF?");
+            NSLog("Huh");
         }
     }
     
@@ -86,7 +86,7 @@ public class DoYouEvenCoordinateBro: NSObject {
         } else if let error = coordinationError {
             NSLog("Coordinated write error: %@", error);
         } else {
-            NSLog("WTF?");
+            NSLog("Huh");
         }
     }
 }
