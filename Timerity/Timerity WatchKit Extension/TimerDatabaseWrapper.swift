@@ -18,7 +18,7 @@ func spinUpTimerDB() -> TimerData {
     case .Left(let timerDataBox):
         return timerDataBox.unwrapped
     case .Right(let error):
-        println("error reading data file: \(error.unwrapped)")
+        NSLog("error reading data file: %@", error.unwrapped.description)
         return TimerData(url: timerDatabaseURL)
     }
 }

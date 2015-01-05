@@ -199,7 +199,7 @@ extension Duration {
 //MARK: JSON encoding and decoding
 
 extension Timer: JSONEncodable {
-    public func encode() -> [String : AnyObject] {
+    public func encodeToJSONData() -> [String : AnyObject] {
         var informationDictionary = [
             "id": id,
             "name": name,

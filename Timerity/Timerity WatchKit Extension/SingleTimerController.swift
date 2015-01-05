@@ -66,7 +66,7 @@ class SingleTimerController {
             timerUpdateCallbackID = callbackIDBox.unwrapped
             break
         case .Right(let errorBox):
-            println("Error getting information for timer: \(errorBox.unwrapped)")
+            NSLog("Error getting information for timer: ", errorBox.unwrapped.description)
             timer = nil
             break
         }
@@ -103,7 +103,7 @@ class SingleTimerController {
             return;
         }
         if let timer = self.timer {
-            println("yay! \(timer)");
+            NSLog("yay! %@", timer.description);
             nameLabel.setText(timer.name)
             switch timer.state {
             case .Active(fireDate: let fireDate):
@@ -131,7 +131,7 @@ class SingleTimerController {
             }
             menuItemPresenter?.configureMenuForState(timer.state)
         } else {
-            println("Eep, no timer")
+            NSLog("Eep, no timer")
             nameLabel.setText(NSLocalizedString("Missing timer", comment: "missing timer row label"))
             totalTimeLabel.setHidden(true)
             countdownTimer.setHidden(true)

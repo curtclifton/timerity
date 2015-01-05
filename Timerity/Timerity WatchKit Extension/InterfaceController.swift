@@ -84,11 +84,10 @@ class InterfaceController: WKInterfaceController {
 
     override func contextForSegueWithIdentifier(segueIdentifier: String, inTable table: WKInterfaceTable, rowIndex: Int) -> AnyObject? {
         if (segueIdentifier == SegueIdentifiers.PushTimer) {
-            println("getting context for seque \(segueIdentifier) and row \(rowIndex)")
             let timers = timerDB.timers
             return timers[rowIndex].id
         } else {
-            println("unexpected seque identifier \(segueIdentifier)")
+            NSLog("unexpected seque identifier %@", segueIdentifier)
             return nil
         }
     }
@@ -166,7 +165,7 @@ class InterfaceController: WKInterfaceController {
                     rowCallbackIDs.append(callbackIDBox.unwrapped)
                     break
                 case .Right(let errorBox):
-                    println("Error registering callback for timer: \(errorBox.unwrapped)")
+                    NSLog("Error registering callback for timer: ", errorBox.unwrapped.description)
                     break
                 }
             }

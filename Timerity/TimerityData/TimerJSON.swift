@@ -10,7 +10,7 @@ import Foundation
 
 public protocol JSONEncodable {
     /// Result strings should be unique tags for each saved typed. Result values should be encodable per NSJSONSerialization
-    func encode() -> [String: AnyObject]
+    func encodeToJSONData() -> [String: AnyObject]
 }
 
 public protocol JSONDecodable {

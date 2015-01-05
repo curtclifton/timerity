@@ -22,9 +22,13 @@ public struct TimerCommand {
     public let timer: Timer
     
     public func send() {
-        WKInterfaceController.openParentApplication(self.encode()) { result, error in
-            println("got callback with result: “\(result)”")
-            println("and error: “\(error)”")
+        WKInterfaceController.openParentApplication(self.encodeToJSONData()) { result, error in
+            if result != nil {
+                NSLog("got callback with result: “%@”", result)
+            }
+            if error != nil {
+                NSLog("got callback with error: “%@”", error)
+            }
             // CCC, 12/30/2014. implement
         }
     }
@@ -42,9 +46,9 @@ public enum TimerCommandType: String {
 }
 
 extension TimerCommand: JSONEncodable {
-    public func encode() -> [String : AnyObject] {
-        var payload: [String: AnyObject] = commandType.encode()
-        payload.merge(timer.encode())
+    public func encodeToJSONData() -> [String : AnyObject] {
+        var payload: [String: AnyObject] = commandType.encodeToJSONData()
+        payload.merge(timer.encodeToJSONData())
         return [JSONKey.TimerCommand: payload]
     }
 }
@@ -68,7 +72,7 @@ extension TimerCommand: JSONDecodable {
 }
 
 extension TimerCommandType: JSONEncodable {
-    public func encode() -> [String : AnyObject] {
+    public func encodeToJSONData() -> [String : AnyObject] {
             return [JSONKey.TimerCommandType: rawValue]
     }
 }

@@ -20,7 +20,7 @@ func spinUpTimerDB() -> TimerData {
     case .Left(let timerDataBox):
         return timerDataBox.unwrapped
     case .Right(let error):
-        println("error reading data file: \(error.unwrapped)")
+        NSLog("error reading data file: %@", error.unwrapped.description)
         return TimerData()
     }
 }
@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         // CCC, 1/4/2015. testing
-        println("Loaded timer database: \(timerDB.timers)")
+        NSLog("timers: %@", timerDB.timers.description)
         
         return true
     }
@@ -67,6 +67,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication!, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]!, reply: (([NSObject : AnyObject]!) -> Void)!) {
+        // CCC, 1/4/2015. Can we get here without getting didFinishLaunching…? Better make sure the database is spun up in any case
+        NSLog("handling extension request with timers: %@", timerDB.timers.description)
+        NSLog("request: %@", userInfo)
         if let rawJSONData = userInfo as? [String: AnyObject] {
             let maybeCommand = TimerCommand.decodeJSONData(rawJSONData)
             switch maybeCommand {
@@ -102,6 +105,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         // CCC, 1/4/2015.  just round-tripping the data to debug our encoding at the moment:
         // CCC, 1/4/2015. this should be an error case
+        NSLog("sending reply to watch extension")
         let result: [NSObject: AnyObject] = userInfo
         reply(result)
     }

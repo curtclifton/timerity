@@ -80,7 +80,7 @@ extension SingleTimerInterfaceController: MenuItemPresenter {
     }
     
     func resetMenuItemPressed() {
-        println("resetting")
+        NSLog("resetting")
         if var timer = timerController?.timer {
             timer.reset()
             timerDB.updateTimer(timer, commandType: TimerCommandType.Reset)
@@ -88,14 +88,14 @@ extension SingleTimerInterfaceController: MenuItemPresenter {
     }
     
     func editMenuItemPressed() {
-        println("editting")
+        NSLog("editting")
         if var timer = timerController?.timer {
             presentControllerWithName(InterfaceControllerIdentifier.TimerEditingController, context: timer.id)
         }
     }
     
     func deleteMenuItemPressed() {
-        println("deleting")
+        NSLog("deleting")
         if var timer = timerController?.timer {
             // TODO: Do we need to get confirmation from the user before deleting?
             _clearCurrentTimer()
