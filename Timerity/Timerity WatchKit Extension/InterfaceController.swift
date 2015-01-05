@@ -172,6 +172,7 @@ class InterfaceController: WKInterfaceController {
             }
         }
         
+        table.scrollToRowAtIndex(0)
         needsTableReload = false
     }
     
