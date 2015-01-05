@@ -9,6 +9,25 @@
 import UIKit
 import TimerityData
 
+// TODO: This is just a bare skeleton iPhone app for demo purposes.
+
+//let groupURL = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.net.curtclifton.Timerity")
+//let timerDatabaseURL = groupURL!.URLByAppendingPathComponent("data.json", isDirectory: false)
+//
+//func spinUpTimerDB() -> TimerData {
+//    let maybeTimerData = TimerData.fromURL(timerDatabaseURL)
+//    switch maybeTimerData {
+//    case .Left(let timerDataBox):
+//        return timerDataBox.unwrapped
+//    case .Right(let error):
+//        println("error reading data file: \(error.unwrapped)")
+//        return TimerData()
+//    }
+//}
+//
+///// Lazily loaded global timer database
+//let timerDB = spinUpTimerDB()
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -19,14 +38,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerUserNotificationSettings(settings)
         // Override point for customization after application launch.
         
-        // NOTE: We can get a WKInterfaceDevice instance, but if we try to use it we crash:
-        //        let device = WKInterfaceDevice.currentDevice()
-        //        println(device.description)
-        //        if let plusImage = UIImage(named: "Plus") {
-        //            println("image: \(plusImage)")
-        //            let isCached = device.addCachedImage(plusImage, name: "Plus")
-        //            println("cached: \(isCached)")
-        //        }
+        // CCC, 1/4/2015. testing
+//        println("Loaded timer database: \(timerDB.timers)")
         
         return true
     }

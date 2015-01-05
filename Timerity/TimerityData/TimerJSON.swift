@@ -21,5 +21,6 @@ protocol JSONDecodable {
 struct JSONKey {
     static let TimerData = "TimerData"
     static let Timer = "TimerInformation"
+    static let TimerCommand = "TimerCommand"
 }
 

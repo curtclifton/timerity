@@ -18,16 +18,14 @@ extension Dictionary {
 }
 
 public struct TimerCommand {
-    static let commandKey = "command"
+    static let commandKey = "commandType"
     static let timerIDKey = "timerID"
 
     let commandType: TimerCommandType
     let timer: Timer
     
     public func send() {
-        var payload: [String: AnyObject] = commandType.encode()
-        payload.merge(timer.encode())
-        WKInterfaceController.openParentApplication(payload) { result, error in
+        WKInterfaceController.openParentApplication(self.encode()) { result, error in
             println("got callback with result: “\(result)”")
             println("and error: “\(error)”")
             // CCC, 12/30/2014. implement
@@ -38,10 +36,19 @@ public struct TimerCommand {
 public enum TimerCommandType: String {
     case Start = "start"
     case Pause = "pause"
+    case Resume = "resume"
     case Delete = "delete"
     case Reset = "reset"
     case Add = "add"
     case Replace = "replace"
+}
+
+extension TimerCommand: JSONEncodable {
+    func encode() -> [String : AnyObject] {
+        var payload: [String: AnyObject] = commandType.encode()
+        payload.merge(timer.encode())
+        return [JSONKey.TimerCommand: payload]
+    }
 }
 
 extension TimerCommandType: JSONEncodable {

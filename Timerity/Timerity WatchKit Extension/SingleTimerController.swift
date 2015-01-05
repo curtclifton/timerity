@@ -82,9 +82,11 @@ class SingleTimerController {
                 break;
             case .Paused(timeRemaining: let timeRemaining):
                 timer.resume()
+                timerDB.updateTimer(timer, commandType: TimerCommandType.Resume) // triggers a callback that updates the UI
                 break;
             case .Inactive:
                 timer.start()
+                timerDB.updateTimer(timer, commandType: TimerCommandType.Start) // triggers a callback that updates the UI
                 break;
             }
         }

@@ -87,8 +87,8 @@ public class TimerData {
         }
     }
     
-    public convenience init() {
-        self.init(timers: [], url: nil)
+    public convenience init(url: NSURL? = nil) {
+        self.init(timers: [], url: url)
     }
     
     //MARK: - Mutation
