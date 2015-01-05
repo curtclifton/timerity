@@ -16,7 +16,7 @@ public enum TimerCommand: String {
     static let commandKey = "command"
     static let timerIDKey = "timerID"
     
-    public func send(timer: TimerInformation) {
+    public func send(timer: Timer) {
         let payload: [NSObject: AnyObject] = [TimerCommand.commandKey: self.rawValue, TimerCommand.timerIDKey: timer.id]
         WKInterfaceController.openParentApplication(payload) { result, error in
             println("got callback with result “\(result)” and error “\(error)”")

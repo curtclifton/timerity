@@ -1,5 +1,5 @@
 //
-//  TimerInformation.swift
+//  Timer.swift
 //  Timerity
 //
 //  Created by Curt Clifton on 12/7/14.
@@ -44,7 +44,7 @@ public enum TimerState {
     case Inactive
 }
 
-public struct TimerInformation {
+public struct Timer {
     public var name: String
     public var duration: Duration
     public let id: String
@@ -199,7 +199,7 @@ extension Duration {
 //MARK: JSON encoding and decoding
 
 // CCC, 1/4/2015. Rename to Timer
-extension TimerInformation: JSONEncodable {
+extension Timer: JSONEncodable {
     func encode() -> [String : AnyObject] {
         var informationDictionary = [
             "id": id,
@@ -219,14 +219,14 @@ extension TimerInformation: JSONEncodable {
         case .Inactive:
             break;
         }
-        return [JSONKey.TimerInformation: informationDictionary]
+        return [JSONKey.Timer: informationDictionary]
     }
 }
 
-extension TimerInformation: JSONDecodable {
-    typealias ResultType = TimerInformation
-    static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL? = nil) -> Either<TimerInformation, TimerError> {
-        let maybeEncodedTimer: AnyObject? = jsonData[JSONKey.TimerInformation]
+extension Timer: JSONDecodable {
+    typealias ResultType = Timer
+    static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL? = nil) -> Either<Timer, TimerError> {
+        let maybeEncodedTimer: AnyObject? = jsonData[JSONKey.Timer]
         if let encodedTimer = maybeEncodedTimer as? [String: AnyObject] {
             // TODO: This is pretty hideous with all the error handling Swift requires. See 	SwiftyJSON https://github.com/SwiftyJSON/SwiftyJSON or this Haskell-style: http://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics approach for alternatives.
             var lastCheckedProperty: String
@@ -250,17 +250,17 @@ extension TimerInformation: JSONDecodable {
                                     case (true, false):
                                         lastCheckedProperty = "fireDate"
                                         if let fireDateNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
-                                            return Either.Left(Box(wrap: TimerInformation(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Active(fireDate: NSDate(timeIntervalSince1970: fireDateNumber.doubleValue)))))
+                                            return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Active(fireDate: NSDate(timeIntervalSince1970: fireDateNumber.doubleValue)))))
                                         }
                                         break;
                                     case (false, true):
                                         lastCheckedProperty = "timeRemaining"
                                         if let timeRemainingNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
-                                            return Either.Left(Box(wrap: TimerInformation(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Paused(timeRemaining: Duration(seconds: timeRemainingNumber.doubleValue)))))
+                                            return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Paused(timeRemaining: Duration(seconds: timeRemainingNumber.doubleValue)))))
                                         }
                                         break;
                                     default:
-                                        return Either.Left(Box(wrap: TimerInformation(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Inactive)))
+                                        return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Inactive)))
                                     }
                                 }
                             }
@@ -278,7 +278,7 @@ extension TimerInformation: JSONDecodable {
 
 //MARK: Printable, DebugPrintable extensions
 
-extension TimerInformation: Printable, DebugPrintable {
+extension Timer: Printable, DebugPrintable {
     public var description: String {
         return "name:\(name), duration: \(duration.description)"
     }

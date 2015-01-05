@@ -24,7 +24,7 @@ public enum Either<T,U> {
     case Right(Box<U>)
 }
 
-public typealias TimerChangeCallback = TimerInformation? -> ()
+public typealias TimerChangeCallback = Timer? -> ()
 
 public struct TimerChangeCallbackID {
     let value: Int
@@ -32,7 +32,7 @@ public struct TimerChangeCallbackID {
 
 //! Mutable timer database.
 public class TimerData {
-    public var timers: [TimerInformation]
+    public var timers: [Timer]
     /// maps timer IDs to indices in the timers array
     private var timerIndex: [String: Int]
     /// A sparse "array" of NSTimer instances counting down with the active timers, used to update timer state when timers expire.
@@ -67,7 +67,7 @@ public class TimerData {
         }
     }
     
-    private init(timers: [TimerInformation], url: NSURL? = nil) {
+    private init(timers: [Timer], url: NSURL? = nil) {
         originalURL = url
         self.timers = timers
         timerIndex = TimerData._rebuiltIndexForTimers(timers)
@@ -110,7 +110,7 @@ public class TimerData {
         }
     }
     
-    public func updateTimer(var timer: TimerInformation) {
+    public func updateTimer(var timer: Timer) {
         if let index = timerIndex[timer.id] {
             // CCC, 12/30/2014. Decide what sort of operation this is, pass the appropriate command to the main app. Let the write back trigger the database update and callbacks.
             //            let command = TimerCommand.Start
@@ -167,7 +167,7 @@ public class TimerData {
         }
     }
     
-    public func deleteTimer(timer: TimerInformation) {
+    public func deleteTimer(timer: Timer) {
         if let index = timerIndex[timer.id] {
             // CCC, 12/30/2014. Pass Delete command to the main app. Let the write back trigger the database and UI update.
             //            let command = TimerCommend.Delete
@@ -230,7 +230,7 @@ public class TimerData {
     }
     
     //MARK: - Private API
-    private class func _rebuiltIndexForTimers(timers: [TimerInformation]) -> [String: Int] {
+    private class func _rebuiltIndexForTimers(timers: [Timer]) -> [String: Int] {
         var newTimerIndex: [String: Int] = [:]
         for (index, timer) in enumerate(timers) {
             assert(newTimerIndex[timer.id] == nil, "timer IDs must be unique, \(timer.id) is not.")
@@ -239,7 +239,7 @@ public class TimerData {
         return newTimerIndex
     }
     
-    private func _invokeCallbacks(#timer: TimerInformation, isDeleted deleted: Bool = false) {
+    private func _invokeCallbacks(#timer: Timer, isDeleted deleted: Bool = false) {
         if let callbackIDs = callbackIDsByTimerID[timer.id] {
             var validCallbackIDs:[Int] = []
             for callbackID in callbackIDs {
@@ -261,7 +261,7 @@ public class TimerData {
         }
     }
     
-    private func _timer(#identifier: String) -> Either<TimerInformation, TimerError> {
+    private func _timer(#identifier: String) -> Either<Timer, TimerError> {
         if let index = timerIndex[identifier] {
             return Either.Left(Box(wrap: timers[index]))
         } else {
@@ -309,7 +309,7 @@ extension TimerData: JSONDecodable {
     class func decodeJSONData(jsonData: [String:AnyObject], sourceURL: NSURL? = nil) -> Either<TimerData, TimerError> {
         let maybeEncodedTimers: AnyObject? = jsonData[JSONKey.TimerData]
         if let encodedTimers = maybeEncodedTimers as? [[String: AnyObject]] {
-            let maybeTimers = encodedTimers.emap() { TimerInformation.decodeJSONData($0) }
+            let maybeTimers = encodedTimers.emap() { Timer.decodeJSONData($0) }
             switch maybeTimers {
             case .Left(let timersBox):
                 let timers = timersBox.unwrapped

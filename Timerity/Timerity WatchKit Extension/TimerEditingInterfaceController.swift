@@ -13,7 +13,7 @@ import WatchKit
 let defaultTimerNames = ["Tea", "Power Nap", "Brownies", "Egg", "Tempo Run"]
 
 class TimerEditingInterfaceController: WKInterfaceController {
-    private lazy var timer = TimerInformation()
+    private lazy var timer = Timer()
     private var isChanged = false
     private var needsUpdate = true
     private var isActive = true
@@ -41,7 +41,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
                     if let timer = maybeTimer {
                         strongSelf.timer = timer
                     } else {
-                        strongSelf.timer = TimerInformation()
+                        strongSelf.timer = Timer()
                     }
                     strongSelf._update()
                 }

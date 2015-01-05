@@ -14,7 +14,7 @@ protocol MenuItemPresenter: class {
 }
 
 class SingleTimerController {
-    var timer: TimerInformation?
+    var timer: Timer?
     private var timerUpdateCallbackID: TimerChangeCallbackID?
     private var isActive = true // we assume that we're initially active so that loading into an already loaded UI causes an update
     private var needsUpdate = false
