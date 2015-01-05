@@ -28,7 +28,8 @@ func spinUpTimerDB() -> TimerData {
 /// Lazily loaded global timer database
 let timerDB = spinUpTimerDB()
 
-private var dyecb: DoYouEvenCoordinateBro!
+// TODO: remove file coordination demo code:
+// private var dyecb: DoYouEvenCoordinateBro!
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -42,7 +43,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // CCC, 1/4/2015. testing
         NSLog("In application did finish launching, timers: %@", timerDB.timers.description)
-        dyecb = DoYouEvenCoordinateBro()
+        // TODO: remove file coordination demo code:
+        // dyecb = DoYouEvenCoordinateBro()
         
         return true
     }
@@ -67,11 +69,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+
+        // TODO: remove file coordination demo code:
+        // dyecb.invalidate()
     }
 
     func application(application: UIApplication!, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]!, reply: (([NSObject : AnyObject]!) -> Void)!) {
-        dyecb.text = "Here I come to save the day!"
-        dyecb.write()
+        // TODO: remove file coordination demo code:
+        //        dyecb.text = "Here I come to save the day!"
+        //        dyecb.write()
         
         // CCC, 1/4/2015. Can we get here without getting didFinishLaunching…? Better make sure the database is spun up in any case
         NSLog("handling extension request with timers: %@", timerDB.timers.description)

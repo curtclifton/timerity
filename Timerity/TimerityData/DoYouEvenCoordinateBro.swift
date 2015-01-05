@@ -18,6 +18,7 @@ func spinUpQueue() -> NSOperationQueue {
 }
 let processingQueue = spinUpQueue()
 
+/// This is a sample class to experiment with file coodination in watch extensions.
 public class DoYouEvenCoordinateBro: NSObject {
     public var text: String = ""
     let fileCoordinator: NSFileCoordinator!
@@ -30,11 +31,11 @@ public class DoYouEvenCoordinateBro: NSObject {
         read()
     }
     
+    // TODO: there's no sensible place to call this from the watch app
     public func invalidate() {
         if isInvalidated {
             return
         }
-        
         NSFileCoordinator.removeFilePresenter(self)
     }
     
@@ -42,6 +43,7 @@ public class DoYouEvenCoordinateBro: NSObject {
     }
     
     public func read() {
+        assert(!isInvalidated)
         var coordinationSuccess = false // assume the worst
         var coordinationError: NSError?
         NSLog("Beginning coordinated read");
@@ -71,6 +73,7 @@ public class DoYouEvenCoordinateBro: NSObject {
     }
     
     public func write() {
+        assert(!isInvalidated)
         var coordinationSuccess = false // assume the worst
         var coordinationError: NSError?
         NSLog("Beginning coordinated write");
