@@ -333,6 +333,9 @@ public class TimerData: NSObject {
 extension TimerData: NSFilePresenter {
     public var presentedItemURL: NSURL? {
         NSLog("somebody is asking for presentedItemURL")
+        if let url = originalURL {
+            NSLog("It's “%@”", url)
+        }
         return originalURL
     }
 
