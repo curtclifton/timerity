@@ -80,9 +80,9 @@ public class TimerData {
                 } else {
                     timerTimers[index] = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(index))
                 }
-                break;
+                break
             default:
-                break;
+                break
             }
         }
     }
@@ -296,7 +296,7 @@ private extension Array {
             switch maybeResult {
             case .Left(let resultBox):
                 resultArray.append(resultBox.unwrapped)
-                break;
+                break
             case .Right(let errorBox):
                 return .Right(errorBox)
             }
@@ -336,7 +336,7 @@ extension TimerData: JSONDecodable {
                         println("comparing: \(left.name) last modified on \(left.lastModified)")
                         println("           with: \(right.name) last modified on \(right.lastModified)")
                         result = left.lastModified.compare(right.lastModified) == NSComparisonResult.OrderedDescending
-                        break;
+                        break
                     }
                     let modifier = result ? "" : "not "
                     println("left is \(modifier)ordered before right")

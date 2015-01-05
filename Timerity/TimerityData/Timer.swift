@@ -211,12 +211,12 @@ extension Timer: JSONEncodable {
         switch state {
         case .Active(fireDate: let fireDate):
             informationDictionary["fireDate"] = NSNumber(double: fireDate.timeIntervalSince1970)
-            break;
+            break
         case .Paused(timeRemaining: let timeRemaining):
             informationDictionary["timeRemaining"] = NSNumber(double: timeRemaining.seconds)
-            break;
+            break
         case .Inactive:
-            break;
+            break
         }
         return [JSONKey.Timer: informationDictionary]
     }
@@ -251,13 +251,13 @@ extension Timer: JSONDecodable {
                                         if let fireDateNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
                                             return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Active(fireDate: NSDate(timeIntervalSince1970: fireDateNumber.doubleValue)))))
                                         }
-                                        break;
+                                        break
                                     case (false, true):
                                         lastCheckedProperty = "timeRemaining"
                                         if let timeRemainingNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
                                             return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Paused(timeRemaining: Duration(seconds: timeRemainingNumber.doubleValue)))))
                                         }
-                                        break;
+                                        break
                                     default:
                                         return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Inactive)))
                                     }

@@ -64,11 +64,11 @@ class SingleTimerController {
         switch registrationResult {
         case .Left(let callbackIDBox):
             timerUpdateCallbackID = callbackIDBox.unwrapped
-            break;
+            break
         case .Right(let errorBox):
             println("Error getting information for timer: \(errorBox.unwrapped)")
             timer = nil
-            break;
+            break
         }
     }
     
@@ -79,15 +79,15 @@ class SingleTimerController {
                 countdownTimer.stop() // the countdown will be removed by the callback, but lets not let the count drop below the cached time remaining
                 timer.pause()
                 timerDB.updateTimer(timer, commandType: TimerCommandType.Pause) // triggers a callback that updates the UI
-                break;
+                break
             case .Paused(timeRemaining: let timeRemaining):
                 timer.resume()
                 timerDB.updateTimer(timer, commandType: TimerCommandType.Resume) // triggers a callback that updates the UI
-                break;
+                break
             case .Inactive:
                 timer.start()
                 timerDB.updateTimer(timer, commandType: TimerCommandType.Start) // triggers a callback that updates the UI
-                break;
+                break
             }
         }
     }
@@ -113,21 +113,21 @@ class SingleTimerController {
                 countdownTimer.setHidden(false)
                 button?.setTitle(NSLocalizedString("Pause", comment: "pause button label"))
                 button?.setHidden(false)
-                break;
+                break
             case .Paused(timeRemaining: let timeRemaining):
                 totalTimeLabel.setText(timeRemaining.formattedString)
                 totalTimeLabel.setHidden(false)
                 countdownTimer.setHidden(true)
                 button?.setTitle(NSLocalizedString("Resume", comment: "resume button label"))
                 button?.setHidden(false)
-                break;
+                break
             case .Inactive:
                 totalTimeLabel.setText(timer.duration.formattedString)
                 totalTimeLabel.setHidden(false)
                 countdownTimer.setHidden(true)
                 button?.setTitle(NSLocalizedString("Start", comment: "start button label"))
                 button?.setHidden(false)
-                break;
+                break
             }
             menuItemPresenter?.configureMenuForState(timer.state)
         } else {

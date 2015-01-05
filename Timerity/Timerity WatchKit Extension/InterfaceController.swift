@@ -164,10 +164,10 @@ class InterfaceController: WKInterfaceController {
                 switch registrationResult {
                 case .Left(let callbackIDBox):
                     rowCallbackIDs.append(callbackIDBox.unwrapped)
-                    break;
+                    break
                 case .Right(let errorBox):
                     println("Error registering callback for timer: \(errorBox.unwrapped)")
-                    break;
+                    break
                 }
             }
         }
