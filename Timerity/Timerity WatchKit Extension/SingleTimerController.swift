@@ -78,6 +78,7 @@ class SingleTimerController {
             case .Active(fireDate: let fireDate):
                 countdownTimer.stop() // the countdown will be removed by the callback, but lets not let the count drop below the cached time remaining
                 timer.pause()
+                timerDB.updateTimer(timer, commandType: TimerCommandType.Pause) // triggers a callback that updates the UI
                 break;
             case .Paused(timeRemaining: let timeRemaining):
                 timer.resume()
@@ -86,7 +87,6 @@ class SingleTimerController {
                 timer.start()
                 break;
             }
-            timerDB.updateTimer(timer) // triggers a callback that updates the UI
         }
     }
     

@@ -18,6 +18,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
     private var needsUpdate = true
     private var isActive = true
     private var callbackIdentifier: TimerChangeCallbackID?
+    private var isNewTimer = true
 
     // outlets
     @IBOutlet var doneButton: WKInterfaceButton!
@@ -39,6 +40,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
             let registrationResult = timerDB.registerCallbackForTimer(identifier: timerID) { [weak self] maybeTimer in
                 if let strongSelf = self {
                     if let timer = maybeTimer {
+                        strongSelf.isNewTimer = false
                         strongSelf.timer = timer
                     } else {
                         strongSelf.timer = Timer()
@@ -116,7 +118,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
     @IBAction func doneButtonPressed() {
         dismissController()
         timer.lastModified = NSDate()
-        timerDB.updateTimer(timer)
+        timerDB.updateTimer(timer, commandType: (isNewTimer ? .Add : .Replace))
     }
     
     //MARK: - Private API

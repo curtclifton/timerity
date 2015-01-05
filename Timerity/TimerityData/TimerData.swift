@@ -110,11 +110,11 @@ public class TimerData {
         }
     }
     
-    public func updateTimer(var timer: Timer) {
+    public func updateTimer(var timer: Timer, commandType: TimerCommandType) {
         if let index = timerIndex[timer.id] {
-            // CCC, 12/30/2014. Decide what sort of operation this is, pass the appropriate command to the main app. Let the write back trigger the database update and callbacks.
-            //            let command = TimerCommand.Start
-            //            command.send(timer)
+            let command = TimerCommand(commandType: commandType, timer: timer)
+            command.send()
+            // CCC, 1/4/2015. Let the write-back trigger the database and UI update. That is, most of this should happen on the iPhone app side.
             if let timerTimer = timerTimers[index] {
                 timerTimer.invalidate()
                 timerTimers[index] = nil
@@ -136,9 +136,10 @@ public class TimerData {
             }
             _invokeCallbacks(timer: timer)
         } else {
+            assert(commandType == .Add)
             let command = TimerCommand(commandType: TimerCommandType.Add, timer: timer)
             command.send()
-            // CCC, 12/30/2014. Let the write-back trigger the database and UI update. That is, most of this should happen on the iOS app side.
+            // CCC, 1/4/2015. Let the write-back trigger the database and UI update. That is, most of this should happen on the iPhone app side.
             // Add the new timer to the head of the list
             switch timer.state {
             case .Active(fireDate: let fireDate):
@@ -169,9 +170,9 @@ public class TimerData {
     
     public func deleteTimer(timer: Timer) {
         if let index = timerIndex[timer.id] {
-            // CCC, 12/30/2014. Pass Delete command to the main app. Let the write back trigger the database and UI update.
-            //            let command = TimerCommend.Delete
-            //            command.send(timer)
+            let command = TimerCommand(commandType: TimerCommandType.Delete, timer: timer)
+            command.send()
+            // CCC, 1/4/2015. Let the write-back trigger the database and UI update. That is, most of this should happen on the iPhone app side.
             timers.removeAtIndex(index)
 
             if let timerTimer = self.timerTimers[index] {
@@ -274,7 +275,7 @@ public class TimerData {
             if let strongSelf = self {
                 var currentTimer = strongSelf.timers[index]
                 currentTimer.reset()
-                strongSelf.updateTimer(currentTimer)
+                strongSelf.updateTimer(currentTimer, commandType: TimerCommandType.Reset)
             }
         }
     }

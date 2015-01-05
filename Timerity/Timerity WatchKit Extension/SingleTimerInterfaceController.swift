@@ -83,7 +83,7 @@ extension SingleTimerInterfaceController: MenuItemPresenter {
         println("resetting")
         if var timer = timerController?.timer {
             timer.reset()
-            timerDB.updateTimer(timer)
+            timerDB.updateTimer(timer, commandType: TimerCommandType.Reset)
         }
     }
     
