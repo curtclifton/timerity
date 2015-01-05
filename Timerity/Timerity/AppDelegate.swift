@@ -88,6 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 break
             case .Right(let errorBox):
                 // CCC, 1/4/2015. implement error handling
+                NSLog("error decoding command from watch extension: %@", errorBox.unwrapped.description)
                 break
             }
             // CCC, 12/10/2014. This schedules a notification, but we also have to handle the case where the app is foregrounded when the notification expires.

@@ -18,9 +18,6 @@ extension Dictionary {
 }
 
 public struct TimerCommand {
-    static let commandKey = "commandType"
-    static let timerIDKey = "timerID"
-
     public let commandType: TimerCommandType
     public let timer: Timer
     
@@ -55,22 +52,39 @@ extension TimerCommand: JSONEncodable {
 extension TimerCommand: JSONDecodable {
     typealias ResultType = TimerCommand
     public static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL? = nil) -> Either<TimerCommand, TimerError> {
-        // CCC, 1/4/2015. implement
-        return Either.Right(Box(wrap: TimerError.Decoding("not yet implement")))
+        if let payload = jsonData[JSONKey.TimerCommand] as? [String: AnyObject] {
+            let maybeCommandType = TimerCommandType.decodeJSONData(payload, sourceURL: sourceURL)
+            let maybeTimer = Timer.decodeJSONData(payload, sourceURL: sourceURL)
+            switch (maybeCommandType, maybeTimer) {
+            case (.Left(let timerCommandBox), .Left(let timerBox)):
+                return Either.Left(Box(wrap: TimerCommand(commandType: timerCommandBox.unwrapped, timer: timerBox.unwrapped)))
+            default:
+                return Either.Right(Box(wrap: TimerError.Decoding("unexpected JSON data: \(payload)")))
+            }
+        } else {
+            return Either.Right(Box(wrap: TimerError.Decoding("missing key “\(JSONKey.TimerCommand)” in JSON data: \(jsonData)")))
+        }
     }
 }
 
 extension TimerCommandType: JSONEncodable {
     public func encode() -> [String : AnyObject] {
-            return [TimerCommand.commandKey: rawValue]
+            return [JSONKey.TimerCommandType: rawValue]
     }
 }
 
 extension TimerCommandType: JSONDecodable {
     typealias ResultType = TimerCommandType
     public static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL? = nil) -> Either<TimerCommandType, TimerError> {
-        // CCC, 1/4/2015. implement
-        return Either.Right(Box(wrap: TimerError.Decoding("not yet implement")))
+        if let timerCommandTypeRawValue = jsonData[JSONKey.TimerCommandType] as? String {
+            if let timerCommandType = TimerCommandType(rawValue: timerCommandTypeRawValue) {
+                return Either.Left(Box(wrap: timerCommandType))
+            } else {
+                return Either.Right(Box(wrap: TimerError.Decoding("invalid timer command type raw value: \(timerCommandTypeRawValue)")))
+            }
+        } else {
+            return Either.Right(Box(wrap: TimerError.Decoding("missing timer command type key: \(jsonData)")))
+        }
     }
 }
 
