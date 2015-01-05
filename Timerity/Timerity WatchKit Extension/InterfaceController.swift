@@ -37,8 +37,11 @@ class InterfaceController: WKInterfaceController {
     private var databaseReloadCallbackID: TimerChangeCallbackID! // should be initialized in awakeWithContext
     private var isActive = true
     
+    private let dyecb: DoYouEvenCoordinateBro
+    
     override init() {
         // Configure interface objects here.
+        dyecb = DoYouEvenCoordinateBro()
     }
 
     deinit {

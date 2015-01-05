@@ -28,6 +28,8 @@ func spinUpTimerDB() -> TimerData {
 /// Lazily loaded global timer database
 let timerDB = spinUpTimerDB()
 
+private var dyecb: DoYouEvenCoordinateBro!
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -39,7 +41,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         // CCC, 1/4/2015. testing
-        NSLog("timers: %@", timerDB.timers.description)
+        NSLog("In application did finish launching, timers: %@", timerDB.timers.description)
+        dyecb = DoYouEvenCoordinateBro()
         
         return true
     }
@@ -67,6 +70,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication!, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]!, reply: (([NSObject : AnyObject]!) -> Void)!) {
+        dyecb.text = "Here I come to save the day!"
+        dyecb.write()
+        
         // CCC, 1/4/2015. Can we get here without getting didFinishLaunching…? Better make sure the database is spun up in any case
         NSLog("handling extension request with timers: %@", timerDB.timers.description)
         NSLog("request: %@", userInfo)
