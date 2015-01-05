@@ -8,12 +8,12 @@
 
 import Foundation
 
-protocol JSONEncodable {
+public protocol JSONEncodable {
     /// Result strings should be unique tags for each saved typed. Result values should be encodable per NSJSONSerialization
     func encode() -> [String: AnyObject]
 }
 
-protocol JSONDecodable {
+public protocol JSONDecodable {
     typealias ResultType
     class func decodeJSONData(jsonData: [String:AnyObject], sourceURL: NSURL?) -> Either<ResultType, TimerError>
 }

@@ -21,8 +21,8 @@ public struct TimerCommand {
     static let commandKey = "commandType"
     static let timerIDKey = "timerID"
 
-    let commandType: TimerCommandType
-    let timer: Timer
+    public let commandType: TimerCommandType
+    public let timer: Timer
     
     public func send() {
         WKInterfaceController.openParentApplication(self.encode()) { result, error in
@@ -41,25 +41,34 @@ public enum TimerCommandType: String {
     case Reset = "reset"
     case Add = "add"
     case Replace = "replace"
+    case Local = "local"
 }
 
 extension TimerCommand: JSONEncodable {
-    func encode() -> [String : AnyObject] {
+    public func encode() -> [String : AnyObject] {
         var payload: [String: AnyObject] = commandType.encode()
         payload.merge(timer.encode())
         return [JSONKey.TimerCommand: payload]
     }
 }
 
+extension TimerCommand: JSONDecodable {
+    typealias ResultType = TimerCommand
+    public static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL? = nil) -> Either<TimerCommand, TimerError> {
+        // CCC, 1/4/2015. implement
+        return Either.Right(Box(wrap: TimerError.Decoding("not yet implement")))
+    }
+}
+
 extension TimerCommandType: JSONEncodable {
-    func encode() -> [String : AnyObject] {
+    public func encode() -> [String : AnyObject] {
             return [TimerCommand.commandKey: rawValue]
     }
 }
 
 extension TimerCommandType: JSONDecodable {
     typealias ResultType = TimerCommandType
-    static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL?) -> Either<TimerCommandType, TimerError> {
+    public static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL? = nil) -> Either<TimerCommandType, TimerError> {
         // CCC, 1/4/2015. implement
         return Either.Right(Box(wrap: TimerError.Decoding("not yet implement")))
     }

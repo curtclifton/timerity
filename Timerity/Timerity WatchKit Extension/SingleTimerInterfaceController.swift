@@ -100,7 +100,7 @@ extension SingleTimerInterfaceController: MenuItemPresenter {
             // TODO: Do we need to get confirmation from the user before deleting?
             _clearCurrentTimer()
             popController()
-            timerDB.deleteTimer(timer)
+            timerDB.deleteTimer(timer, commandType: TimerCommandType.Delete)
         }
     }
 }

@@ -67,16 +67,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication!, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]!, reply: (([NSObject : AnyObject]!) -> Void)!) {
-        // CCC, 12/30/2014. See TimerCommand for userInfo values
-        // CCC, 12/10/2014. This schedules a notification, but we also have to handle the case where the app is foregrounded when the notification expires.
-//        let notification = UILocalNotification()
-//        let oneMinuteHence = NSDate().dateByAddingTimeInterval(60.0)
-//        notification.fireDate = oneMinuteHence
-//        notification.alertTitle = "Fire!"
-//        notification.alertBody = "Release all zigs"
-//        application.scheduleLocalNotification(notification)
-        
+        if let rawJSONData = userInfo as? [String: AnyObject] {
+            let maybeCommand = TimerCommand.decodeJSONData(rawJSONData)
+            switch maybeCommand {
+            case .Left(let commandBox):
+                let command = commandBox.unwrapped
+                switch command.commandType {
+                case .Local:
+                    assert(false, "shouldn't send local command to the iPhone app")
+                    break
+                case .Delete:
+                    timerDB.deleteTimer(command.timer, commandType: .Local)
+                    break
+                default:
+                    timerDB.updateTimer(command.timer, commandType: .Local)
+                    break
+                }
+                // CCC, 1/4/2015. Debugging
+                NSLog("updated iPhone database %@", timerDB.timers.description)
+                break
+            case .Right(let errorBox):
+                // CCC, 1/4/2015. implement error handling
+                break
+            }
+            // CCC, 12/10/2014. This schedules a notification, but we also have to handle the case where the app is foregrounded when the notification expires.
+            //        let notification = UILocalNotification()
+            //        let oneMinuteHence = NSDate().dateByAddingTimeInterval(60.0)
+            //        notification.fireDate = oneMinuteHence
+            //        notification.alertTitle = "Fire!"
+            //        notification.alertBody = "Release all zigs"
+            //        application.scheduleLocalNotification(notification)
+            
+        }
         // CCC, 1/4/2015.  just round-tripping the data to debug our encoding at the moment:
+        // CCC, 1/4/2015. this should be an error case
         let result: [NSObject: AnyObject] = userInfo
         reply(result)
     }

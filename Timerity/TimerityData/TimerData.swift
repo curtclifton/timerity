@@ -112,86 +112,97 @@ public class TimerData {
     
     public func updateTimer(var timer: Timer, commandType: TimerCommandType) {
         if let index = timerIndex[timer.id] {
-            let command = TimerCommand(commandType: commandType, timer: timer)
-            command.send()
-            // CCC, 1/4/2015. Let the write-back trigger the database and UI update. That is, most of this should happen on the iPhone app side.
-            if let timerTimer = timerTimers[index] {
-                timerTimer.invalidate()
-                timerTimers[index] = nil
-            }
-            switch timer.state {
-            case .Active(fireDate: let fireDate):
-                if fireDate.timeIntervalSinceNow < 0 {
-                    timer.reset()
-                } else {
-                    timerTimers[index] = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(index))
+            if commandType == .Local {
+                if let timerTimer = timerTimers[index] {
+                    timerTimer.invalidate()
+                    timerTimers[index] = nil
                 }
-                break;
-            default:
-                break;
-            }
-            timers[index] = timer
-            if let url = originalURL {
-                self.writeToURL(url)
-            }
-            _invokeCallbacks(timer: timer)
-        } else {
-            assert(commandType == .Add)
-            let command = TimerCommand(commandType: TimerCommandType.Add, timer: timer)
-            command.send()
-            // CCC, 1/4/2015. Let the write-back trigger the database and UI update. That is, most of this should happen on the iPhone app side.
-            // Add the new timer to the head of the list
-            switch timer.state {
-            case .Active(fireDate: let fireDate):
-                if fireDate.timeIntervalSinceNow < 0 {
-                    timer.reset()
-                } else {
-                    let timerTimer = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(0))
-                    var timerTimers: [Int: NSTimer] = [:]
-                    for oldIndex in self.timerTimers.keys {
-                        timerTimers[oldIndex + 1] = self.timerTimers[oldIndex]
+                switch timer.state {
+                case .Active(fireDate: let fireDate):
+                    if fireDate.timeIntervalSinceNow < 0 {
+                        timer.reset()
+                    } else {
+                        timerTimers[index] = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(index))
                     }
-                    timerTimers[0] = timerTimer
-                    self.timerTimers = timerTimers
+                    break
+                default:
+                    break
                 }
-                break;
-            default:
-                break;
+                timers[index] = timer
+                if let url = originalURL {
+                    self.writeToURL(url)
+                }
+                _invokeCallbacks(timer: timer)
+            } else {
+                let command = TimerCommand(commandType: commandType, timer: timer)
+                command.send()
+                // CCC, 1/4/2015. Need to update Watch timerTimers when we get a file coordination reload back
             }
-            let newIndex = timers.count
-            timers.insert(timer, atIndex: 0)
-            timerIndex = TimerData._rebuiltIndexForTimers(timers)
-            if let url = originalURL {
-                self.writeToURL(url)
+        } else {
+            // Unknown ID, so this is an Add operation
+            if commandType == .Local {
+                // Add the new timer to the head of the list
+                switch timer.state {
+                case .Active(fireDate: let fireDate):
+                    if fireDate.timeIntervalSinceNow < 0 {
+                        timer.reset()
+                    } else {
+                        let timerTimer = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(0))
+                        var timerTimers: [Int: NSTimer] = [:]
+                        for oldIndex in self.timerTimers.keys {
+                            timerTimers[oldIndex + 1] = self.timerTimers[oldIndex]
+                        }
+                        timerTimers[0] = timerTimer
+                        self.timerTimers = timerTimers
+                    }
+                    break
+                default:
+                    break
+                }
+                let newIndex = timers.count
+                timers.insert(timer, atIndex: 0)
+                timerIndex = TimerData._rebuiltIndexForTimers(timers)
+                if let url = originalURL {
+                    self.writeToURL(url)
+                }
+                _invokeDatabaseReloadCallbacks()
+            } else {
+                assert(commandType == .Add)
+                let command = TimerCommand(commandType: TimerCommandType.Add, timer: timer)
+                command.send()
+                // CCC, 1/4/2015. Need to update Watch timerTimers when we get a file coordination reload back
             }
-            _invokeDatabaseReloadCallbacks()
         }
     }
     
-    public func deleteTimer(timer: Timer) {
-        if let index = timerIndex[timer.id] {
+    public func deleteTimer(timer: Timer, commandType: TimerCommandType) {
+        if commandType == .Local {
+            if let index = timerIndex[timer.id] {
+                timers.removeAtIndex(index)
+                
+                if let timerTimer = self.timerTimers[index] {
+                    timerTimer.invalidate()
+                    self.timerTimers[index] = nil
+                }
+                var timerTimers: [Int: NSTimer] = [:]
+                for oldIndex in self.timerTimers.keys {
+                    if oldIndex >= index {
+                        timerTimers[oldIndex - 1] = self.timerTimers[oldIndex]
+                    }
+                }
+                self.timerTimers = timerTimers
+                
+                timerIndex = TimerData._rebuiltIndexForTimers(timers)
+                if let url = originalURL {
+                    self.writeToURL(url)
+                }
+                _invokeCallbacks(timer: timer, isDeleted: true)
+            }
+        } else {
+            assert(commandType == .Delete)
             let command = TimerCommand(commandType: TimerCommandType.Delete, timer: timer)
             command.send()
-            // CCC, 1/4/2015. Let the write-back trigger the database and UI update. That is, most of this should happen on the iPhone app side.
-            timers.removeAtIndex(index)
-
-            if let timerTimer = self.timerTimers[index] {
-                timerTimer.invalidate()
-                self.timerTimers[index] = nil
-            }
-            var timerTimers: [Int: NSTimer] = [:]
-            for oldIndex in self.timerTimers.keys {
-                if oldIndex >= index {
-                    timerTimers[oldIndex - 1] = self.timerTimers[oldIndex]
-                }
-            }
-            self.timerTimers = timerTimers
-
-            timerIndex = TimerData._rebuiltIndexForTimers(timers)
-            if let url = originalURL {
-                self.writeToURL(url)
-            }
-            _invokeCallbacks(timer: timer, isDeleted: true)
+            // CCC, 1/4/2015. Need to update Watch timerTimers when we get a file coordination reload back
         }
     }
     
@@ -282,7 +293,7 @@ public class TimerData {
 }
 
 extension TimerData: JSONEncodable {
-    func encode() -> [String : AnyObject] {
+    public func encode() -> [String : AnyObject] {
         let encodedTimers = timers.map() { $0.encode() }
         return [JSONKey.TimerData: encodedTimers]
     }
@@ -307,7 +318,7 @@ private extension Array {
 
 extension TimerData: JSONDecodable {
     typealias ResultType = TimerData
-    class func decodeJSONData(jsonData: [String:AnyObject], sourceURL: NSURL? = nil) -> Either<TimerData, TimerError> {
+    public class func decodeJSONData(jsonData: [String:AnyObject], sourceURL: NSURL? = nil) -> Either<TimerData, TimerError> {
         let maybeEncodedTimers: AnyObject? = jsonData[JSONKey.TimerData]
         if let encodedTimers = maybeEncodedTimers as? [[String: AnyObject]] {
             let maybeTimers = encodedTimers.emap() { Timer.decodeJSONData($0) }
