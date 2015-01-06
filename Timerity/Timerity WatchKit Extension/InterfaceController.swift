@@ -12,6 +12,11 @@ import WatchKit
 
 let MaxRows = 20
 
+struct TimerityColors {
+    static let ThemeColor = UIColor(hue: 108.0/360.0, saturation: 0.69, brightness: 1.0, alpha: 1.0)
+    static let TextColor = UIColor.whiteColor()
+}
+
 struct InterfaceControllerIdentifier {
     static let AllTimersController = "AllTimersController"
     static let SingleTimerController = "SingleTimerController"

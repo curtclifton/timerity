@@ -404,7 +404,7 @@ public class TimerData {
         switch timer.state {
         case .Active(fireDate: let fireDate):
             if fireDate.timeIntervalSinceNow < 0 {
-                timer.reset() // CCC, 1/5/2015. should really move to the Completed state
+                timer.complete()
             }
         default:
             break
@@ -445,8 +445,7 @@ public class TimerData {
                 switch strongSelf._timer(identifier: identifier) {
                 case .Left(let currentTimerBox):
                     var currentTimer = currentTimerBox.unwrapped
-                    // CCC, 1/5/2015. Instead of resetting, we should really move to a Completed state, in which the timer's single button would be Reset
-                    currentTimer.reset()
+                    currentTimer.complete()
                      // We only replace locally even in the watch extension. We count on the database on the other side to stop its own active timers. Any subsequent actions will synchronize these timers.
                     strongSelf.updateTimer(currentTimer, commandType: TimerCommandType.Local)
                 case .Right(let errorBox):

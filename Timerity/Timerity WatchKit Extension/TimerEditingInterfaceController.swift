@@ -154,7 +154,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
         var color: UIColor {
             switch self {
             case .Hours:
-                return UIColor(hue: 108.0/360.0, saturation: 0.69, brightness: 1.0, alpha: 1.0)
+                return TimerityColors.ThemeColor
             case .Minutes:
                 return UIColor(hue: 220.0/360.0, saturation: 0.69, brightness: 1.0, alpha: 1.0)
             case .Seconds:

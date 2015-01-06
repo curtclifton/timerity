@@ -42,6 +42,7 @@ public enum TimerState {
     case Active(fireDate: NSDate)
     case Paused(timeRemaining: Duration)
     case Inactive
+    case Completed
 }
 
 public struct Timer {
@@ -52,6 +53,7 @@ public struct Timer {
 
     var isActive: Bool = false
     var isPaused: Bool = false
+    var isCompleted: Bool = false
 
     var timeRemaining: Duration = Duration()
     var fireDate: NSDate?
@@ -62,6 +64,8 @@ public struct Timer {
             return TimerState.Active(fireDate: fireDate!)
         } else if isPaused {
             return TimerState.Paused(timeRemaining: timeRemaining)
+        } else if isCompleted {
+            return TimerState.Completed
         } else {
             return TimerState.Inactive
         }
@@ -83,26 +87,34 @@ public struct Timer {
         self.duration = Duration(seconds: durationInSeconds)
         self.id = id
         self.lastModified = lastModified
+        // CCC, 1/5/2015. Hrmm. Should probably just store the state, eh?
         switch state {
         case .Active(fireDate: let fireDate):
             if fireDate.timeIntervalSinceNow < 0 {
-                // already expired so make inactive
+                // already expired so make completed
                 isActive = false
                 isPaused = false
+                isCompleted = true
             } else {
                 isActive = true
                 isPaused = false
+                isCompleted = false
                 self.fireDate = fireDate
             }
-            break
         case .Paused(timeRemaining: let timeRemaining):
             isActive = false
             isPaused = true
+            isCompleted = false
             self.timeRemaining = timeRemaining
             break
+        case .Completed:
+            isActive = false
+            isPaused = false
+            isCompleted = true
         case .Inactive:
             isActive = false
             isPaused = false
+            isCompleted = false
             break
         }
     }
@@ -112,25 +124,28 @@ public struct Timer {
         assert(!isPaused && !isActive)
         isActive = true
         isPaused = false
+        isCompleted = false
         fireDate = NSDate(timeIntervalSinceNow: duration.seconds)
         timeRemaining = duration
         _justModified()
     }
     
     public mutating func resume() {
-        assert(isPaused && !isActive)
+        assert(isPaused && !isActive && !isCompleted)
         isActive = true
         isPaused = false
+        isCompleted = false
         fireDate = NSDate(timeIntervalSinceNow: timeRemaining.seconds)
         timeRemaining = Duration()
         _justModified()
     }
     
     public mutating func pause() {
-        assert(!isPaused && isActive)
+        assert(!isPaused && isActive && !isCompleted)
         let timeUntilFireDate = fireDate!.timeIntervalSinceNow
         isActive = false
         isPaused = true
+        isCompleted = false
         fireDate = nil
         timeRemaining = Duration(seconds: timeUntilFireDate)
         _justModified()
@@ -139,6 +154,16 @@ public struct Timer {
     public mutating func reset() {
         isActive = false
         isPaused = false
+        isCompleted = false
+        fireDate = nil
+        timeRemaining = Duration()
+        _justModified()
+    }
+    
+    public mutating func complete() {
+        isActive = false
+        isPaused = false
+        isCompleted = true
         fireDate = nil
         timeRemaining = Duration()
         _justModified()
@@ -206,15 +231,14 @@ extension Timer: JSONEncodable {
             "lastModified": NSNumber(double: lastModified.timeIntervalSince1970),
             "isActive": NSNumber(bool: isActive),
             "isPaused": NSNumber(bool: isPaused),
+            "isCompleted": NSNumber(bool: isCompleted),
         ]
         switch state {
         case .Active(fireDate: let fireDate):
             informationDictionary["fireDate"] = NSNumber(double: fireDate.timeIntervalSince1970)
-            break
         case .Paused(timeRemaining: let timeRemaining):
             informationDictionary["timeRemaining"] = NSNumber(double: timeRemaining.seconds)
-            break
-        case .Inactive:
+        case .Inactive, .Completed:
             break
         }
         return [JSONKey.Timer: informationDictionary]
@@ -240,27 +264,31 @@ extension Timer: JSONDecodable {
                             if let isActiveNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
                                 lastCheckedProperty = "isPaused"
                                 if let isPausedNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
-                                    let isActive = isActiveNumber.boolValue
-                                    let isPaused = isPausedNumber.boolValue
-                                    switch (isActive, isPaused) {
-                                    case (true, true):
-                                        return Either.Right(Box(wrap: TimerError.Decoding("unexpected timer state, cannot be both active and paused")))
-                                    case (true, false):
-                                        lastCheckedProperty = "fireDate"
-                                        if let fireDateNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
-                                            return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Active(fireDate: NSDate(timeIntervalSince1970: fireDateNumber.doubleValue)))))
+                                    lastCheckedProperty = "isCompleted"
+                                    if let isCompletedNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
+                                        let isActive = isActiveNumber.boolValue
+                                        let isPaused = isPausedNumber.boolValue
+                                        let isCompleted = isCompletedNumber.boolValue
+                                        switch (isActive, isPaused, isCompleted) {
+                                        case (true, false, false):
+                                            lastCheckedProperty = "fireDate"
+                                            if let fireDateNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
+                                                return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Active(fireDate: NSDate(timeIntervalSince1970: fireDateNumber.doubleValue)))))
+                                            }
+                                        case (false, true, false):
+                                            lastCheckedProperty = "timeRemaining"
+                                            if let timeRemainingNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
+                                                return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Paused(timeRemaining: Duration(seconds: timeRemainingNumber.doubleValue)))))
+                                            }
+                                        case (false, false, true):
+                                            return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Completed)))
+                                        case (false, false, false):
+                                            return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Inactive)))
+                                        default:
+                                            return Either.Right(Box(wrap: TimerError.Decoding("unexpected timer state, cannot be more than one of active, paused, and completed")))
                                         }
-                                        break
-                                    case (false, true):
-                                        lastCheckedProperty = "timeRemaining"
-                                        if let timeRemainingNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
-                                            return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Paused(timeRemaining: Duration(seconds: timeRemainingNumber.doubleValue)))))
-                                        }
-                                        break
-                                    default:
-                                        return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Inactive)))
                                     }
-                                }
+                            }
                             }
                         }
                     }
@@ -299,9 +327,10 @@ public func ==(lhs: Timer, rhs:Timer) -> Bool {
     let sameID = lhs.id == rhs.id
     let sameActive = lhs.isActive == rhs.isActive
     let samePause = lhs.isPaused == rhs.isPaused
+    let sameCompleted = lhs.isCompleted == rhs.isCompleted
     let sameTimeRemaining = lhs.timeRemaining == rhs.timeRemaining
     let sameLastModified = lhs.lastModified.compare(rhs.lastModified) == NSComparisonResult.OrderedSame
-    return (sameName && sameDuration && sameID && sameActive && samePause && sameTimeRemaining && sameLastModified)
+    return (sameName && sameDuration && sameID && sameActive && samePause && sameCompleted && sameTimeRemaining && sameLastModified)
 }
 
 //MARK: Printable, DebugPrintable extensions

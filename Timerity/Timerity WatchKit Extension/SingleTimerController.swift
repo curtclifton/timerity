@@ -76,17 +76,20 @@ class SingleTimerController {
         if var timer = self.timer {
             switch timer.state {
             case .Active(fireDate: let fireDate):
-                countdownTimer.stop() // the countdown will be removed by the callback, but lets not let the count drop below the cached time remaining
+                countdownTimer.stop() // the countdown will be hidden by a callback, but lets not let the count drop below the cached time remaining
                 timer.pause()
-                timerDB.updateTimer(timer, commandType: TimerCommandType.Pause) // triggers a callback that updates the UI
+                timerDB.updateTimer(timer, commandType: TimerCommandType.Pause)
                 break
             case .Paused(timeRemaining: let timeRemaining):
                 timer.resume()
-                timerDB.updateTimer(timer, commandType: TimerCommandType.Resume) // triggers a callback that updates the UI
+                timerDB.updateTimer(timer, commandType: TimerCommandType.Resume)
                 break
+            case .Completed:
+                timer.reset()
+                timerDB.updateTimer(timer, commandType: TimerCommandType.Reset)
             case .Inactive:
                 timer.start()
-                timerDB.updateTimer(timer, commandType: TimerCommandType.Start) // triggers a callback that updates the UI
+                timerDB.updateTimer(timer, commandType: TimerCommandType.Start)
                 break
             }
         }
@@ -107,27 +110,37 @@ class SingleTimerController {
             nameLabel.setText(timer.name)
             switch timer.state {
             case .Active(fireDate: let fireDate):
+                nameLabel.setTextColor(TimerityColors.TextColor)
                 countdownTimer.setDate(fireDate)
                 countdownTimer.start()
                 totalTimeLabel.setHidden(true)
                 countdownTimer.setHidden(false)
                 button?.setTitle(NSLocalizedString("Pause", comment: "pause button label"))
                 button?.setHidden(false)
-                break
             case .Paused(timeRemaining: let timeRemaining):
+                nameLabel.setTextColor(TimerityColors.TextColor)
                 totalTimeLabel.setText(timeRemaining.formattedString)
                 totalTimeLabel.setHidden(false)
+                totalTimeLabel.setTextColor(TimerityColors.TextColor)
                 countdownTimer.setHidden(true)
                 button?.setTitle(NSLocalizedString("Resume", comment: "resume button label"))
                 button?.setHidden(false)
-                break
+            case .Completed:
+                nameLabel.setTextColor(TimerityColors.ThemeColor)
+                totalTimeLabel.setText(Duration().formattedString)
+                totalTimeLabel.setHidden(false)
+                totalTimeLabel.setTextColor(TimerityColors.ThemeColor)
+                countdownTimer.setHidden(true)
+                button?.setTitle(NSLocalizedString("Reset", comment: "reset button label"))
+                button?.setHidden(false)
             case .Inactive:
+                nameLabel.setTextColor(TimerityColors.TextColor)
                 totalTimeLabel.setText(timer.duration.formattedString)
                 totalTimeLabel.setHidden(false)
+                totalTimeLabel.setTextColor(TimerityColors.TextColor)
                 countdownTimer.setHidden(true)
                 button?.setTitle(NSLocalizedString("Start", comment: "start button label"))
                 button?.setHidden(false)
-                break
             }
             menuItemPresenter?.configureMenuForState(timer.state)
         } else {

@@ -65,17 +65,15 @@ extension SingleTimerInterfaceController: MenuItemPresenter {
     func configureMenuForState(timerState: TimerState) {
         clearAllMenuItems()
         switch timerState {
-        case .Active:
+        case .Active, .Completed:
             // no menu items here
             // TODO: Is this OK? We'll train users that the menu is unreliable. Maybe allow reset when active also? Maybe alway include all the buttons? Add Restart? (Leaving with dynamic menus for demonstration purposes.)
             break
         case .Paused:
             addMenuItemWithItemIcon(WKMenuItemIcon.Decline, title: NSLocalizedString("Reset Timer", comment: "reset timer menu item title"), action: "resetMenuItemPressed")
-            break
         case .Inactive:
             addMenuItemWithItemIcon(WKMenuItemIcon.Info, title: NSLocalizedString("Edit Timer", comment: "edit timer menu item title"), action: "editMenuItemPressed")
             addMenuItemWithItemIcon(WKMenuItemIcon.Trash, title: NSLocalizedString("Delete Timer", comment: "delete timer menu item title"), action: "deleteMenuItemPressed")
-            break
         }
     }
     
