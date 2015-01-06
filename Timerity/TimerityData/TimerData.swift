@@ -193,12 +193,12 @@ public class TimerDataPresenter: NSObject, NSFilePresenter {
 
 /// Mutable timer database.
 public class TimerData {
-    private var _backingTimers: [Timer] = []
+    private(set) public var timers: [Timer] = []
 
     /// maps timer IDs to indices in the timers array
     private var timerIndex: [String: Int] = [:]
-    /// A sparse "array" of NSTimer instances counting down with the active timers, used to update timer state when timers expire.
-    private var timerTimers: [Int: NSTimer] = [:]
+    /// Maps timer IDs to NSTimer instances counting down with the active timers, used to update timer state when timers expire.
+    private var timerTimers: [String: NSTimer] = [:]
     
     private var nextCallbackID = 0
     private var callbacksByCallbackID: [Int: TimerChangeCallback] = [:]
@@ -207,21 +207,14 @@ public class TimerData {
     
     //MARK: - Initialization
     private init(timers: [Timer]) {
-        self.timers = timers
-        for (index, timer) in enumerate(timers) {
-            switch timer.state {
-            case .Active(fireDate: let fireDate):
-                if fireDate.timeIntervalSinceNow < 0 {
-                    // Oops. Already expired. Since no call-backs can be registered yet, just reset the timer.
-                    self.timers[index].reset()
-                } else {
-                    timerTimers[index] = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(index))
-                }
-                break
-            default:
-                break
-            }
+        self.timers = timers.map() { timer in
+            // CCC, 1/5/2015. This is unnecessary when deserializing a temporary instance just for extracting timers sent from the iPhone app. The timers will be completed when integrated
+            let result = self._completeTimerIfNecessary(timer)
+            // CCC, 1/5/2015. This is really expensive when deserializing a temporary instance just for extracting timers sent from the iPhone app!
+            self._scheduleTimerExpirationTimerForTimerIfNecessary(timer)
+            return result
         }
+        timerIndex = TimerData._rebuiltIndexForTimers(timers)
     }
     
     public convenience init() {
@@ -229,83 +222,72 @@ public class TimerData {
     }
 
     //MARK: - Public API
-    private(set) public var timers: [Timer] {
-        get {
-            return _backingTimers
+    public func replaceTimers(newValue: [Timer]) {
+        let newTimers = newValue.map() { self._completeTimerIfNecessary($0) }
+        if timers.isEmpty {
+            timers = newTimers
+            timerIndex = TimerData._rebuiltIndexForTimers(timers)
+            return
         }
-        set(newTimers) {
-            if _backingTimers.isEmpty {
-                _backingTimers = newTimers
-                timerIndex = TimerData._rebuiltIndexForTimers(_backingTimers)
-                return
-            }
-
-            // iterate over the new timers, replacing any existing ones, accumulating new ones, and calculating deleted ones (i.e., those missing from newTimers)
-            var oldTimersIndex = timerIndex
-            var changedTimers: [Timer] = []
-            var addedTimers: [Timer] = []
-            for newTimer in newTimers {
-                let maybeOldIndex = oldTimersIndex[newTimer.id]
-                if let oldIndex = maybeOldIndex {
-                    let unchanged = _backingTimers[oldIndex] == newTimer
-                    if !unchanged {
-                        _backingTimers[oldIndex] = newTimer
-                        changedTimers.append(newTimer)
-                    }
-                    oldTimersIndex[newTimer.id] = nil
-                } else {
-                    addedTimers.append(newTimer)
+        
+        // iterate over the new timers, replacing any existing ones, accumulating new ones, and calculating deleted ones (i.e., those missing from newTimers)
+        var oldTimersIndex = timerIndex
+        var changedTimers: [Timer] = []
+        var addedTimers: [Timer] = []
+        for newTimer in newTimers {
+            let maybeOldIndex = oldTimersIndex[newTimer.id]
+            if let oldIndex = maybeOldIndex {
+                let unchanged = timers[oldIndex] == newTimer
+                if !unchanged {
+                    _invalidateTimerExpirationTimerForTimerIfNecessary(newTimer)
+                    timers[oldIndex] = newTimer
+                    _scheduleTimerExpirationTimerForTimerIfNecessary(newTimer)
+                    changedTimers.append(newTimer)
                 }
+                oldTimersIndex[newTimer.id] = nil
+            } else {
+                addedTimers.append(newTimer)
             }
-            
-            let indexesOfTimersToDelete = [Int](oldTimersIndex.values).sorted(>)
-            var deletedTimers: [Timer] = []
-            for index in indexesOfTimersToDelete {
-                let deletedTimer = _backingTimers[index]
-                _backingTimers.removeAtIndex(index)
-                deletedTimers.append(deletedTimer)
-            }
-            
-            addedTimers.sort() { leftTimer, rightTimer in
-                return leftTimer.lastModified.compare(rightTimer.lastModified) == NSComparisonResult.OrderedDescending
-            }
-            _backingTimers.splice(addedTimers, atIndex: 0)
-            
-            timerIndex = TimerData._rebuiltIndexForTimers(_backingTimers)
-            // CCC, 1/5/2015. fix timerTimers
-            
-            if !addedTimers.isEmpty {
-                _invokeDatabaseReloadCallbacks()
-            }
-            for timer in changedTimers {
-                _invokeCallbacks(timer: timer, isDeleted: false)
-            }
-            for timer in deletedTimers {
-                _invokeCallbacks(timer: timer, isDeleted: true)
-            }
+        }
+        
+        let indexesOfTimersToDelete = [Int](oldTimersIndex.values).sorted(>)
+        var deletedTimers: [Timer] = []
+        for index in indexesOfTimersToDelete {
+            let deletedTimer = timers[index]
+            _invalidateTimerExpirationTimerForTimerIfNecessary(deletedTimer)
+            timers.removeAtIndex(index)
+            deletedTimers.append(deletedTimer)
+        }
+        
+        addedTimers.sort() { leftTimer, rightTimer in
+            return leftTimer.lastModified.compare(rightTimer.lastModified) == NSComparisonResult.OrderedDescending
+        }
+        timers.splice(addedTimers, atIndex: 0)
+        for timer in addedTimers {
+            _scheduleTimerExpirationTimerForTimerIfNecessary(timer)
+        }
+        
+        timerIndex = TimerData._rebuiltIndexForTimers(timers)
+        
+        if !addedTimers.isEmpty {
+            _invokeDatabaseReloadCallbacks()
+        }
+        for timer in changedTimers {
+            _invokeCallbacks(timer: timer, isDeleted: false)
+        }
+        for timer in deletedTimers {
+            _invokeCallbacks(timer: timer, isDeleted: true)
         }
     }
-    
+
     //MARK: Mutation
     public func updateTimer(var timer: Timer, commandType: TimerCommandType) {
         if let index = timerIndex[timer.id] {
             if commandType == .Local {
-                if let timerTimer = timerTimers[index] {
-                    timerTimer.invalidate()
-                    timerTimers[index] = nil
-                }
-                switch timer.state {
-                case .Active(fireDate: let fireDate):
-                    if fireDate.timeIntervalSinceNow < 0 {
-                        timer.reset()
-                    } else {
-                        timerTimers[index] = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(index))
-                    }
-                    break
-                default:
-                    break
-                }
+                _invalidateTimerExpirationTimerForTimerIfNecessary(timer)
+                timer = _completeTimerIfNecessary(timer)
                 timers[index] = timer
+                _scheduleTimerExpirationTimerForTimerIfNecessary(timer)
                 _invokeCallbacks(timer: timer)
             } else {
                 let command = TimerCommand(commandType: commandType, timer: timer)
@@ -315,26 +297,10 @@ public class TimerData {
             // Unknown ID, so this is an Add operation
             if commandType == .Local {
                 // Add the new timer to the head of the list
-                switch timer.state {
-                case .Active(fireDate: let fireDate):
-                    if fireDate.timeIntervalSinceNow < 0 {
-                        timer.reset()
-                    } else {
-                        let timerTimer = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForIndex(0))
-                        var timerTimers: [Int: NSTimer] = [:]
-                        for oldIndex in self.timerTimers.keys {
-                            timerTimers[oldIndex + 1] = self.timerTimers[oldIndex]
-                        }
-                        timerTimers[0] = timerTimer
-                        self.timerTimers = timerTimers
-                    }
-                    break
-                default:
-                    break
-                }
-                let newIndex = timers.count
+                timer = _completeTimerIfNecessary(timer)
                 timers.insert(timer, atIndex: 0)
                 timerIndex = TimerData._rebuiltIndexForTimers(timers)
+                _scheduleTimerExpirationTimerForTimerIfNecessary(timer)
                 _invokeDatabaseReloadCallbacks()
             } else {
                 assert(commandType == .Add)
@@ -347,20 +313,8 @@ public class TimerData {
     public func deleteTimer(timer: Timer, commandType: TimerCommandType) {
         if commandType == .Local {
             if let index = timerIndex[timer.id] {
+                _invalidateTimerExpirationTimerForTimerIfNecessary(timer)
                 timers.removeAtIndex(index)
-                
-                if let timerTimer = self.timerTimers[index] {
-                    timerTimer.invalidate()
-                    self.timerTimers[index] = nil
-                }
-                var timerTimers: [Int: NSTimer] = [:]
-                for oldIndex in self.timerTimers.keys {
-                    if oldIndex >= index {
-                        timerTimers[oldIndex - 1] = self.timerTimers[oldIndex]
-                    }
-                }
-                self.timerTimers = timerTimers
-                
                 timerIndex = TimerData._rebuiltIndexForTimers(timers)
                 _invokeCallbacks(timer: timer, isDeleted: true)
             }
@@ -446,12 +400,58 @@ public class TimerData {
         }
     }
     
-    private func _timerExpirationHandlerForIndex(index: Int) -> (NSTimer! -> Void) {
+    private func _completeTimerIfNecessary(var timer: Timer) -> Timer {
+        switch timer.state {
+        case .Active(fireDate: let fireDate):
+            if fireDate.timeIntervalSinceNow < 0 {
+                timer.reset() // CCC, 1/5/2015. should really move to the Completed state
+            }
+        default:
+            break
+        }
+        return timer
+    }
+    
+    private func _invalidateTimerExpirationTimerForTimerIfNecessary(timer: Timer) {
+        NSLog("invalidating timer timer for timer %@", timer.id)
+        if let timerTimer = timerTimers[timer.id] {
+            timerTimer.invalidate()
+            timerTimers[timer.id] = nil
+            NSLog("invalidated");
+        }
+    }
+    
+    private func _scheduleTimerExpirationTimerForTimerIfNecessary(timer: Timer) {
+        NSLog("maybe scheduling timer timer for timer %@", timer.id)
+        if let timerTimer = timerTimers[timer.id] {
+            NSLog("timerTimers[timer.id] = %@", timerTimer)
+            assert(false, "call _invalidateTimerExpirationTimerForTimerIfNecessary first")
+        }
+        switch timer.state {
+        case .Active(fireDate: let fireDate):
+            NSLog("actually scheduling timer timer for timer %@", timer.id)
+            let timerTimer = NSTimer.scheduledTimerWithFireDate(fireDate, handler: _timerExpirationHandlerForTimerWithIdentifier(timer.id))
+            NSLog("current time: %@", NSDate());
+            NSLog("timer timer fire date: %@", timerTimer.fireDate);
+            timerTimers[timer.id] = timerTimer
+        default:
+            break
+        }
+    }
+    
+    private func _timerExpirationHandlerForTimerWithIdentifier(identifier: String) -> (NSTimer! -> Void) {
         return { [weak self] scheduledTimer in
             if let strongSelf = self {
-                var currentTimer = strongSelf.timers[index]
-                currentTimer.reset()
-                strongSelf.updateTimer(currentTimer, commandType: TimerCommandType.Reset)
+                switch strongSelf._timer(identifier: identifier) {
+                case .Left(let currentTimerBox):
+                    var currentTimer = currentTimerBox.unwrapped
+                    // CCC, 1/5/2015. Instead of resetting, we should really move to a Completed state, in which the timer's single button would be Reset
+                    currentTimer.reset()
+                     // We only replace locally even in the watch extension. We count on the database on the other side to stop its own active timers. Any subsequent actions will synchronize these timers.
+                    strongSelf.updateTimer(currentTimer, commandType: TimerCommandType.Local)
+                case .Right(let errorBox):
+                    NSLog("Error on timer expiration: %@", errorBox.unwrapped.description);
+                }
             }
         }
     }
@@ -465,7 +465,7 @@ public class TimerData {
                     let newTimerDataOrError = TimerData.decodeJSONData(jsonDataBox.unwrapped)
                     switch newTimerDataOrError {
                     case .Left(let newTimerDataBox):
-                        strongSelf.timers = newTimerDataBox.unwrapped.timers
+                        strongSelf.replaceTimers(newTimerDataBox.unwrapped.timers)
                     case .Right(let errorBox):
                         NSLog("Error decoding JSON data from iPhone: %@", errorBox.unwrapped.description);
                     }
