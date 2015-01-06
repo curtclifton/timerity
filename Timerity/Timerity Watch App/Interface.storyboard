@@ -155,10 +155,20 @@
         <!--Glance Interface Controller-->
         <scene sceneID="BOz-TT-tkC">
             <objects>
-                <glanceController spacing="0.0" id="0uZ-2p-rRc" customClass="GlanceController" customModule="Timerity_Watch_App" customModuleProvider="target">
+                <glanceController spacing="0.0" topTemplateType="body3" bottomTemplateType="largeBody1Group" id="0uZ-2p-rRc" customClass="GlanceController" customModule="Timerity_Watch_App" customModuleProvider="target">
                     <items>
-                        <group alignment="left" id="t8f-Gd-c4y"/>
-                        <group alignment="left" id="uCw-4Q-Ouw"/>
+                        <label alignment="left" text="Timerity" id="cb0-Oc-9sT">
+                            <color key="textColor" red="0.44484919309999998" green="1" blue="0.31143206359999998" alpha="1" colorSpace="calibratedRGB"/>
+                        </label>
+                        <label alignment="left" text="Tea" id="saN-ZK-JeE"/>
+                        <label alignment="left" text="1m 19s" id="8V6-Ok-VSq"/>
+                        <group alignment="left" id="WBU-pt-9p7">
+                            <items>
+                                <label alignment="left" text="and 3 other timers" id="nEj-iI-XtI">
+                                    <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
+                                </label>
+                            </items>
+                        </group>
                     </items>
                     <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="14"/>
                 </glanceController>
@@ -172,7 +182,10 @@
                     <items>
                         <label alignment="left" text="Alert Label" id="XkS-y5-khE"/>
                     </items>
-                    <notificationCategory key="notificationCategory" id="JfB-70-Muf"/>
+                    <notificationCategory key="notificationCategory" id="JfB-70-Muf">
+                        <color key="titleColor" red="0.44484919309999998" green="1" blue="0.31143206359999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="sashColor" red="0.24313344061374664" green="0.24312615394592285" blue="0.24313029646873474" alpha="1" colorSpace="calibratedRGB"/>
+                    </notificationCategory>
                     <connections>
                         <outlet property="notificationAlertLabel" destination="XkS-y5-khE" id="49B-RR-99y"/>
                         <segue destination="gdX-wl-uQE" kind="relationship" relationship="dynamicNotificationInterface" id="fKh-qV-3T2"/>
