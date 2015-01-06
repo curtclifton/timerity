@@ -13,6 +13,8 @@ public enum TimerError {
     case Decoding(String)
     case FileError(NSError)
     case DeserializationError(NSError)
+    case InterprocessCommunicationFormatError(String)
+    case InterprocessCommunicationError(NSError)
 }
 
 extension TimerError: Printable, DebugPrintable {
@@ -26,6 +28,10 @@ extension TimerError: Printable, DebugPrintable {
             return "File error: \(error)"
         case .DeserializationError(let error):
             return "Deserialization error: \(error)"
+        case .InterprocessCommunicationFormatError(let string):
+            return "Interprocess communication format error: \(string)"
+        case .InterprocessCommunicationError(let error):
+            return "Interprocess communication error: \(error)"
         }
     }
     

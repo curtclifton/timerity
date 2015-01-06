@@ -21,15 +21,20 @@ public struct TimerCommand {
     public let commandType: TimerCommandType
     public let timer: Timer
     
-    public func send() {
-        WKInterfaceController.openParentApplication(self.encodeToJSONData()) { result, error in
-            if result != nil {
-                NSLog("got callback with result: “%@”", result)
-            }
-            if error != nil {
+    public func sendWithContinuation(continuation: (Either<[String: AnyObject], TimerError> -> Void)) {
+        WKInterfaceController.openParentApplication(self.encodeToJSONData()) { maybeResult, maybeError in
+            if let jsonResult = maybeResult as? [String: AnyObject] {
+                NSLog("got callback with JSON result: “%@”", jsonResult)
+                continuation(Either.Left(Box(wrap: jsonResult)))
+            } else if maybeResult != nil {
+                NSLog("got callback with non-JSON result: “%@”", maybeResult!)
+                continuation(Either.Right(Box(wrap: TimerError.InterprocessCommunicationFormatError("expected JSON, got \(maybeResult)"))))
+            } else if let error = maybeError {
                 NSLog("got callback with error: “%@”", error)
+                continuation(Either.Right(Box(wrap: TimerError.InterprocessCommunicationError(error))))
+            } else {
+                assert(false, "how could this happen?")
             }
-            // CCC, 12/30/2014. implement
         }
     }
 }

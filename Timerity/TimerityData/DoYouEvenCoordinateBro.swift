@@ -104,7 +104,7 @@ extension DoYouEvenCoordinateBro: NSFilePresenter {
     }
     
     public func relinquishPresentedItemToReader(reader: ((() -> Void)!) -> Void) {
-        // CCC, 1/4/2015. implement
+        // TODO: implement
         NSLog("relinquishing to reader")
         reader() {
             // anything?
@@ -113,16 +113,11 @@ extension DoYouEvenCoordinateBro: NSFilePresenter {
     }
     
     public func relinquishPresentedItemToWriter(writer: ((() -> Void)!) -> Void) {
-        // CCC, 1/4/2015. implement
+        // TODO: implement
         NSLog("relinquishing to writer")
         writer() {
-            // CCC, 1/4/2015. need to reload the contents of the file and send appropriate callbacks. probably should kick over to the main queue to do that
+            // anything?
             NSLog("writer is done")
         }
-    }
-    
-    public func presentedItemDidChange() {
-        // CCC, 1/4/2015. not sure we need this because we should always get relinquishPresentedItemToWriter (the file is in our sandbox and we're using file coordination in both processes
-        NSLog("presentedItemDidChange")
     }
 }

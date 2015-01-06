@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerUserNotificationSettings(settings)
         // Override point for customization after application launch.
         
-        // CCC, 1/4/2015. testing
+        updateNotifications()
         NSLog("In application did finish launching, timers: %@", timerDB.timers.description)
         // TODO: remove file coordination demo code:
         // dyecb = DoYouEvenCoordinateBro()
@@ -72,7 +72,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //        dyecb.text = "Here I come to save the day!"
         //        dyecb.write()
         
-        // CCC, 1/4/2015. Can we get here without getting didFinishLaunching…? Better make sure the database is spun up in any case
         NSLog("handling extension request with timers: %@", timerDB.timers.description)
         NSLog("request: %@", userInfo)
         if let rawJSONData = userInfo as? [String: AnyObject] {
@@ -89,25 +88,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     break
                 default:
                     timerDB.updateTimer(command.timer, commandType: .Local)
+                    updateNotificationsForTimer(command.timer)
                     break
                 }
 
                 timerDataPresenter.write()
-                NSLog("updated iPhone database %@", timerDB.timers.description)
-                // CCC, 1/5/2015. serialize the TimerData and send it back as the result
+                NSLog("updated iPhone database %@", timerDB.description)
+                
+                // TODO: Our data set is small enough to just send it all back in the reply. For a larger data set, we might want to tell the watch extension to re-read from the file.
+                let updatedDB = timerDB.encodeToJSONData()
+                let result = updatedDB as [NSObject: AnyObject]
+                reply(result)
+                return
             case .Right(let errorBox):
                 // CCC, 1/4/2015. implement error handling
                 NSLog("error decoding command from watch extension: %@", errorBox.unwrapped.description)
             }
-            // CCC, 12/10/2014. Schedule a notification.
-            // CCC, 1/5/2015. We also have to handle the case where the app is foregrounded when the notification expires.
-            //        let notification = UILocalNotification()
-            //        let oneMinuteHence = NSDate().dateByAddingTimeInterval(60.0)
-            //        notification.fireDate = oneMinuteHence
-            //        notification.alertTitle = "Fire!"
-            //        notification.alertBody = "Release all zigs"
-            //        application.scheduleLocalNotification(notification)
-            
         }
         // CCC, 1/4/2015.  just round-tripping the data to debug our encoding at the moment:
         // CCC, 1/4/2015. this should be an error case
@@ -115,5 +111,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let result: [NSObject: AnyObject] = userInfo
         reply(result)
     }
+    
+    private func updateNotificationsForTimer(timer: Timer) {
+        // CCC, 1/5/2015. implement
+        //        let notification = UILocalNotification()
+        //        let oneMinuteHence = NSDate().dateByAddingTimeInterval(60.0)
+        //        notification.fireDate = oneMinuteHence
+        //        notification.alertTitle = "Fire!"
+        //        notification.alertBody = "Release all zigs"
+        //        application.scheduleLocalNotification(notification)
+    }
+    
+    private func updateNotifications() {
+        // CCC, 12/10/2014. implement
+    }
+    
+    // CCC, 1/5/2015. Handle the case where the app is foregrounded when a notification expires.
 }
 

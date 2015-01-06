@@ -24,6 +24,17 @@ public enum Either<T,U> {
     case Right(Box<U>)
 }
 
+extension Either: Printable {
+    public var description: String {
+        switch self {
+        case .Left(let tBox):
+            return "Left: \(tBox.unwrapped)"
+        case .Right(let uBox):
+            return "Right: \(uBox.unwrapped)"
+        }
+    }
+}
+
 public typealias TimerChangeCallback = Timer? -> ()
 
 public struct TimerChangeCallbackID {
@@ -76,14 +87,9 @@ public class TimerDataPresenter: NSObject, NSFilePresenter {
         // CCC, 1/4/2015. implement
         NSLog("relinquishing to writer")
         writer() {
-            // CCC, 1/4/2015. need to reload the contents of the file and send appropriate callbacks. probably should kick over to the main queue to do that
+            // anything?
             NSLog("writer is done")
         }
-    }
-    
-    public func presentedItemDidChange() {
-        // CCC, 1/4/2015. not sure we need this because we should always get relinquishPresentedItemToWriter (the file is in our sandbox and we're using file coordination in both processes
-        NSLog("presentedItemDidChange")
     }
 
     //MARK: - Public API
@@ -247,8 +253,7 @@ public class TimerData {
                 _invokeCallbacks(timer: timer)
             } else {
                 let command = TimerCommand(commandType: commandType, timer: timer)
-                command.send()
-                // CCC, 1/4/2015. Need to update Watch timerTimers when we get a file coordination reload back
+                command.sendWithContinuation(_commandSentContinuation())
             }
         } else {
             // Unknown ID, so this is an Add operation
@@ -278,8 +283,7 @@ public class TimerData {
             } else {
                 assert(commandType == .Add)
                 let command = TimerCommand(commandType: TimerCommandType.Add, timer: timer)
-                command.send()
-                // CCC, 1/4/2015. Need to update Watch timerTimers when we get a file coordination reload back
+                command.sendWithContinuation(_commandSentContinuation())
             }
         }
     }
@@ -307,8 +311,7 @@ public class TimerData {
         } else {
             assert(commandType == .Delete)
             let command = TimerCommand(commandType: TimerCommandType.Delete, timer: timer)
-            command.send()
-            // CCC, 1/4/2015. Need to update Watch timerTimers when we get a file coordination reload back
+            command.sendWithContinuation(_commandSentContinuation())
         }
     }
     
@@ -394,6 +397,14 @@ public class TimerData {
                 currentTimer.reset()
                 strongSelf.updateTimer(currentTimer, commandType: TimerCommandType.Reset)
             }
+        }
+    }
+    
+    private func _commandSentContinuation() -> (Either<[String: AnyObject], TimerError> -> Void) {
+        return { jsonDataOrError in
+            NSLog("continuation got: %@", jsonDataOrError.description)
+            // CCC, 1/5/2015. Replace timers with jsonData ones
+            // CCC, 1/4/2015. Need to update Watch timerTimers when we get a file coordination reload back
         }
     }
 }
