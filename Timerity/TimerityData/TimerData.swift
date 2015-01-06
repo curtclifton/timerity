@@ -208,7 +208,7 @@ public class TimerData {
     //MARK: - Initialization
     private init(timers: [Timer]) {
         self.timers = timers.map() { timer in
-            // CCC, 1/5/2015. This is unnecessary when deserializing a temporary instance just for extracting timers sent from the iPhone app. The timers will be completed when integrated
+            // CCC, 1/5/2015. This is unnecessary when deserializing a temporary instance just for extracting timers sent from the iPhone app. The timers will be completed when integrated.
             let result = self._completeTimerIfNecessary(timer)
             // CCC, 1/5/2015. This is really expensive when deserializing a temporary instance just for extracting timers sent from the iPhone app!
             self._scheduleTimerExpirationTimerForTimerIfNecessary(timer)

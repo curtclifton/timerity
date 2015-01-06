@@ -99,17 +99,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let updatedDB = timerDB.encodeToJSONData()
                 let result = updatedDB as [NSObject: AnyObject]
                 reply(result)
-                return
             case .Right(let errorBox):
-                // CCC, 1/4/2015. implement error handling
                 NSLog("error decoding command from watch extension: %@", errorBox.unwrapped.description)
+                // TODO: communicate error back to watch app
+                reply([:])
             }
+        } else {
+            NSLog("userInfo from watch extension wasn't expected type [String: AnyObject]: %@", userInfo);
+            // TODO: communicate error back to watch app
+            reply([:])
         }
-        // CCC, 1/4/2015.  just round-tripping the data to debug our encoding at the moment:
-        // CCC, 1/4/2015. this should be an error case
-        NSLog("sending reply to watch extension")
-        let result: [NSObject: AnyObject] = userInfo
-        reply(result)
     }
     
     private func updateNotificationsForTimer(timer: Timer) {
