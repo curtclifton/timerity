@@ -240,10 +240,9 @@ public class TimerData {
                 return
             }
 
-            // CCC, 1/5/2015. invoking the callbacks in the middle of the operations exposes the TimerData in an inconsistent state. Don't do that.
-            
             // iterate over the new timers, replacing any existing ones, accumulating new ones, and calculating deleted ones (i.e., those missing from newTimers)
             var oldTimersIndex = timerIndex
+            var changedTimers: [Timer] = []
             var addedTimers: [Timer] = []
             for newTimer in newTimers {
                 let maybeOldIndex = oldTimersIndex[newTimer.id]
@@ -251,7 +250,7 @@ public class TimerData {
                     let unchanged = _backingTimers[oldIndex] == newTimer
                     if !unchanged {
                         _backingTimers[oldIndex] = newTimer
-                        _invokeCallbacks(timer: newTimer, isDeleted: false)
+                        changedTimers.append(newTimer)
                     }
                     oldTimersIndex[newTimer.id] = nil
                 } else {
@@ -260,22 +259,30 @@ public class TimerData {
             }
             
             let indexesOfTimersToDelete = [Int](oldTimersIndex.values).sorted(>)
+            var deletedTimers: [Timer] = []
             for index in indexesOfTimersToDelete {
                 let deletedTimer = _backingTimers[index]
                 _backingTimers.removeAtIndex(index)
-                _invokeCallbacks(timer: deletedTimer, isDeleted: true)
+                deletedTimers.append(deletedTimer)
             }
             
-            if !addedTimers.isEmpty {
-                addedTimers.sort() { leftTimer, rightTimer in
-                    return leftTimer.lastModified.compare(rightTimer.lastModified) == NSComparisonResult.OrderedDescending
-                }
-                _backingTimers.splice(addedTimers, atIndex: 0)
-                _invokeDatabaseReloadCallbacks()
+            addedTimers.sort() { leftTimer, rightTimer in
+                return leftTimer.lastModified.compare(rightTimer.lastModified) == NSComparisonResult.OrderedDescending
             }
+            _backingTimers.splice(addedTimers, atIndex: 0)
             
             timerIndex = TimerData._rebuiltIndexForTimers(_backingTimers)
             // CCC, 1/5/2015. fix timerTimers
+            
+            if !addedTimers.isEmpty {
+                _invokeDatabaseReloadCallbacks()
+            }
+            for timer in changedTimers {
+                _invokeCallbacks(timer: timer, isDeleted: false)
+            }
+            for timer in deletedTimers {
+                _invokeCallbacks(timer: timer, isDeleted: true)
+            }
         }
     }
     
