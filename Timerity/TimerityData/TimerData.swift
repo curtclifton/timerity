@@ -75,7 +75,7 @@ public class TimerDataPresenter: NSObject, NSFilePresenter {
     }
     
     public func relinquishPresentedItemToReader(reader: ((() -> Void)!) -> Void) {
-        // CCC, 1/4/2015. implement
+        // CCC, 1/4/2015. implement to wait until our current operation is done
         NSLog("relinquishing to reader")
         reader() {
             // anything?
@@ -84,7 +84,7 @@ public class TimerDataPresenter: NSObject, NSFilePresenter {
     }
     
     public func relinquishPresentedItemToWriter(writer: ((() -> Void)!) -> Void) {
-        // CCC, 1/4/2015. implement
+        // CCC, 1/4/2015. implement to wait until our current operation is done
         NSLog("relinquishing to writer")
         writer() {
             // anything?
@@ -193,10 +193,10 @@ public class TimerDataPresenter: NSObject, NSFilePresenter {
 
 /// Mutable timer database.
 public class TimerData {
-    // CCC, 1/5/2015. Make this a computed public property with private backing store. On reload via file coordination, maintain the original order, but insert any new timers at the start? Call the registered callbacks as needed.
-    public var timers: [Timer]
+    private var _backingTimers: [Timer] = []
+
     /// maps timer IDs to indices in the timers array
-    private var timerIndex: [String: Int]
+    private var timerIndex: [String: Int] = [:]
     /// A sparse "array" of NSTimer instances counting down with the active timers, used to update timer state when timers expire.
     private var timerTimers: [Int: NSTimer] = [:]
     
@@ -208,7 +208,6 @@ public class TimerData {
     //MARK: - Initialization
     private init(timers: [Timer]) {
         self.timers = timers
-        timerIndex = TimerData._rebuiltIndexForTimers(timers)
         for (index, timer) in enumerate(timers) {
             switch timer.state {
             case .Active(fireDate: let fireDate):
@@ -228,9 +227,41 @@ public class TimerData {
     public convenience init() {
         self.init(timers: [])
     }
+
+    //MARK: - Public API
+    private(set) public var timers: [Timer] {
+        get {
+            return _backingTimers
+        }
+        set {
+            if _backingTimers.isEmpty {
+                _backingTimers = newValue
+                timerIndex = TimerData._rebuiltIndexForTimers(_backingTimers)
+                return
+            }
+
+            // CCC, 1/5/2015. HACK to see if we can make the UI work: 
+            let oldTimers = _backingTimers
+            var oldTimersIndex = timerIndex
+            _backingTimers = newValue
+            _invokeDatabaseReloadCallbacks()
+            for timer in _backingTimers {
+                oldTimersIndex[timer.id] = nil
+                _invokeCallbacks(timer: timer, isDeleted: false)
+            }
+            for (_, timerIndex) in oldTimersIndex {
+                _invokeCallbacks(timer: oldTimers[timerIndex], isDeleted: true)
+            }
+            
+            // CCC, 1/5/2015. Maintain the original order, but insert any new timers at the start.
+            
+            timerIndex = TimerData._rebuiltIndexForTimers(_backingTimers)
+            // CCC, 1/5/2015. fix timerTimers
+            // CCC, 1/5/2015. Call the registered callbacks as needed.
+        }
+    }
     
-    //MARK: - Mutation
-    
+    //MARK: Mutation
     public func updateTimer(var timer: Timer, commandType: TimerCommandType) {
         if let index = timerIndex[timer.id] {
             if commandType == .Local {
@@ -315,7 +346,7 @@ public class TimerData {
         }
     }
     
-    //MARK: - Callbacks
+    //MARK: Callbacks
     /// If there exists a timer wtih the given identifier, then callback function is invoked immediately and whenever the given timer changes in the database. The return value is either a unique integer that can be used to de-register the callback or else an error.
     public func registerCallbackForTimer(#identifier: String, callback: TimerChangeCallback) -> Either<TimerChangeCallbackID, TimerError> {
         switch _timer(identifier: identifier) {
@@ -401,10 +432,22 @@ public class TimerData {
     }
     
     private func _commandSentContinuation() -> (Either<[String: AnyObject], TimerError> -> Void) {
-        return { jsonDataOrError in
+        return { [weak self] jsonDataOrError in
             NSLog("continuation got: %@", jsonDataOrError.description)
-            // CCC, 1/5/2015. Replace timers with jsonData ones
-            // CCC, 1/4/2015. Need to update Watch timerTimers when we get a file coordination reload back
+            if let strongSelf = self {
+                switch jsonDataOrError {
+                case .Left(let jsonDataBox):
+                    let newTimerDataOrError = TimerData.decodeJSONData(jsonDataBox.unwrapped)
+                    switch newTimerDataOrError {
+                    case .Left(let newTimerDataBox):
+                        strongSelf.timers = newTimerDataBox.unwrapped.timers
+                    case .Right(let errorBox):
+                        NSLog("Error decoding JSON data from iPhone: %@", errorBox.unwrapped.description);
+                    }
+                case .Right(let errorBox):
+                    NSLog("Error sending command to iPhone: %@", errorBox.unwrapped.description);
+                }
+            }
         }
     }
 }
