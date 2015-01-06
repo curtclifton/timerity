@@ -233,31 +233,49 @@ public class TimerData {
         get {
             return _backingTimers
         }
-        set {
+        set(newTimers) {
             if _backingTimers.isEmpty {
-                _backingTimers = newValue
+                _backingTimers = newTimers
                 timerIndex = TimerData._rebuiltIndexForTimers(_backingTimers)
                 return
             }
 
-            // CCC, 1/5/2015. HACK to see if we can make the UI work: 
-            let oldTimers = _backingTimers
+            // CCC, 1/5/2015. invoking the callbacks in the middle of the operations exposes the TimerData in an inconsistent state. Don't do that.
+            
+            // iterate over the new timers, replacing any existing ones, accumulating new ones, and calculating deleted ones (i.e., those missing from newTimers)
             var oldTimersIndex = timerIndex
-            _backingTimers = newValue
-            _invokeDatabaseReloadCallbacks()
-            for timer in _backingTimers {
-                oldTimersIndex[timer.id] = nil
-                _invokeCallbacks(timer: timer, isDeleted: false)
-            }
-            for (_, timerIndex) in oldTimersIndex {
-                _invokeCallbacks(timer: oldTimers[timerIndex], isDeleted: true)
+            var addedTimers: [Timer] = []
+            for newTimer in newTimers {
+                let maybeOldIndex = oldTimersIndex[newTimer.id]
+                if let oldIndex = maybeOldIndex {
+                    let unchanged = _backingTimers[oldIndex] == newTimer
+                    if !unchanged {
+                        _backingTimers[oldIndex] = newTimer
+                        _invokeCallbacks(timer: newTimer, isDeleted: false)
+                    }
+                    oldTimersIndex[newTimer.id] = nil
+                } else {
+                    addedTimers.append(newTimer)
+                }
             }
             
-            // CCC, 1/5/2015. Maintain the original order, but insert any new timers at the start.
+            let indexesOfTimersToDelete = [Int](oldTimersIndex.values).sorted(>)
+            for index in indexesOfTimersToDelete {
+                let deletedTimer = _backingTimers[index]
+                _backingTimers.removeAtIndex(index)
+                _invokeCallbacks(timer: deletedTimer, isDeleted: true)
+            }
+            
+            if !addedTimers.isEmpty {
+                addedTimers.sort() { leftTimer, rightTimer in
+                    return leftTimer.lastModified.compare(rightTimer.lastModified) == NSComparisonResult.OrderedDescending
+                }
+                _backingTimers.splice(addedTimers, atIndex: 0)
+                _invokeDatabaseReloadCallbacks()
+            }
             
             timerIndex = TimerData._rebuiltIndexForTimers(_backingTimers)
             // CCC, 1/5/2015. fix timerTimers
-            // CCC, 1/5/2015. Call the registered callbacks as needed.
         }
     }
     

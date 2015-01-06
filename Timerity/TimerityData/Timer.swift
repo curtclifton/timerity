@@ -197,7 +197,6 @@ extension Duration {
 }
 
 //MARK: JSON encoding and decoding
-
 extension Timer: JSONEncodable {
     public func encodeToJSONData() -> [String : AnyObject] {
         var informationDictionary = [
@@ -275,8 +274,37 @@ extension Timer: JSONDecodable {
     }
 }
 
-//MARK: Printable, DebugPrintable extensions
+//MARK: Equatable extensions
+public func ==(lhs: Duration, rhs: Duration) -> Bool {
+    let difference = lhs.seconds - rhs.seconds
+    return abs(difference) < 1.0e-9
+}
 
+public func ==(lhs: Timer, rhs:Timer) -> Bool {
+    switch (lhs.fireDate, rhs.fireDate) {
+    case (let leftFireDate, let rightFireDate) as (NSDate, NSDate):
+        if leftFireDate.compare(rightFireDate) != NSComparisonResult.OrderedSame {
+            return false
+        } // else continue to other comparisons
+    case (nil, nil):
+        // continue to other comparisons
+        break
+    default:
+        // only one fire date is set
+        return false
+    }
+    
+    let sameName = lhs.name == rhs.name
+    let sameDuration = lhs.duration == rhs.duration
+    let sameID = lhs.id == rhs.id
+    let sameActive = lhs.isActive == rhs.isActive
+    let samePause = lhs.isPaused == rhs.isPaused
+    let sameTimeRemaining = lhs.timeRemaining == rhs.timeRemaining
+    let sameLastModified = lhs.lastModified.compare(rhs.lastModified) == NSComparisonResult.OrderedSame
+    return (sameName && sameDuration && sameID && sameActive && samePause && sameTimeRemaining && sameLastModified)
+}
+
+//MARK: Printable, DebugPrintable extensions
 extension Timer: Printable, DebugPrintable {
     public var description: String {
         return "name:\(name), duration: \(duration.description)"
