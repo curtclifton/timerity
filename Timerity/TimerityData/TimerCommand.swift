@@ -55,10 +55,10 @@ extension TimerCommand: JSONEncodable {
 
 extension TimerCommand: JSONDecodable {
     typealias ResultType = TimerCommand
-    public static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL? = nil) -> Either<TimerCommand, TimerError> {
+    public static func decodeJSONData(jsonData: [String : AnyObject]) -> Either<TimerCommand, TimerError> {
         if let payload = jsonData[JSONKey.TimerCommand] as? [String: AnyObject] {
-            let maybeCommandType = TimerCommandType.decodeJSONData(payload, sourceURL: sourceURL)
-            let maybeTimer = Timer.decodeJSONData(payload, sourceURL: sourceURL)
+            let maybeCommandType = TimerCommandType.decodeJSONData(payload)
+            let maybeTimer = Timer.decodeJSONData(payload)
             switch (maybeCommandType, maybeTimer) {
             case (.Left(let timerCommandBox), .Left(let timerBox)):
                 return Either.Left(Box(wrap: TimerCommand(commandType: timerCommandBox.unwrapped, timer: timerBox.unwrapped)))
@@ -79,7 +79,7 @@ extension TimerCommandType: JSONEncodable {
 
 extension TimerCommandType: JSONDecodable {
     typealias ResultType = TimerCommandType
-    public static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL? = nil) -> Either<TimerCommandType, TimerError> {
+    public static func decodeJSONData(jsonData: [String : AnyObject]) -> Either<TimerCommandType, TimerError> {
         if let timerCommandTypeRawValue = jsonData[JSONKey.TimerCommandType] as? String {
             if let timerCommandType = TimerCommandType(rawValue: timerCommandTypeRawValue) {
                 return Either.Left(Box(wrap: timerCommandType))

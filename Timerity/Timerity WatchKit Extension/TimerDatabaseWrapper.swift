@@ -13,14 +13,10 @@ let groupURL = NSFileManager.defaultManager().containerURLForSecurityApplication
 let timerDatabaseURL = groupURL!.URLByAppendingPathComponent("data.json", isDirectory: false)
 
 func spinUpTimerDB() -> TimerData {
-    let maybeTimerData = TimerData.fromURL(timerDatabaseURL)
-    switch maybeTimerData {
-    case .Left(let timerDataBox):
-        return timerDataBox.unwrapped
-    case .Right(let error):
-        NSLog("error reading data file: %@", error.unwrapped.description)
-        return TimerData(url: timerDatabaseURL)
-    }
+    let timerDataPresenter = TimerDataPresenter(fileURL: timerDatabaseURL)
+    let timerData = timerDataPresenter.timerData
+    timerDataPresenter.invalidate()
+    return timerData
 }
 
 /// Lazily loaded global timer database

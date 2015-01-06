@@ -12,6 +12,7 @@ public enum TimerError {
     case MissingIdentifier(String)
     case Decoding(String)
     case FileError(NSError)
+    case DeserializationError(NSError)
 }
 
 extension TimerError: Printable, DebugPrintable {
@@ -23,6 +24,8 @@ extension TimerError: Printable, DebugPrintable {
             return "Decoding error: \(string)"
         case .FileError(let error):
             return "File error: \(error)"
+        case .DeserializationError(let error):
+            return "Deserialization error: \(error)"
         }
     }
     

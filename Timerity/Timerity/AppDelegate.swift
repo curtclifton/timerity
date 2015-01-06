@@ -11,22 +11,8 @@ import TimerityData
 
 // TODO: This is just a bare skeleton iPhone app for demo purposes.
 
-let groupURL = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.net.curtclifton.Timerity")
-let timerDatabaseURL = groupURL!.URLByAppendingPathComponent("data.json", isDirectory: false)
-
-func spinUpTimerDB() -> TimerData {
-    let maybeTimerData = TimerData.fromURL(timerDatabaseURL)
-    switch maybeTimerData {
-    case .Left(let timerDataBox):
-        return timerDataBox.unwrapped
-    case .Right(let error):
-        NSLog("error reading data file: %@", error.unwrapped.description)
-        return TimerData()
-    }
-}
-
-/// Lazily loaded global timer database
-let timerDB = spinUpTimerDB()
+private let groupURL = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.net.curtclifton.Timerity")
+private let timerDatabaseURL = groupURL!.URLByAppendingPathComponent("data.json", isDirectory: false)
 
 // TODO: remove file coordination demo code:
 // private var dyecb: DoYouEvenCoordinateBro!
@@ -36,6 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    private let timerDataPresenter = TimerDataPresenter(fileURL: timerDatabaseURL)
+    var timerDB: TimerData {
+        return timerDataPresenter.timerData
+    }
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         let settings = UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil)
         application.registerUserNotificationSettings(settings)
@@ -72,6 +63,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // TODO: remove file coordination demo code:
         // dyecb.invalidate()
+        
+        timerDataPresenter.invalidate()
     }
 
     func application(application: UIApplication!, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]!, reply: (([NSObject : AnyObject]!) -> Void)!) {
@@ -98,15 +91,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     timerDB.updateTimer(command.timer, commandType: .Local)
                     break
                 }
-                // CCC, 1/4/2015. Debugging
+
+                timerDataPresenter.write()
                 NSLog("updated iPhone database %@", timerDB.timers.description)
-                break
+                // CCC, 1/5/2015. serialize the TimerData and send it back as the result
             case .Right(let errorBox):
                 // CCC, 1/4/2015. implement error handling
                 NSLog("error decoding command from watch extension: %@", errorBox.unwrapped.description)
-                break
             }
-            // CCC, 12/10/2014. This schedules a notification, but we also have to handle the case where the app is foregrounded when the notification expires.
+            // CCC, 12/10/2014. Schedule a notification.
+            // CCC, 1/5/2015. We also have to handle the case where the app is foregrounded when the notification expires.
             //        let notification = UILocalNotification()
             //        let oneMinuteHence = NSDate().dateByAddingTimeInterval(60.0)
             //        notification.fireDate = oneMinuteHence

@@ -224,7 +224,7 @@ extension Timer: JSONEncodable {
 
 extension Timer: JSONDecodable {
     typealias ResultType = Timer
-    public static func decodeJSONData(jsonData: [String : AnyObject], sourceURL: NSURL? = nil) -> Either<Timer, TimerError> {
+    public static func decodeJSONData(jsonData: [String : AnyObject]) -> Either<Timer, TimerError> {
         let maybeEncodedTimer: AnyObject? = jsonData[JSONKey.Timer]
         if let encodedTimer = maybeEncodedTimer as? [String: AnyObject] {
             // TODO: This is pretty hideous with all the error handling Swift requires. See 	SwiftyJSON https://github.com/SwiftyJSON/SwiftyJSON or this Haskell-style: http://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics approach for alternatives.

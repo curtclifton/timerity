@@ -39,16 +39,160 @@ private func spinUpPresenterQueue() -> NSOperationQueue {
 /// lazily initialized global queue
 private let filePresenterQueue = spinUpPresenterQueue()
 
-//! Mutable timer database.
-public class TimerData: NSObject {
+public class TimerDataPresenter: NSObject, NSFilePresenter {
+    let url: NSURL
+    var fileCoordinator: NSFileCoordinator! // need to pass self to initializer, so force unwrapping
+    private var persistentTimerData: TimerData?
+    private var isPresenterRegistered = false
+    private var isInvalidated = false
+    
+    public init(fileURL: NSURL) {
+        url = fileURL
+        super.init()
+        fileCoordinator = NSFileCoordinator(filePresenter: self)
+    }
+    
+    //MARK: NSFilePresenter subclass
+    public var presentedItemURL: NSURL? {
+        NSLog("Somebody is asking for presentedItemURL. It's “%@”", url)
+        return url
+    }
+    
+    public var presentedItemOperationQueue: NSOperationQueue {
+        NSLog("somebody is asking for presentedItemOperationQueue")
+        return filePresenterQueue
+    }
+    
+    public func relinquishPresentedItemToReader(reader: ((() -> Void)!) -> Void) {
+        // CCC, 1/4/2015. implement
+        NSLog("relinquishing to reader")
+        reader() {
+            // anything?
+            NSLog("reader is done")
+        }
+    }
+    
+    public func relinquishPresentedItemToWriter(writer: ((() -> Void)!) -> Void) {
+        // CCC, 1/4/2015. implement
+        NSLog("relinquishing to writer")
+        writer() {
+            // CCC, 1/4/2015. need to reload the contents of the file and send appropriate callbacks. probably should kick over to the main queue to do that
+            NSLog("writer is done")
+        }
+    }
+    
+    public func presentedItemDidChange() {
+        // CCC, 1/4/2015. not sure we need this because we should always get relinquishPresentedItemToWriter (the file is in our sandbox and we're using file coordination in both processes
+        NSLog("presentedItemDidChange")
+    }
+
+    //MARK: - Public API
+    public var timerData: TimerData {
+        assert(!isInvalidated)
+        if let alreadyLoadedTimerData = persistentTimerData {
+            return alreadyLoadedTimerData
+        }
+        persistentTimerData = read()
+        return persistentTimerData!
+    }
+    
+    public func write() {
+        assert(!isInvalidated)
+
+        var coordinationError: NSError?
+        var coordinatedWriteSucceeded = false // assume the worst
+        
+        NSLog("beginning coordinated write to file")
+        fileCoordinator?.coordinateWritingItemAtURL(url, options: nil, error: &coordinationError) { actualURL in
+            assert(actualURL == self.url, "don't expect the file to move")
+            NSLog("entered writing block")
+            let dataDictionary = self.timerData.encodeToJSONData()
+            let maybeJSONData = NSJSONSerialization.dataWithJSONObject(dataDictionary, options: NSJSONWritingOptions.PrettyPrinted, error: &coordinationError)
+            if let jsonData = maybeJSONData {
+                NSLog("actually writing json data: %@", jsonData)
+                if jsonData.writeToURL(actualURL, options: NSDataWritingOptions.DataWritingAtomic, error: &coordinationError) {
+                    coordinatedWriteSucceeded = true
+                    NSLog("successfully wrote json data")
+                } else {
+                    NSLog("error writing JSON to file: %@", coordinationError!)
+                }
+            } else {
+                NSLog("error encoding JSON data: %@", coordinationError!)
+            }
+        }
+        
+        if coordinatedWriteSucceeded {
+            NSLog("successfully finished coordinated write to file")
+        } else if let error = coordinationError {
+            NSLog("coordinated write failed with error: %@", error)
+        } else {
+            NSLog("who knows what happened?!");
+        }
+    }
+    
+    public func invalidate() {
+        if isInvalidated {
+            return
+        }
+        
+        isInvalidated = true
+        
+        NSFileCoordinator.removeFilePresenter(self)
+        fileCoordinator = nil
+    }
+    
+    //MARK: - Private API
+    
+    private func read() -> TimerData {
+        var coordinationSuccess = false // assume the worst
+        var coordinationError: NSError?
+        var readResult: Either<TimerData, TimerError> = Either.Right(Box(wrap: TimerError.FileError(NSError())))
+        
+        NSLog("Beginning coordinated read");
+        fileCoordinator.coordinateReadingItemAtURL(url, options: nil, error: &coordinationError) { actualURL in
+            assert(actualURL == self.url)
+
+            if !self.isPresenterRegistered {
+                NSFileCoordinator.addFilePresenter(self)
+                self.isPresenterRegistered = true
+            }
+            
+            let maybeRawData = NSData(contentsOfURL: actualURL, options: nil, error: &coordinationError)
+            if let rawData = maybeRawData {
+                coordinationSuccess = true
+                let maybeJSONData: AnyObject? = NSJSONSerialization.JSONObjectWithData(rawData, options: nil, error: &coordinationError)
+                if let jsonData: AnyObject = maybeJSONData {
+                    if let jsonDictionary = jsonData as? [String:AnyObject] {
+                        readResult = TimerData.decodeJSONData(jsonDictionary)
+                    } else {
+                        readResult = Either.Right(Box(wrap: TimerError.Decoding("invalid data file contents, expected top-level dictionary, got \(jsonData)")))
+                    }
+                } else {
+                    readResult = Either.Right(Box(wrap: TimerError.DeserializationError(coordinationError!)))
+                }
+            } else {
+                readResult = Either.Right(Box(wrap: TimerError.FileError(coordinationError!)))
+            }
+        }
+        
+        switch readResult {
+        case .Left(let timerDataBox):
+            return timerDataBox.unwrapped
+        case .Right(let errorBox):
+            NSLog("error reading data: %@", errorBox.unwrapped.description)
+            return TimerData()
+        }
+    }
+}
+
+/// Mutable timer database.
+public class TimerData {
+    // CCC, 1/5/2015. Make this a computed public property with private backing store. On reload via file coordination, maintain the original order, but insert any new timers at the start? Call the registered callbacks as needed.
     public var timers: [Timer]
     /// maps timer IDs to indices in the timers array
     private var timerIndex: [String: Int]
     /// A sparse "array" of NSTimer instances counting down with the active timers, used to update timer state when timers expire.
     private var timerTimers: [Int: NSTimer] = [:]
-    
-    private var originalURL: NSURL?
-    private var fileCoordinator: NSFileCoordinator?
     
     private var nextCallbackID = 0
     private var callbacksByCallbackID: [Int: TimerChangeCallback] = [:]
@@ -56,32 +200,9 @@ public class TimerData: NSObject {
     private var databaseChangeCallbacksByCallbackID: [Int: (() -> ())] = [:]
     
     //MARK: - Initialization
-    public class func fromURL(url: NSURL) -> Either<TimerData, TimerError> {
-        // CCC, 12/14/2014. Need to do file coordination on the file and call the registered callbacks as needed
-        // CCC, 1/2/2015. On reload via file coordination, maintain the original order, but insert any new timers at the start?
-        var error: NSError?
-        let maybeRawData = NSData(contentsOfURL: url, options: nil, error: &error)
-        if let rawData = maybeRawData {
-            let maybeJSONData: AnyObject? = NSJSONSerialization.JSONObjectWithData(rawData, options: nil, error: &error)
-            if let jsonData: AnyObject = maybeJSONData {
-                if let jsonDictionary = jsonData as? [String:AnyObject] {
-                    return TimerData.decodeJSONData(jsonDictionary, sourceURL: url)
-                } else {
-                    return Either.Right(Box(wrap: TimerError.Decoding("invalid data file contents, expected top-level dictionary, got \(jsonData)")))
-                }
-            } else {
-                return Either.Right(Box(wrap: TimerError.FileError(error!)))
-            }
-        } else {
-            return Either.Right(Box(wrap: TimerError.FileError(error!)))
-        }
-    }
-    
-    private init(timers: [Timer], url: NSURL? = nil) {
-        originalURL = url
+    private init(timers: [Timer]) {
         self.timers = timers
         timerIndex = TimerData._rebuiltIndexForTimers(timers)
-        super.init()
         for (index, timer) in enumerate(timers) {
             switch timer.state {
             case .Active(fireDate: let fireDate):
@@ -96,60 +217,13 @@ public class TimerData: NSObject {
                 break
             }
         }
-        if url != nil {
-            // CCC, 1/4/2015. This seems late for setting this up. We've already read the file.
-            fileCoordinator = NSFileCoordinator(filePresenter: self)
-        }
     }
     
-    public convenience init(url: NSURL? = nil) {
-        self.init(timers: [], url: url)
+    public convenience init() {
+        self.init(timers: [])
     }
     
     //MARK: - Mutation
-    
-    private func write() -> NSError? {
-        if originalURL == nil {
-            return nil
-        }
-        NSLog("preparing to write to file")
-        let url = originalURL!
-        let fileCoordination = self.fileCoordinator!
-        var coordinationError: NSError?
-        var coordinatedWriteSucceeded = false // assume the worst
-        NSLog("beginning coordinated write to file")
-        fileCoordinator?.coordinateWritingItemAtURL(url, options: nil, error: &coordinationError) { newURL in
-            assert(newURL == url, "don't expect the file to move")
-            NSLog("entered writing block")
-            let dataDictionary = self.encodeToJSONData()
-            var error: NSError?
-            let maybeJSONData = NSJSONSerialization.dataWithJSONObject(dataDictionary, options: NSJSONWritingOptions.PrettyPrinted, error: &error)
-            if let jsonData = maybeJSONData {
-                NSLog("actually writing json data: %@", jsonData)
-                if jsonData.writeToURL(url, options: NSDataWritingOptions.DataWritingAtomic, error: &error) {
-                    NSLog("successfully wrote json data")
-                    coordinatedWriteSucceeded = true
-                    NSLog("successfully recorded success");
-                } else {
-                    NSLog("error writing JSON to file: %@", error!)
-                    coordinationError = error
-                }
-            } else {
-                NSLog("error encoding JSON data: %@", error!)
-                coordinationError = error
-            }
-        }
-        if coordinatedWriteSucceeded {
-            NSLog("successfully finished coordinate write to file")
-            return nil
-        } else if let error = coordinationError {
-            NSLog("coordinated write failed with error: %@", error)
-            return error
-        } else {
-            NSLog("who knows what happened?!");
-            return nil
-        }
-    }
     
     public func updateTimer(var timer: Timer, commandType: TimerCommandType) {
         if let index = timerIndex[timer.id] {
@@ -170,8 +244,6 @@ public class TimerData: NSObject {
                     break
                 }
                 timers[index] = timer
-                write()
-                // CCC, 1/4/2015. these might have to happen in a continuation:
                 _invokeCallbacks(timer: timer)
             } else {
                 let command = TimerCommand(commandType: commandType, timer: timer)
@@ -202,8 +274,6 @@ public class TimerData: NSObject {
                 let newIndex = timers.count
                 timers.insert(timer, atIndex: 0)
                 timerIndex = TimerData._rebuiltIndexForTimers(timers)
-                write()
-                // CCC, 1/4/2015. these might have to happen in a continuation
                 _invokeDatabaseReloadCallbacks()
             } else {
                 assert(commandType == .Add)
@@ -232,8 +302,6 @@ public class TimerData: NSObject {
                 self.timerTimers = timerTimers
                 
                 timerIndex = TimerData._rebuiltIndexForTimers(timers)
-                write()
-                // CCC, 1/4/2015. these might have to happen in a continuation
                 _invokeCallbacks(timer: timer, isDeleted: true)
             }
         } else {
@@ -330,44 +398,6 @@ public class TimerData: NSObject {
     }
 }
 
-extension TimerData: NSFilePresenter {
-    public var presentedItemURL: NSURL? {
-        NSLog("somebody is asking for presentedItemURL")
-        if let url = originalURL {
-            NSLog("It's “%@”", url)
-        }
-        return originalURL
-    }
-
-    public var presentedItemOperationQueue: NSOperationQueue {
-        NSLog("somebody is asking for presentedItemOperationQueue")
-        return filePresenterQueue
-    }
-    
-    public func relinquishPresentedItemToReader(reader: ((() -> Void)!) -> Void) {
-        // CCC, 1/4/2015. implement
-        NSLog("relinquishing to reader")
-        reader() {
-            // anything?
-            NSLog("reader is done")
-        }
-    }
-    
-    public func relinquishPresentedItemToWriter(writer: ((() -> Void)!) -> Void) {
-        // CCC, 1/4/2015. implement
-        NSLog("relinquishing to writer")
-        writer() {
-            // CCC, 1/4/2015. need to reload the contents of the file and send appropriate callbacks. probably should kick over to the main queue to do that
-            NSLog("writer is done")
-        }
-    }
-    
-    public func presentedItemDidChange() {
-        // CCC, 1/4/2015. not sure we need this because we should always get relinquishPresentedItemToWriter (the file is in our sandbox and we're using file coordination in both processes
-        NSLog("presentedItemDidChange")
-    }
-}
-
 extension TimerData: JSONEncodable {
     public func encodeToJSONData() -> [String : AnyObject] {
         let encodedTimers = timers.map() { $0.encodeToJSONData() }
@@ -394,7 +424,7 @@ private extension Array {
 
 extension TimerData: JSONDecodable {
     typealias ResultType = TimerData
-    public class func decodeJSONData(jsonData: [String:AnyObject], sourceURL: NSURL? = nil) -> Either<TimerData, TimerError> {
+    public class func decodeJSONData(jsonData: [String:AnyObject]) -> Either<TimerData, TimerError> {
         let maybeEncodedTimers: AnyObject? = jsonData[JSONKey.TimerData]
         if let encodedTimers = maybeEncodedTimers as? [[String: AnyObject]] {
             let maybeTimers = encodedTimers.emap() { Timer.decodeJSONData($0) }
@@ -419,7 +449,7 @@ extension TimerData: JSONDecodable {
                     }
                     return result
                 }
-                return .Left(Box(wrap:TimerData(timers: sortedTimers, url: sourceURL)))
+                return .Left(Box(wrap:TimerData(timers: sortedTimers)))
             case .Right(let timerErrorBox):
                 return .Right(timerErrorBox)
             }
@@ -429,25 +459,24 @@ extension TimerData: JSONDecodable {
     }
 }
 
-// TODO: can't implement the Swift versions of these on an NSObject subclass?
-//extension TimerData: Printable, DebugPrintable {
-//    overriding var description: String {
-//        get {
-//            var result: String = "TimerData:\n"
-//            for (i, timer) in enumerate(timers) {
-//                result += timer.description
-//                if i < timers.count - 1 {
-//                    result += "\n"
-//                }
-//            }
-//            return result
-//        }
-//    }
-//    
-//    public var debugDescription: String {
-//        get {
-//            return description
-//        }
-//    }
-//}
+extension TimerData: Printable, DebugPrintable {
+    public var description: String {
+        get {
+            var result: String = "TimerData:\n"
+            for (i, timer) in enumerate(timers) {
+                result += timer.description
+                if i < timers.count - 1 {
+                    result += "\n"
+                }
+            }
+            return result
+        }
+    }
+    
+    public var debugDescription: String {
+        get {
+            return description
+        }
+    }
+}
 
