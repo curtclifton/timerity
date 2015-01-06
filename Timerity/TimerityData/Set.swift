@@ -14,6 +14,11 @@ public struct Set<T: Hashable> {
     public init() {
         _backingDictionary = [:]
     }
+    
+    public init(array: [T]) {
+        self.init()
+        add(array)
+    }
 
     public func contains(element: T) -> Bool {
         return _backingDictionary[element] != nil
@@ -21,6 +26,16 @@ public struct Set<T: Hashable> {
     
     public mutating func add(element: T) {
         _backingDictionary[element] = true
+    }
+    
+    public mutating func add(elements: [T]) {
+        for element in elements {
+            add(element)
+        }
+    }
+    
+    public mutating func remove(element: T) {
+        _backingDictionary[element] = nil
     }
     
     public var count: Int {
