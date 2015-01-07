@@ -1,8 +1,6 @@
 footer: Curt Clifton—The Omni Group. Jan 8, 2015, Seattle Xcoders
 slidenumbers: true
 
-^ [[[Review dev notebook and bring over notes]]]
-
 ^ [[[Clean up all these notes to self]]]
 
 ^ Sample presenter notes.
@@ -69,7 +67,11 @@ slidenumbers: true
 
 ## All the WatchKit classes fit on one slide that you can read.
 
+
+
 ### Enjoy it while it lasts
+
+
 
 ^ [[[Need an image here]]]
 
