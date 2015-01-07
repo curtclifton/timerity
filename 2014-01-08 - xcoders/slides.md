@@ -3,6 +3,8 @@ slidenumbers: true
 
 ^ [[[Clean up all these notes to self]]]
 
+^ [[[Add presenter notes to each slide]]]
+
 ^ Sample presenter notes.
 
 ^ Are we good?
@@ -67,23 +69,24 @@ slidenumbers: true
 
 ## All the WatchKit classes fit on one slide that you can read.
 
+![original](WatchKitClasses.png)
 
-
-### Enjoy it while it lasts
-
-
-
-^ [[[Need an image here]]]
+^ A couple of interface controllers. You’ll have one for each screen in your watch app.
+^ One device class that vends a singleton. Can get device size and cache images with this.
+^ 
 
 ---
 
-## All UI elements on the Watch are accessed through proxy objects.
+
+## All UI elements on the Watch are accessed through proxy objects.[^]
 
 ^ [[[Need an image here]]]
 
 ^ setters, not properties!
 
-^ Some important conceptual bits on WKInterfaceObjects as proxies: https://developer.apple.com/library/prerelease/ios/documentation/General/Conceptual/WatchKitProgrammingGuide/InterfaceObjects.html#//apple_ref/doc/uid/TP40014969-CH13-SW1
+^ “Interface objects are not views. They are proxy objects that communicate wirelessly with the actual views used to implement your UI on Apple Watch.”
+
+[^]: [From the WatchKit docs](https://developer.apple.com/library/prerelease/ios/documentation/General/Conceptual/WatchKitProgrammingGuide/InterfaceObjects.html)
 
 ---
 
@@ -98,7 +101,7 @@ slidenumbers: true
 # [fit] Data with 
 # [fit] Watch
 
-^ [[[review the issues and choices, but don't dive into code yet]]]
+^ [[[review the issues and choices, but don’t dive into code yet]]]
 ^ Tom Harrington’s’s file coordination notes: http://www.atomicbird.com/blog/sharing-with-app-extensions
 ^ File coordination is a no no: https://developer.apple.com/library/ios/technotes/tn2408/_index.html
 ^ 	File coordination may be OK: https://devforums.apple.com/message/1074447#1074447
@@ -110,7 +113,7 @@ slidenumbers: true
 
 # Cartoon of the Day
 
-^ Before we jump into code, it's probably helpful to understand my state of mind when writing this…
+^ Before we jump into code, it’s probably helpful to understand my state of mind when writing this…
 
 ^ [[[Nerd Sniping]]]
 
@@ -134,7 +137,7 @@ slidenumbers: true
 
 # [fit] Challenges
 
-^ Send UI commands when the corresponding element is not active doesn't update the UI.
+^ Send UI commands when the corresponding element is not active doesn’t update the UI.
 ^ Using shared frameworks.
 ^ Selecting watch menu items crashes the simulator eventually
 ^ no auto layout (challenge?)
