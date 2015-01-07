@@ -188,4 +188,8 @@ Thibaut Sailly
 
 # Wish List
 
+- `setNeedsUpdate` and friends
+- Direct access to the Taptic Engine
+- iPhone-free 3<sup>rd</sup> party code
+
 ^ [[[get items from David]]]
