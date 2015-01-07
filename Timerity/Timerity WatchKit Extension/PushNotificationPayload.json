@@ -7,8 +7,8 @@
     
     "WatchKit Simulator Actions": [
         {
-            "title": "First Button",
-            "identifier": "firstButtonAction"
+            "title": "Snooze",
+            "identifier": "snoozeAction"
         }
     ],
     
