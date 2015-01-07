@@ -1,9 +1,11 @@
-# Test Slide
+footer: Curt Clifton—The Omni Group. Jan 8, 2015, Seattle Xcoders
+slidenumbers: true
 
-- Notifications off
-- Phone silenced
+^ Sample presenter notes.
 
-![fit](testImage.jpg)
+^ Are we good?
+
+![fit](testImage.png)
 
 ---
 
