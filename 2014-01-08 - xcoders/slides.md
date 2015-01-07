@@ -1,6 +1,10 @@
 footer: Curt Clifton—The Omni Group. Jan 8, 2015, Seattle Xcoders
 slidenumbers: true
 
+^ [[[Review dev notebook and bring over notes]]]
+
+^ [[[Clean up all these notes to self]]]
+
 ^ Sample presenter notes.
 
 ^ Are we good?
@@ -28,62 +32,6 @@ slidenumbers: true
 
 ---
 
-**Outline**
-
-^ [Discuss in terms of your goals for them leaving the talk]
-
----
-
-# Outline
-
-- Conceptual model
-
----
-
-# Outline
-
-- Conceptual model
-
-- Sample app
-
---- 
-
-# Outline
-
-- Conceptual model
-
-- Sample app
-
-- Syncing data with Watch
-
---- 
-
-# Outline
-
-- Conceptual model
-
-- Sample app
-
-- Syncing data with Watch
-
-- Debugging Watch apps
-
---- 
-
-# Outline
-
-- Conceptual model
-
-- Sample app
-
-- Syncing data with Watch
-
-- Debugging Watch apps
-
-- Some challenges
-
---- 
-
 # Outline
 
 - Conceptual model
@@ -98,6 +46,8 @@ slidenumbers: true
 
 - Other resources
 
+^ [Discuss in terms of your goals for them leaving the talk]
+
 ---
 
 # [fit] Conceptual
@@ -111,19 +61,9 @@ slidenumbers: true
 
 ## In WatchKit 1.0 your code runs in an extension on the iPhone.
 
-![original](PhoneAndWatch.png)
-
-^ [[[add callouts to the figure noting what code runs where and how it's written]]]
+![original](WhatGoesWhere.png)
 
 ^ WatchKit extension and Watch app resources are bundled with your iPhone app (like Today and Sharing extensions and custom keyboards)
-
----
-
-## All UI elements on the Watch are accessed through proxy objects.
-
-^ [[[Need an image here]]]
-
-^ Some important conceptual bits on WKInterfaceObjects as proxies: https://developer.apple.com/library/prerelease/ios/documentation/General/Conceptual/WatchKitProgrammingGuide/InterfaceObjects.html#//apple_ref/doc/uid/TP40014969-CH13-SW1
 
 ---
 
@@ -135,8 +75,20 @@ slidenumbers: true
 
 ---
 
+## All UI elements on the Watch are accessed through proxy objects.
+
+^ [[[Need an image here]]]
+
+^ setters, not properties!
+
+^ Some important conceptual bits on WKInterfaceObjects as proxies: https://developer.apple.com/library/prerelease/ios/documentation/General/Conceptual/WatchKitProgrammingGuide/InterfaceObjects.html#//apple_ref/doc/uid/TP40014969-CH13-SW1
+
+---
+
 # [fit] Sample
 # [fit] App
+
+^ [Fire up the WatchApp and give a brief demo of using it. Stay away from the code]
 
 ---
 
@@ -144,6 +96,7 @@ slidenumbers: true
 # [fit] Data with 
 # [fit] Watch
 
+^ [[[review the issues and choices, but don't dive into code yet]]]
 ^ Tom Harrington’s’s file coordination notes: http://www.atomicbird.com/blog/sharing-with-app-extensions
 ^ File coordination is a no no: https://developer.apple.com/library/ios/technotes/tn2408/_index.html
 ^ 	File coordination may be OK: https://devforums.apple.com/message/1074447#1074447
@@ -151,6 +104,13 @@ slidenumbers: true
 ^ Using Darwin notifications to send notifications: https://devforums.apple.com/message/1078581#1078581
 ^ Using a shared CoreData database: http://stackoverflow.com/questions/24641768/accessing-core-data-sql-database-in-ios-8-extension-sharing-data-between-app-an
 
+---
+
+# Cartoon of the Day
+
+^ Before we jump into code, it's probably helpful to understand my state of mind when writing this…
+
+^ [[[Nerd Sniping]]]
 
 ---
 
@@ -175,6 +135,9 @@ slidenumbers: true
 ^ Send UI commands when the corresponding element is not active doesn't update the UI.
 ^ Using shared frameworks.
 ^ Selecting watch menu items crashes the simulator eventually
+^ no auto layout (challenge?)
+^ notifications while watch app is running?
+^ 
 
 ---
 
@@ -215,3 +178,9 @@ Thibaut Sailly
 - Combine with [Xscope Mirror](http://furbo.org/2015/01/06/bezel-and-xscope/)
 
 ![right](bezelApp.png)
+
+---
+
+# Wish List
+
+^ [[[get items from David]]]
