@@ -1,10 +1,6 @@
 footer: Curt Clifton—The Omni Group. Jan 8, 2015, Seattle Xcoders
 slidenumbers: true
 
-^ [[[Add presenter notes to each slide]]]
-
-^ [[[Put all presenter notes in Outliner]]]
-
 ^ Sample presenter notes.
 
 ^ Are we good?
@@ -159,6 +155,8 @@ slidenumbers: true
 ![fit right](PythonHandGrenade.jpg)
 
 [^1]: [Monty Python and the Holy Grail](http://www.imdb.com/title/tt0071853/)
+
+^ So what can we do? …
 
 ---
 
