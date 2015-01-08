@@ -5,6 +5,8 @@ slidenumbers: true
 
 ^ [[[Add presenter notes to each slide]]]
 
+^ [[[Put all presenter notes in Outliner]]]
+
 ^ Sample presenter notes.
 
 ^ Are we good?
@@ -69,6 +71,10 @@ slidenumbers: true
 
 ## All the WatchKit classes fit on one slide that you can read.
 
+---
+
+## All the WatchKit classes fit on one slide that you can read.
+
 ![original](WatchKitClasses.png)
 
 ^ A couple of interface controllers. You’ll have one for each screen in your watch app.
@@ -77,16 +83,25 @@ slidenumbers: true
 
 ---
 
+## All UI elements on the Watch are accessed through proxy objects.
 
-## All UI elements on the Watch are accessed through proxy objects.[^]
+---
 
-^ [[[Need an image here]]]
+## All UI elements on the Watch are accessed through proxy objects.
+
+![original](ProxyObjects.png) 
+
+^ [Quick handwavy explanation of the diagram. Details on next slide.]
+
+---
+
+## All UI elements on the Watch are accessed through proxy objects.
+
+![original](ProxyObjectsDetails.png)
 
 ^ setters, not properties!
 
 ^ “Interface objects are not views. They are proxy objects that communicate wirelessly with the actual views used to implement your UI on Apple Watch.”
-
-[^]: [From the WatchKit docs](https://developer.apple.com/library/prerelease/ios/documentation/General/Conceptual/WatchKitProgrammingGuide/InterfaceObjects.html)
 
 ---
 
@@ -101,48 +116,100 @@ slidenumbers: true
 # [fit] Data with 
 # [fit] Watch
 
-^ [[[review the issues and choices, but don’t dive into code yet]]]
-^ Tom Harrington’s’s file coordination notes: http://www.atomicbird.com/blog/sharing-with-app-extensions
-^ File coordination is a no no: https://developer.apple.com/library/ios/technotes/tn2408/_index.html
-^ 	File coordination may be OK: https://devforums.apple.com/message/1074447#1074447
-^ 	But probably not, since we still don’t get a chance to deregister.
-^ Using Darwin notifications to send notifications: https://devforums.apple.com/message/1078581#1078581
-^ Using a shared CoreData database: http://stackoverflow.com/questions/24641768/accessing-core-data-sql-database-in-ios-8-extension-sharing-data-between-app-an
+---
+
+# Your watch extension is a separate process from your iPhone app: you just signed up for data syncing.
+
+---
+
+# Watch apps die easily; network operations are right out.[^1]
+
+![fit right](PythonHandGrenade.jpg)
+
+[^1]: [Monty Python and the Holy Grail](http://www.imdb.com/title/tt0071853/)
 
 ---
 
 # Cartoon of the Day
 
-^ Before we jump into code, it’s probably helpful to understand my state of mind when writing this…
-
-^ [[[Nerd Sniping]]]
+^ Before turning to more technical details, it’s probably helpful to understand my state of mind when implementing the code…
 
 ---
 
-# [fit] Debugging 
-# [fit] Watch 
-# [fit] Apps
+# Cartoon of the Day[^2]
 
-^ SimPholders2 for finding which simulator is active
-^ System Log in Console: show logging
+![inline](nerd_sniping.png)
+
+^ “I first saw this problem on the Google Labs Aptitude Test. A professor and I filled a blackboard without getting anywhere. Have fun.”
+
+[^2]: [https://xkcd.com/356/](https://xkcd.com/356/)
+
+---
+
+# What’s a developer to do?
+
+- File coordination? [Nope.](https://developer.apple.com/library/ios/technotes/tn2408/_index.html)
+- [App Group entitlement and user defaults](http://www.atomicbird.com/blog/sharing-with-app-extensions)
+- [Shared CoreData database](http://stackoverflow.com/questions/24641768/accessing-core-data-sql-database-in-ios-8-extension-sharing-data-between-app-an)
+- Shared SQLite database
+- Seed file & callbacks
+
+^ [Review the issues and choices, but don’t dive into code yet.]
+
+---
+
+# [fit] Syncing Using Seed File & Callbacks 
+
+![original](SeedFileSyncing.png)
+
+^ note that time flows down the page
+^ [talk through the steps chronologically]
+^ Let’s take a look at this in code. This should also be a good example of debugging WatchKit apps.
+
+^ See presenter's script
+
+^ [[[ Move this bit just to Outliner]]]
+^ SET UP:
+^ Turn breakpoints off
 ^ Launch iPhone app first to get the simulator rolling.
 ^ Open Watch display
 ^ Kill the app
 ^ Launch the WatchKit app
 ^ In the simulator, tap the iPhone app
-^ In Xcode, connect to the iPhone app (now you can switch between the apps with the drop-down in Xcode’s debug console header
+^ In Xcode, connect to the iPhone app (now you can switch between the apps with the drop-down in Xcode’s debug console header)
 ^ Note that log messages don’t seem to appear in the console this way, but breakpoints work. You can open the simulator log file in Console to see the log messages.
+^ SimPholders2 for finding which simulator is active
+^ System Log in Console: show logging
+
+
+---
+
+# [fit] Debugging Watch Apps
+
+- Run iPhone app first
+- Open Watch “external display”
+- Launch the WatchKit app
+- In the simulator, tap the iPhone app
+- In Xcode, connect to the iPhone app
+- Use Console to watch Simulator’s system log
+
+^ Just a summary of the demo for reference on the steps.
 
 ---
 
 # [fit] Challenges
 
-^ Send UI commands when the corresponding element is not active doesn’t update the UI.
-^ Using shared frameworks.
-^ Selecting watch menu items crashes the simulator eventually
-^ no auto layout (challenge?)
-^ notifications while watch app is running?
-^ 
+---
+
+# Challenges
+
+- Sending UI commands to non-active controls
+- Using shared frameworks
+- Selecting watch menu items crashes the simulator eventually
+- No auto layout?
+- Notifications while watch app is running?
+
+
 
 ---
 
@@ -188,8 +255,17 @@ Thibaut Sailly
 
 # Wish List
 
-- `setNeedsUpdate` and friends
 - Direct access to the Taptic Engine
 - iPhone-free 3<sup>rd</sup> party code
+- API for digital crown
+- Animated state changes
+- Interactive Glances
 
-^ [[[get items from David]]]
+^ Ask David to come back up.
+
+---
+
+# [fit]Thanks!
+
+- @curtclifton, [curtclifton.net](http://www.curtclifton.net)
+- @davidhoang, [davidhoang.com](http://www.davidhoang.com)
