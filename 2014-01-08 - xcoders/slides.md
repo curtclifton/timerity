@@ -1,8 +1,6 @@
 footer: Curt Clifton—The Omni Group. Jan 8, 2015, Seattle Xcoders
 slidenumbers: true
 
-^ [[[Clean up all these notes to self]]]
-
 ^ [[[Add presenter notes to each slide]]]
 
 ^ [[[Put all presenter notes in Outliner]]]
@@ -18,35 +16,31 @@ slidenumbers: true
 # [fit] Developing with
 # [fit] WatchKit 1.0
 
+^ [put this slide up at end of break]
+
 ^ [transition to introduce yourself]
 
 ---
 
 # Developing with WatchKit 1.0
 
-## Curt Clifton
+## Curt Clifton, The Omni Group
 
-### The Omni Group
+### @curtclifton
 
-#### Twitter: @curtclifton
-
-#### Web: curtclifton.net
+### curtclifton.net
 
 ---
 
 # Outline
 
 - Conceptual model
-
 - Sample app
-
 - Syncing data with Watch
-
 - Debugging Watch apps
-
 - Some challenges
-
 - Other resources
+- Wish list
 
 ^ [Discuss in terms of your goals for them leaving the talk]
 
@@ -57,19 +51,31 @@ slidenumbers: true
 
 ---
 
-## In WatchKit 1.0 your code runs in an extension on the iPhone.
-
----
-
-## In WatchKit 1.0 your code runs in an extension on the iPhone.
-
-![original](WhatGoesWhere.png)
+## In WatchKit 1.0 your code *runs* in an extension *on the iPhone*.
 
 ^ WatchKit extension and Watch app resources are bundled with your iPhone app (like Today and Sharing extensions and custom keyboards)
 
 ---
 
+## In WatchKit 1.0 your code *runs* in an extension *on the iPhone*.
+
+![original](WhatGoesWhere.png)
+
+^ iPhone first
+
+^ then watch
+
+^ then generated images
+
+^ “So the first thing to remember is that you’re writing code that runs on the iPhone. Almost all assets on the watch are put there statically at install time.”
+
+^ The next piece of the conceptually model is that you have a limited set of classes to work with. In fact…
+
+---
+
 ## All the WatchKit classes fit on one slide that you can read.
+
+^ [beat]
 
 ---
 
@@ -77,17 +83,23 @@ slidenumbers: true
 
 ![original](WatchKitClasses.png)
 
+^ “but I don’t expect you to.”
+
 ^ A couple of interface controllers. You’ll have one for each screen in your watch app.
+
 ^ One device class that vends a singleton. Can get device size and cache images with this.
-^ 
+
+^ All the rest are the classes for building your UI that David talks about.
+
+^ “But what are these classes good for if we can’t run code on the watch?”
 
 ---
 
-## All UI elements on the Watch are accessed through proxy objects.
+## All the `WKInterfaceObject` subclasses are proxy objects.
 
 ---
 
-## All UI elements on the Watch are accessed through proxy objects.
+## All the `WKInterfaceObject` subclasses are proxy objects.
 
 ![original](ProxyObjects.png) 
 
@@ -163,24 +175,12 @@ slidenumbers: true
 ![original](SeedFileSyncing.png)
 
 ^ note that time flows down the page
+
 ^ [talk through the steps chronologically]
+
 ^ Let’s take a look at this in code. This should also be a good example of debugging WatchKit apps.
 
-^ See presenter's script
-
-^ [[[ Move this bit just to Outliner]]]
-^ SET UP:
-^ Turn breakpoints off
-^ Launch iPhone app first to get the simulator rolling.
-^ Open Watch display
-^ Kill the app
-^ Launch the WatchKit app
-^ In the simulator, tap the iPhone app
-^ In Xcode, connect to the iPhone app (now you can switch between the apps with the drop-down in Xcode’s debug console header)
-^ Note that log messages don’t seem to appear in the console this way, but breakpoints work. You can open the simulator log file in Console to see the log messages.
-^ SimPholders2 for finding which simulator is active
-^ System Log in Console: show logging
-
+^ See presenter’s script
 
 ---
 
@@ -209,7 +209,9 @@ slidenumbers: true
 - No auto layout?
 - Notifications while watch app is running?
 
+^ [If OK on time, show code for first two items.]
 
+^ [If swimming in time, demo coding and running dynamic notification]
 
 ---
 
@@ -224,7 +226,7 @@ slidenumbers: true
 
 - [Dev and design resources](http://developer.apple.com/watchkit/)
 
-^ Links will be in posted slides on curtclifton.net
+^ Links will be in the slides posted later
 
 ---
 
@@ -269,3 +271,4 @@ Thibaut Sailly
 
 - @curtclifton, [curtclifton.net](http://www.curtclifton.net)
 - @davidhoang, [davidhoang.com](http://www.davidhoang.com)
+
