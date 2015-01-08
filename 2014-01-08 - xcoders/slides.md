@@ -95,25 +95,37 @@ slidenumbers: true
 
 ---
 
-## All the `WKInterfaceObject` subclasses are proxy objects.
+## All the WKInterfaceObjects are proxies for views on the watch.
 
 ---
 
-## All the `WKInterfaceObject` subclasses are proxy objects.
+## All the WKInterfaceObjects are proxies for views on the watch.
 
 ![original](ProxyObjects.png) 
 
-^ [Quick handwavy explanation of the diagram. Details on next slide.]
+^ [Quick hand-wavy explanation of the diagram. Details on next slide.]
+
+^ The Apple docs say, “Interface objects are not views. They are proxy objects that communicate wirelessly with the actual views used to implement your UI on Apple Watch.”
+
+^ “So what can you do with these objects? Let’s look at the methods available on WKInterfaceLabel.”
 
 ---
 
-## All UI elements on the Watch are accessed through proxy objects.
+## All the WKInterfaceObjects are proxies for views on the watch.
 
 ![original](ProxyObjectsDetails.png)
 
 ^ setters, not properties!
 
-^ “Interface objects are not views. They are proxy objects that communicate wirelessly with the actual views used to implement your UI on Apple Watch.”
+---
+
+# Conceptual Model
+
+- In WatchKit 1.0 your code *runs* in an extension *on the iPhone*.
+
+- All the WKInterfaceObjects are proxies for views on the watch.
+
+^ summarize
 
 ---
 
@@ -122,15 +134,23 @@ slidenumbers: true
 
 ^ [Fire up the WatchApp and give a brief demo of using it. Stay away from the code]
 
+^ Note that the code will be posted on github on Friday
+
 ---
 
 # [fit] Syncing 
 # [fit] Data with 
 # [fit] Watch
 
+^ Next I want to talk about syncing data with Watch…
+
 ---
 
-# Your watch extension is a separate process from your iPhone app: you just signed up for data syncing.
+# Your watch extension is a separate process from your iPhone app; you just signed up for data syncing.
+
+^ even if you don't have a "cloud-based" application, almost anything interesting is going to have to share data
+
+^ and even if you do have a cloud app…
 
 ---
 
@@ -166,6 +186,8 @@ slidenumbers: true
 - Shared SQLite database
 - Seed file & callbacks
 
+^ If we can't use network operations, what are our choices?
+
 ^ [Review the issues and choices, but don’t dive into code yet.]
 
 ---
@@ -180,7 +202,18 @@ slidenumbers: true
 
 ^ Let’s take a look at this in code. This should also be a good example of debugging WatchKit apps.
 
-^ See presenter’s script
+^ [See presenter’s script]
+
+^ [After demo ask if anyone sees an issue: initial watch read has to be coordinated and we could still be killed in the brief window. Possible solution: all callbacks, but would have to wake phone app even to get initial data. Too slow?]
+
+---
+
+# Syncing Data with Watch
+
+- Your watch extension is a separate process from your iPhone app; you just signed up for data syncing.
+- Watch apps die easily; network operations are right out.[^1]
+
+^ summarize
 
 ---
 
@@ -199,6 +232,8 @@ slidenumbers: true
 
 # [fit] Challenges
 
+^ I wanted to briefly mention some of the challenges I had implementing the demo app…
+
 ---
 
 # Challenges
@@ -213,10 +248,18 @@ slidenumbers: true
 
 ^ [If swimming in time, demo coding and running dynamic notification]
 
+^ On the iPhone, if a notification arrives while your app is foregrounded, the system doesn't present the notification, it just calls a method on your app delegate. What's going to happen on the Watch? (There's a method that might be called on the watch, but the docs are unclear and we can't test it.)
+
 ---
 
 # [fit] Useful
 # [fit] Resources
+
+^ These are some resources I've found handy.
+
+^ Links will be in the slides posted later
+
+^ [Don't read 'em, just click through!]
 
 ---
 
@@ -225,8 +268,6 @@ slidenumbers: true
 - [Marketing site](http://www.apple.com/watch/)
 
 - [Dev and design resources](http://developer.apple.com/watchkit/)
-
-^ Links will be in the slides posted later
 
 ---
 
