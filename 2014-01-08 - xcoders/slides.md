@@ -160,6 +160,20 @@ slidenumbers: true
 
 ---
 
+# What’s a developer to do?
+
+- File coordination? [Nope.](https://developer.apple.com/library/ios/technotes/tn2408/_index.html)
+- [App Group entitlement and user defaults](http://www.atomicbird.com/blog/sharing-with-app-extensions)
+- [Shared CoreData database](http://stackoverflow.com/questions/24641768/accessing-core-data-sql-database-in-ios-8-extension-sharing-data-between-app-an)
+- Shared SQLite database
+- Seed file & callbacks
+
+^ If we can't use network operations, what are our choices?
+
+^ [Review the issues and choices, but don’t dive into code yet.]
+
+---
+
 # Cartoon of the Day
 
 ^ Before turning to more technical details, it’s probably helpful to understand my state of mind when implementing the code…
@@ -173,20 +187,6 @@ slidenumbers: true
 ^ “I first saw this problem on the Google Labs Aptitude Test. A professor and I filled a blackboard without getting anywhere. Have fun.”
 
 [^2]: [https://xkcd.com/356/](https://xkcd.com/356/)
-
----
-
-# What’s a developer to do?
-
-- File coordination? [Nope.](https://developer.apple.com/library/ios/technotes/tn2408/_index.html)
-- [App Group entitlement and user defaults](http://www.atomicbird.com/blog/sharing-with-app-extensions)
-- [Shared CoreData database](http://stackoverflow.com/questions/24641768/accessing-core-data-sql-database-in-ios-8-extension-sharing-data-between-app-an)
-- Shared SQLite database
-- Seed file & callbacks
-
-^ If we can't use network operations, what are our choices?
-
-^ [Review the issues and choices, but don’t dive into code yet.]
 
 ---
 
