@@ -65,7 +65,7 @@ slidenumbers: true
 
 ^ “So the first thing to remember is that you’re writing code that runs on the iPhone. Almost all assets on the watch are put there statically at install time.”
 
-^ The next piece of the conceptually model is that you have a limited set of classes to work with. In fact…
+^ The next piece of the conceptual model is that you have a limited set of classes to work with. In fact…
 
 ---
 
