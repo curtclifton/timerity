@@ -3,7 +3,7 @@
 //  TimerityData
 //
 //  Created by Curt Clifton on 12/7/14.
-//  Copyright (c) 2014 curtclifton.net. All rights reserved.
+//  Copyright (c) 2014–2015 curtclifton.net. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
