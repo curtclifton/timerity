@@ -25,13 +25,13 @@ public struct TimerCommand {
         WKInterfaceController.openParentApplication(self.encodeToJSONData()) { maybeResult, maybeError in
             if let jsonResult = maybeResult as? [String: AnyObject] {
                 NSLog("got callback with JSON result: “%@”", jsonResult)
-                continuation(Either.Left(Box(wrap: jsonResult)))
+                continuation(Either.Left(Box(jsonResult)))
             } else if maybeResult != nil {
                 NSLog("got callback with non-JSON result: “%@”", maybeResult!)
-                continuation(Either.Right(Box(wrap: TimerError.InterprocessCommunicationFormatError("expected JSON, got \(maybeResult)"))))
+                continuation(Either.Right(Box(TimerError.InterprocessCommunicationFormatError("expected JSON, got \(maybeResult)"))))
             } else if let error = maybeError {
                 NSLog("got callback with error: “%@”", error)
-                continuation(Either.Right(Box(wrap: TimerError.InterprocessCommunicationError(error))))
+                continuation(Either.Right(Box(TimerError.InterprocessCommunicationError(error))))
             } else {
                 assert(false, "how could this happen?")
             }
@@ -66,12 +66,12 @@ extension TimerCommand: JSONDecodable {
             let maybeTimer = Timer.decodeJSONData(payload)
             switch (maybeCommandType, maybeTimer) {
             case (.Left(let timerCommandBox), .Left(let timerBox)):
-                return Either.Left(Box(wrap: TimerCommand(commandType: timerCommandBox.unwrapped, timer: timerBox.unwrapped)))
+                return Either.Left(Box(TimerCommand(commandType: timerCommandBox.contents, timer: timerBox.contents)))
             default:
-                return Either.Right(Box(wrap: TimerError.Decoding("unexpected JSON data: \(payload)")))
+                return Either.Right(Box(TimerError.Decoding("unexpected JSON data: \(payload)")))
             }
         } else {
-            return Either.Right(Box(wrap: TimerError.Decoding("missing key “\(JSONKey.TimerCommand)” in JSON data: \(jsonData)")))
+            return Either.Right(Box(TimerError.Decoding("missing key “\(JSONKey.TimerCommand)” in JSON data: \(jsonData)")))
         }
     }
 }
@@ -87,12 +87,12 @@ extension TimerCommandType: JSONDecodable {
     public static func decodeJSONData(jsonData: [String : AnyObject]) -> Either<TimerCommandType, TimerError> {
         if let timerCommandTypeRawValue = jsonData[JSONKey.TimerCommandType] as? String {
             if let timerCommandType = TimerCommandType(rawValue: timerCommandTypeRawValue) {
-                return Either.Left(Box(wrap: timerCommandType))
+                return Either.Left(Box(timerCommandType))
             } else {
-                return Either.Right(Box(wrap: TimerError.Decoding("invalid timer command type raw value: \(timerCommandTypeRawValue)")))
+                return Either.Right(Box(TimerError.Decoding("invalid timer command type raw value: \(timerCommandTypeRawValue)")))
             }
         } else {
-            return Either.Right(Box(wrap: TimerError.Decoding("missing timer command type key: \(jsonData)")))
+            return Either.Right(Box(TimerError.Decoding("missing timer command type key: \(jsonData)")))
         }
     }
 }

@@ -172,11 +172,9 @@ class InterfaceController: WKInterfaceController {
                 }
                 switch registrationResult {
                 case .Left(let callbackIDBox):
-                    rowCallbackIDs.append(callbackIDBox.unwrapped)
-                    break
+                    rowCallbackIDs.append(callbackIDBox.contents)
                 case .Right(let errorBox):
-                    NSLog("Error registering callback for timer: ", errorBox.unwrapped.description)
-                    break
+                    NSLog("Error registering callback for timer: ", errorBox.contents.description)
                 }
             }
         }

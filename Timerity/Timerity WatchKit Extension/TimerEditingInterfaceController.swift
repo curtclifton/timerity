@@ -51,11 +51,9 @@ class TimerEditingInterfaceController: WKInterfaceController {
             
             switch registrationResult {
             case .Left(let callbackIdentifierBox):
-                callbackIdentifier = callbackIdentifierBox.unwrapped
-                break
+                callbackIdentifier = callbackIdentifierBox.contents
             case .Right(let errorBox):
-                NSLog("error registering timer: ", errorBox.unwrapped.description)
-                break
+                NSLog("error registering timer: ", errorBox.contents.description)
             }
         } else if context == nil {
             _update()

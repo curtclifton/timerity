@@ -63,12 +63,10 @@ class SingleTimerController {
         }
         switch registrationResult {
         case .Left(let callbackIDBox):
-            timerUpdateCallbackID = callbackIDBox.unwrapped
-            break
+            timerUpdateCallbackID = callbackIDBox.contents
         case .Right(let errorBox):
-            NSLog("Error getting information for timer: ", errorBox.unwrapped.description)
+            NSLog("Error getting information for timer: ", errorBox.contents.description)
             timer = nil
-            break
         }
     }
     
@@ -79,18 +77,15 @@ class SingleTimerController {
                 countdownTimer.stop() // the countdown will be hidden by a callback, but lets not let the count drop below the cached time remaining
                 timer.pause()
                 timerDB.updateTimer(timer, commandType: TimerCommandType.Pause)
-                break
             case .Paused(timeRemaining: let timeRemaining):
                 timer.resume()
                 timerDB.updateTimer(timer, commandType: TimerCommandType.Resume)
-                break
             case .Completed:
                 timer.reset()
                 timerDB.updateTimer(timer, commandType: TimerCommandType.Reset)
             case .Inactive:
                 timer.start()
                 timerDB.updateTimer(timer, commandType: TimerCommandType.Start)
-                break
             }
         }
     }

@@ -78,18 +78,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let maybeCommand = TimerCommand.decodeJSONData(rawJSONData)
             switch maybeCommand {
             case .Left(let commandBox):
-                let command = commandBox.unwrapped
+                let command = commandBox.contents
                 switch command.commandType {
                 case .Local:
                     assert(false, "shouldn't send local command to the iPhone app")
-                    break
                 case .Delete:
                     timerDB.deleteTimer(command.timer, commandType: .Local)
-                    break
                 default:
                     timerDB.updateTimer(command.timer, commandType: .Local)
                     updateNotificationsForTimer(command.timer)
-                    break
                 }
 
                 timerDataPresenter.write()
@@ -100,7 +97,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let result = updatedDB as [NSObject: AnyObject]
                 reply(result)
             case .Right(let errorBox):
-                NSLog("error decoding command from watch extension: %@", errorBox.unwrapped.description)
+                NSLog("error decoding command from watch extension: %@", errorBox.contents.description)
                 // TODO: communicate error back to watch app
                 reply([:])
             }

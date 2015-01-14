@@ -10,12 +10,12 @@ import Foundation
 
 // TODO: Lose this gross hack once Swift's IR gen is fixed. (See Either<T,U> below)
 public struct Box<T> {
-    private var valueInABox: [T]
-    init(wrap: T) {
-        valueInABox = [wrap]
+    private var value: [T]
+    init(_ wrap: T) {
+        value = [wrap]
     }
-    public var unwrapped: T {
-        return valueInABox.first!
+    public var contents: T {
+        return value.first!
     }
 }
 
@@ -28,9 +28,9 @@ extension Either: Printable {
     public var description: String {
         switch self {
         case .Left(let tBox):
-            return "Left: \(tBox.unwrapped)"
+            return "Left: \(tBox.contents)"
         case .Right(let uBox):
-            return "Right: \(uBox.unwrapped)"
+            return "Right: \(uBox.contents)"
         }
     }
 }
@@ -152,7 +152,7 @@ public class TimerDataPresenter: NSObject, NSFilePresenter {
     private func read() -> TimerData {
         var coordinationSuccess = false // assume the worst
         var coordinationError: NSError?
-        var readResult: Either<TimerData, TimerError> = Either.Right(Box(wrap: TimerError.FileError(NSError())))
+        var readResult: Either<TimerData, TimerError> = Either.Right(Box(TimerError.FileError(NSError())))
         
         NSLog("Beginning coordinated read");
         fileCoordinator.coordinateReadingItemAtURL(url, options: nil, error: &coordinationError) { actualURL in
@@ -171,21 +171,21 @@ public class TimerDataPresenter: NSObject, NSFilePresenter {
                     if let jsonDictionary = jsonData as? [String:AnyObject] {
                         readResult = TimerData.decodeJSONData(jsonDictionary)
                     } else {
-                        readResult = Either.Right(Box(wrap: TimerError.Decoding("invalid data file contents, expected top-level dictionary, got \(jsonData)")))
+                        readResult = Either.Right(Box(TimerError.Decoding("invalid data file contents, expected top-level dictionary, got \(jsonData)")))
                     }
                 } else {
-                    readResult = Either.Right(Box(wrap: TimerError.DeserializationError(coordinationError!)))
+                    readResult = Either.Right(Box(TimerError.DeserializationError(coordinationError!)))
                 }
             } else {
-                readResult = Either.Right(Box(wrap: TimerError.FileError(coordinationError!)))
+                readResult = Either.Right(Box(TimerError.FileError(coordinationError!)))
             }
         }
         
         switch readResult {
         case .Left(let timerDataBox):
-            return timerDataBox.unwrapped
+            return timerDataBox.contents
         case .Right(let errorBox):
-            NSLog("error reading data: %@", errorBox.unwrapped.description)
+            NSLog("error reading data: %@", errorBox.contents.description)
             return TimerData()
         }
     }
@@ -339,9 +339,9 @@ public class TimerData {
             } else {
                 callbackIDsByTimerID[identifier] = [callbackID]
             }
-            let timerInfo = timerBox.unwrapped
+            let timerInfo = timerBox.contents
             callback(timerInfo)
-            return Either.Left(Box(wrap: TimerChangeCallbackID(value: callbackID)))
+            return Either.Left(Box(TimerChangeCallbackID(value: callbackID)))
         case .Right(let errorBox):
             return Either.Right(errorBox)
         }
@@ -394,9 +394,9 @@ public class TimerData {
     
     private func _timer(#identifier: String) -> Either<Timer, TimerError> {
         if let index = timerIndex[identifier] {
-            return Either.Left(Box(wrap: timers[index]))
+            return Either.Left(Box(timers[index]))
         } else {
-            return Either.Right(Box(wrap: TimerError.MissingIdentifier(identifier)))
+            return Either.Right(Box(TimerError.MissingIdentifier(identifier)))
         }
     }
     
@@ -444,12 +444,12 @@ public class TimerData {
             if let strongSelf = self {
                 switch strongSelf._timer(identifier: identifier) {
                 case .Left(let currentTimerBox):
-                    var currentTimer = currentTimerBox.unwrapped
+                    var currentTimer = currentTimerBox.contents
                     currentTimer.complete()
                      // We only replace locally even in the watch extension. We count on the database on the other side to stop its own active timers. Any subsequent actions will synchronize these timers.
                     strongSelf.updateTimer(currentTimer, commandType: TimerCommandType.Local)
                 case .Right(let errorBox):
-                    NSLog("Error on timer expiration: %@", errorBox.unwrapped.description);
+                    NSLog("Error on timer expiration: %@", errorBox.contents.description);
                 }
             }
         }
@@ -461,15 +461,15 @@ public class TimerData {
             if let strongSelf = self {
                 switch jsonDataOrError {
                 case .Left(let jsonDataBox):
-                    let newTimerDataOrError = TimerData.decodeJSONData(jsonDataBox.unwrapped)
+                    let newTimerDataOrError = TimerData.decodeJSONData(jsonDataBox.contents)
                     switch newTimerDataOrError {
                     case .Left(let newTimerDataBox):
-                        strongSelf.replaceTimers(newTimerDataBox.unwrapped.timers)
+                        strongSelf.replaceTimers(newTimerDataBox.contents.timers)
                     case .Right(let errorBox):
-                        NSLog("Error decoding JSON data from iPhone: %@", errorBox.unwrapped.description);
+                        NSLog("Error decoding JSON data from iPhone: %@", errorBox.contents.description);
                     }
                 case .Right(let errorBox):
-                    NSLog("Error sending command to iPhone: %@", errorBox.unwrapped.description);
+                    NSLog("Error sending command to iPhone: %@", errorBox.contents.description);
                 }
             }
         }
@@ -490,13 +490,12 @@ private extension Array {
             let maybeResult = f(element)
             switch maybeResult {
             case .Left(let resultBox):
-                resultArray.append(resultBox.unwrapped)
-                break
+                resultArray.append(resultBox.contents)
             case .Right(let errorBox):
                 return .Right(errorBox)
             }
         }
-        return Either.Left(Box(wrap: resultArray))
+        return Either.Left(Box(resultArray))
     }
 }
 
@@ -508,31 +507,27 @@ extension TimerData: JSONDecodable {
             let maybeTimers = encodedTimers.emap() { Timer.decodeJSONData($0) }
             switch maybeTimers {
             case .Left(let timersBox):
-                let timers = timersBox.unwrapped
+                let timers = timersBox.contents
                 let sortedTimers = timers.sorted() { left, right in
                     var result: Bool
                     switch (left.state, right.state) {
                     case (.Active(fireDate: let leftFireDate), .Active(fireDate: let rightFireDate)):
                         result = leftFireDate.compare(rightFireDate) == NSComparisonResult.OrderedAscending
-                        break
                     case (.Active, _):
                         result = true
-                        break
                     case (_, .Active):
                         result = false
-                        break
                     default:
                         result = left.lastModified.compare(right.lastModified) == NSComparisonResult.OrderedDescending
-                        break
                     }
                     return result
                 }
-                return .Left(Box(wrap:TimerData(timers: sortedTimers)))
+                return .Left(Box(TimerData(timers: sortedTimers)))
             case .Right(let timerErrorBox):
                 return .Right(timerErrorBox)
             }
         } else {
-            return Either.Right(Box(wrap: TimerError.Decoding("missing all timer data")))
+            return Either.Right(Box(TimerError.Decoding("missing all timer data")))
         }
     }
 }

@@ -106,7 +106,6 @@ public struct Timer {
             isPaused = true
             isCompleted = false
             self.timeRemaining = timeRemaining
-            break
         case .Completed:
             isActive = false
             isPaused = false
@@ -115,7 +114,6 @@ public struct Timer {
             isActive = false
             isPaused = false
             isCompleted = false
-            break
         }
     }
     
@@ -273,19 +271,19 @@ extension Timer: JSONDecodable {
                                         case (true, false, false):
                                             lastCheckedProperty = "fireDate"
                                             if let fireDateNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
-                                                return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Active(fireDate: NSDate(timeIntervalSince1970: fireDateNumber.doubleValue)))))
+                                                return Either.Left(Box(Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Active(fireDate: NSDate(timeIntervalSince1970: fireDateNumber.doubleValue)))))
                                             }
                                         case (false, true, false):
                                             lastCheckedProperty = "timeRemaining"
                                             if let timeRemainingNumber = encodedTimer[lastCheckedProperty] as? NSNumber {
-                                                return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Paused(timeRemaining: Duration(seconds: timeRemainingNumber.doubleValue)))))
+                                                return Either.Left(Box(Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Paused(timeRemaining: Duration(seconds: timeRemainingNumber.doubleValue)))))
                                             }
                                         case (false, false, true):
-                                            return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Completed)))
+                                            return Either.Left(Box(Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Completed)))
                                         case (false, false, false):
-                                            return Either.Left(Box(wrap: Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Inactive)))
+                                            return Either.Left(Box(Timer(name: name, durationInSeconds: durationNumber.doubleValue, id: id, lastModified: NSDate(timeIntervalSince1970: lastModifiedNumber.doubleValue), state: TimerState.Inactive)))
                                         default:
-                                            return Either.Right(Box(wrap: TimerError.Decoding("unexpected timer state, cannot be more than one of active, paused, and completed")))
+                                            return Either.Right(Box(TimerError.Decoding("unexpected timer state, cannot be more than one of active, paused, and completed")))
                                         }
                                     }
                             }
@@ -295,9 +293,9 @@ extension Timer: JSONDecodable {
                 }
             }
             
-            return Either.Right(Box(wrap: TimerError.Decoding("invalid timer data, missing \(lastCheckedProperty): \(encodedTimer)")))
+            return Either.Right(Box(TimerError.Decoding("invalid timer data, missing \(lastCheckedProperty): \(encodedTimer)")))
         } else {
-            return Either.Right(Box(wrap: TimerError.Decoding("missing timer data")))
+            return Either.Right(Box(TimerError.Decoding("missing timer data")))
         }
     }
 }
