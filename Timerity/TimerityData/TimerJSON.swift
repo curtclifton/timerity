@@ -15,7 +15,7 @@ public protocol JSONEncodable {
 
 public protocol JSONDecodable {
     typealias ResultType
-    class func decodeJSONData(jsonData: [String:AnyObject]) -> Either<ResultType, TimerError>
+    static func decodeJSONData(jsonData: [String:AnyObject]) -> Either<ResultType, TimerError>
 }
 
 struct JSONKey {

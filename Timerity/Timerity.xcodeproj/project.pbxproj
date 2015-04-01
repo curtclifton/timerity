@@ -38,7 +38,6 @@
 		4D73888E1A5A0F52004A907B /* TimerJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D73888D1A5A0F52004A907B /* TimerJSON.swift */; };
 		4D821C771A5A398B001B3A93 /* TimerityData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D0A165C1A353216001BF0BE /* TimerityData.framework */; };
 		4D821C781A5A398B001B3A93 /* TimerityData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4D0A165C1A353216001BF0BE /* TimerityData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		4D821C7D1A5B0EE1001B3A93 /* DoYouEvenCoordinateBro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D821C7C1A5B0EE1001B3A93 /* DoYouEvenCoordinateBro.swift */; };
 		4DB48B951A5216580031DECD /* SingleTimerInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */; };
 		4DB48B971A5232A20031DECD /* SingleTimerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B961A5232A20031DECD /* SingleTimerController.swift */; };
 		4DB48B991A5337100031DECD /* TimerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB48B981A5337100031DECD /* TimerCommand.swift */; };
@@ -147,7 +146,6 @@
 		4D20F8AF1A4A554900754D4C /* LabelRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelRowController.swift; sourceTree = "<group>"; };
 		4D2ED75E1A563C3A003F163E /* TimerError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerError.swift; sourceTree = "<group>"; };
 		4D73888D1A5A0F52004A907B /* TimerJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerJSON.swift; sourceTree = "<group>"; };
-		4D821C7C1A5B0EE1001B3A93 /* DoYouEvenCoordinateBro.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoYouEvenCoordinateBro.swift; sourceTree = "<group>"; };
 		4DB48B941A5216580031DECD /* SingleTimerInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleTimerInterfaceController.swift; sourceTree = "<group>"; };
 		4DB48B961A5232A20031DECD /* SingleTimerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleTimerController.swift; sourceTree = "<group>"; };
 		4DB48B981A5337100031DECD /* TimerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerCommand.swift; sourceTree = "<group>"; };
@@ -332,7 +330,6 @@
 				4D0A16751A35328F001BF0BE /* Timer.swift */,
 				4D0A16601A353216001BF0BE /* TimerityData.h */,
 				4D73888D1A5A0F52004A907B /* TimerJSON.swift */,
-				4D821C7C1A5B0EE1001B3A93 /* DoYouEvenCoordinateBro.swift */,
 			);
 			path = TimerityData;
 			sourceTree = "<group>";
@@ -644,7 +641,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D821C7D1A5B0EE1001B3A93 /* DoYouEvenCoordinateBro.swift in Sources */,
 				4DB54EC61A5A01940005186A /* NSTimerExtensions.swift in Sources */,
 				4D0A16761A35328F001BF0BE /* Timer.swift in Sources */,
 				4D73888E1A5A0F52004A907B /* TimerJSON.swift in Sources */,

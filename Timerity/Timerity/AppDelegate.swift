@@ -14,9 +14,6 @@ import TimerityData
 private let groupURL = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.net.curtclifton.Timerity")
 private let timerDatabaseURL = groupURL!.URLByAppendingPathComponent("data.json", isDirectory: false)
 
-// TODO: remove file coordination demo code:
-// private var dyecb: DoYouEvenCoordinateBro!
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -34,8 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         updateNotifications()
         NSLog("In application did finish launching, timers: %@", timerDB.timers.description)
-        // TODO: remove file coordination demo code:
-        // dyecb = DoYouEvenCoordinateBro()
         
         return true
     }

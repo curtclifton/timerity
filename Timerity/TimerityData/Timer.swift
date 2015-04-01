@@ -79,7 +79,7 @@ public struct Timer {
         self.name = name
         self.duration = duration
         lastModified = NSDate()
-        id = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault))
+        id = String(CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault)))
     }
     
     private init(name: String, durationInSeconds: Double, id: String, lastModified: NSDate, state: TimerState) {
