@@ -86,7 +86,7 @@ class TimerEditingInterfaceController: WKInterfaceController {
             if nameSuggestionSet.contains(name) {
                 return false
             }
-            nameSuggestionSet.add(name)
+            nameSuggestionSet.insert(name)
             return true
         }
         

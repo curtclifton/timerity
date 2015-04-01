@@ -145,7 +145,7 @@ class InterfaceController: WKInterfaceController {
                 let countOfElided = timerDB.timers.count - numberOfTimersShown
                 let countOfElidedAsString = countOfElided.description
                 let labelText = NSString(format: NSLocalizedString("And %@ more", comment: "and N more"), countOfElidedAsString)
-                nMoreRowController.label?.setText(labelText)
+                nMoreRowController.label?.setText(labelText as String)
             }
             ++nextRow
         }
@@ -206,6 +206,6 @@ class InterfaceController: WKInterfaceController {
     }
     
     private func _deleteRowWithController(controller: TimerTableRowController) {
-        controllersToDelete.add(controller)
+        controllersToDelete.insert(controller)
     }
 }

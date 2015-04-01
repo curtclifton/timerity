@@ -62,13 +62,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         timerDataPresenter.invalidate()
     }
 
-    func application(application: UIApplication!, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]!, reply: (([NSObject : AnyObject]!) -> Void)!) {
+    func application(application: UIApplication, handleWatchKitExtensionRequest userInfo: [NSObject : AnyObject]?, reply: (([NSObject : AnyObject]!) -> Void)!) {
         // TODO: remove file coordination demo code:
         //        dyecb.text = "Here I come to save the day!"
         //        dyecb.write()
         
         NSLog("handling extension request with timers: %@", timerDB.timers.description)
-        NSLog("request: %@", userInfo)
+        NSLog("request: %@", userInfo ?? "no user info")
         if let rawJSONData = userInfo as? [String: AnyObject] {
             let maybeCommand = TimerCommand.decodeJSONData(rawJSONData)
             switch maybeCommand {
@@ -97,7 +97,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 reply([:])
             }
         } else {
-            NSLog("userInfo from watch extension wasn't expected type [String: AnyObject]: %@", userInfo);
+            NSLog("userInfo from watch extension wasn't expected type [String: AnyObject]: %@", userInfo ?? "was nil");
             // TODO: communicate error back to watch app
             reply([:])
         }
