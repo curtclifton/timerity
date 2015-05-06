@@ -1,0 +1,5 @@
+Developing for WatchKit 1.0
+
+Apple’s initial WatchKit SDK is limited and powerful at the same time. Most of the processing for a third-party Watch app happens on a paired iPhone with data sent to and from the watch via Bluetooth Low Energy. This design leads to an API that emphasizes compile-time configuration and uses an interesting proxy-based approach to run-time user interaction. The design also requires most apps to implement some form of data syncing between the Watch app and its host iPhone app.
+
+In this talk I’ll cover the basic architecture of the WatchKit SDK and share the code for an Watch app that uses many of the SDK’s features. I’ll also discuss some options for syncing data with an Watch app.
