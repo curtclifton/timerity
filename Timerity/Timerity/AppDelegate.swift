@@ -35,6 +35,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        updateNotifications()
+    }
+    
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -117,7 +121,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func updateNotificationsForTimer(timer: Timer) {
-        // CCC, 1/5/2015. implement
+        // CCC, 5/6/2015. unschedule any scheduled notification
+        // CCC, 5/6/2015. add new notification
+        
         //        let notification = UILocalNotification()
         //        let oneMinuteHence = NSDate().dateByAddingTimeInterval(60.0)
         //        notification.fireDate = oneMinuteHence
@@ -127,9 +133,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func updateNotifications() {
-        // CCC, 12/10/2014. implement
+        let currentSettings = UIApplication.sharedApplication().currentUserNotificationSettings()
+        if currentSettings.types != .None {
+            for timer in timerDB.timers {
+                updateNotificationsForTimer(timer)
+            }
+        }
     }
     
-    // CCC, 1/5/2015. Handle the case where the app is foregrounded when a notification expires.
+    // ¡ 1/5/2015. Handle the case where the app is foregrounded when a notification expires.
 }
 

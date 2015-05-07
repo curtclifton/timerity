@@ -30,15 +30,30 @@ slidenumbers: true
 
 # Outline
 
+- Watch app parts
 - Conceptual model
 - Sample app
 - Syncing data with Apple Watch
 - Debugging Apple Watch apps
+- Provisioning
 - Some challenges
 - Other resources
 - Wish list
 
 ^ [Discuss in terms of your goals for them leaving the talk]
+
+---
+
+# [fit] Watch App
+# [fit] Parts
+
+---
+
+## Your Watch app can include notifications, glances, the main app, and handoff.
+
+^ describe each piece
+^ for each, discuss what you need to do as a dev
+^ fast in, fast out
 
 ---
 
@@ -164,7 +179,7 @@ slidenumbers: true
 - File coordination? [Nope.](https://developer.apple.com/library/ios/technotes/tn2408/_index.html)
 - [App Group entitlement and user defaults](http://www.atomicbird.com/blog/sharing-with-app-extensions)
 - [Shared CoreData database](http://stackoverflow.com/questions/24641768/accessing-core-data-sql-database-in-ios-8-extension-sharing-data-between-app-an)
-- [[[Darwin Notifications]]]
+- [Darwin Notifications—MMWormhole](http://blog.consumedbycode.com/data-synchronization-with-watchkit/)
 - Shared SQLite database
 - Seed file & callbacks
 
@@ -230,7 +245,11 @@ slidenumbers: true
 
 # [fit] Provisioning
 
-[[[Fresh circles of provisioning hell…]]]
+![inline](Provisioning.png)
+
+^ Watch UUID in Devices
+^ Separate bundle IDs for each target
+^ Set the signing identities for each target
 
 ---
 
@@ -247,7 +266,7 @@ slidenumbers: true
 - Selecting watch menu items crashes the simulator eventually
 - No auto layout?
 - Notifications while watch app is running?
-
+ 
 ^ [If OK on time, show code for first two items.]
 
 ^ [If swimming in time, demo coding and running dynamic notification]
@@ -263,40 +282,26 @@ slidenumbers: true
 
 ^ Links will be in the slides posted later
 
-^ [Don't read 'em, just click through!]
+^ [Don't read 'em. If time allows, discuss some highlights, otherwise click through]
 
 ---
 
 # From Apple
 
-- [Marketing site](http://www.apple.com/watch/)
-
 - [Dev and design resources](http://developer.apple.com/watchkit/)
+- [Human Interface Guidelines](https://developer.apple.com/watch/human-interface-guidelines/)
+- [Marketing site](http://www.apple.com/watch/)
+- [“Secret” watch kit tips](https://devforums.apple.com/thread/264473?tstart=0)
 
 ---
 
 # From Others
 
-- [“A Day with Watch”](http://furbo.org/2014/11/20/a-day-with-apple-watch/)
-Craig Hockenberry
-
-- [“As I Learn WatchKit”](http://david-smith.org/watchkit/)
-David Smith
-
-- [To-scale Watch Mockup PDF](http://files.iconfactory.net/craig/twitter/Apple_Watch_1-1_v2.pdf)
-Thibaut Sailly
-
-![right](WatchBlueprint.png)
-
----
-
-# Bezel
-
-- [Free from Troy Gaul](http://infinitapps.com/bezel/)
-
-- Combine with [Xscope Mirror](http://furbo.org/2015/01/06/bezel-and-xscope/)
-
-![right](bezelApp.png)
+- [“As I Learn WatchKit”](http://david-smith.org/watchkit/) — David Smith
+ - [“Thinking about Load Time”](http://david-smith.org/blog/2015/04/30/ailw-thinking-about-load-time/)
+- [“Architecting Your App for WatchKit”](http://realm.io/news/architecting-app-apple-watch-natashatherobot) — Natasha Murashev
+- [Apple Watch Code Signing](http://blog.jaredsinclair.com/post/117350678170/jareds-code-signing-tips-apple-watch-edition) — Jared Sinclair
+- [WatchKit Development Tips](http://blog.mikeswanson.com/post/117807821714/watchkit-development-tips) — Mike Swanson
 
 ---
 
@@ -305,15 +310,10 @@ Thibaut Sailly
 - Direct access to the Taptic Engine
 - iPhone-free 3<sup>rd</sup> party code
 - API for digital crown
-- Animated state changes
-- Interactive Glances
-
-^ Ask David to come back up.
 
 ---
 
 # [fit]Thanks!
 
 - @curtclifton, [curtclifton.net](http://www.curtclifton.net)
-- @davidhoang, [davidhoang.com](http://www.davidhoang.com)
 
