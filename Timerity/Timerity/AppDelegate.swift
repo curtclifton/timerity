@@ -66,6 +66,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // TODO: remove file coordination demo code:
         //        dyecb.text = "Here I come to save the day!"
         //        dyecb.write()
+        // If you are using openParentApplication:reply:, make sure you create a background task immediately upon entering application:handleWatchKitExtensionRequest:reply:. This will make sure that the iPhone app gets time in the background instead of being suspended again. Additionally, wrap the call to endBackgroundTask: in a dispatch_after of 2 seconds to ensure that the iPhone app has time to send the reply before being suspended again. https://devforums.apple.com/thread/264473?tstart=0
+        var didEndBackgroundTask = false
+        var watchHandshakeBackgroundTaskIdentifier : UIBackgroundTaskIdentifier? = nil
+        let taskEnder = { () -> Void in
+            if !didEndBackgroundTask {
+                // We need to end the background task immediately or we'll be terminated. We hope to never reach this code, since the background work below should be fast.
+                UIApplication.sharedApplication().endBackgroundTask(watchHandshakeBackgroundTaskIdentifier!)
+            }
+        }
+        watchHandshakeBackgroundTaskIdentifier = UIApplication.sharedApplication().beginBackgroundTaskWithExpirationHandler(taskEnder)
         
         NSLog("handling extension request with timers: %@", timerDB.timers.description)
         NSLog("request: %@", userInfo ?? "no user info")
@@ -101,6 +111,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // TODO: communicate error back to watch app
             reply([:])
         }
+        
+        let endTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * NSEC_PER_SEC))
+        dispatch_after(endTime, dispatch_get_main_queue(), taskEnder)
     }
     
     private func updateNotificationsForTimer(timer: Timer) {
