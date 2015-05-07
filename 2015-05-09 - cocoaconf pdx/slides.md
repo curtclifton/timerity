@@ -32,13 +32,11 @@ slidenumbers: true
 
 - Watch app parts
 - Conceptual model
-- Sample app
 - Syncing data with Apple Watch
 - Debugging Apple Watch apps
 - Provisioning
 - Some challenges
 - Other resources
-- Wish list
 
 ^ [Discuss in terms of your goals for them leaving the talk]
 
@@ -54,6 +52,8 @@ slidenumbers: true
 ^ describe each piece
 ^ for each, discuss what you need to do as a dev
 ^ fast in, fast out
+
+^ [[[Add screenshots]]]
 
 ---
 
@@ -145,7 +145,7 @@ slidenumbers: true
 
 ^ [Fire up the WatchApp and give a brief demo of using it. Stay away from the code]
 
-^ Note that the code will be posted on github on Friday
+^ Note that the code is on github
 
 ---
 
@@ -216,8 +216,6 @@ slidenumbers: true
 ^ Let’s take a look at this in code. This should also be a good example of debugging WatchKit apps.
 
 ^ [See presenter’s script]
-
-^ [After demo ask if anyone sees an issue: initial watch read has to be coordinated and we could still be killed in the brief window. Possible solution: all callbacks, but would have to wake phone app even to get initial data. Too slow?]
 
 ---
 
@@ -315,5 +313,7 @@ slidenumbers: true
 
 # [fit]Thanks!
 
-- @curtclifton, [curtclifton.net](http://www.curtclifton.net)
+- @curtclifton
+- [curtclifton.net](http://www.curtclifton.net)
+- [https://github.com/curtclifton/timerity](https://github.com/curtclifton/timerity)
 
