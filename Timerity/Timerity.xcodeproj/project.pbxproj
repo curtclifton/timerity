@@ -514,6 +514,7 @@
 					};
 					4D0A16411A33E06A001BF0BE = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = H7G98VUF4H;
 					};
 					4D0A165B1A353216001BF0BE = {
 						CreatedOnToolsVersion = 6.2;
@@ -851,6 +852,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -869,6 +871,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				IBSC_MODULE = Timerity_WatchKit_Extension;
 				INFOPLIST_FILE = "Timerity Watch App/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";

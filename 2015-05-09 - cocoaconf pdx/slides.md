@@ -1,4 +1,4 @@
-footer: Curt Clifton—The Omni Group. Jan 8, 2015, Seattle Xcoders
+footer: Curt Clifton—The Omni Group. May 9, 2015, CocoaConf PDX
 slidenumbers: true
 
 ^ Sample presenter notes.
@@ -32,8 +32,8 @@ slidenumbers: true
 
 - Conceptual model
 - Sample app
-- Syncing data with Watch
-- Debugging Watch apps
+- Syncing data with Apple Watch
+- Debugging Apple Watch apps
 - Some challenges
 - Other resources
 - Wish list
@@ -134,11 +134,10 @@ slidenumbers: true
 
 ---
 
-# [fit] Syncing 
-# [fit] Data with 
-# [fit] Watch
+# [fit] Syncing Data
+# [fit] with Apple Watch
 
-^ Next I want to talk about syncing data with Watch…
+^ Next I want to talk about syncing data with Apple Watch…
 
 ---
 
@@ -165,6 +164,7 @@ slidenumbers: true
 - File coordination? [Nope.](https://developer.apple.com/library/ios/technotes/tn2408/_index.html)
 - [App Group entitlement and user defaults](http://www.atomicbird.com/blog/sharing-with-app-extensions)
 - [Shared CoreData database](http://stackoverflow.com/questions/24641768/accessing-core-data-sql-database-in-ios-8-extension-sharing-data-between-app-an)
+- [[[Darwin Notifications]]]
 - Shared SQLite database
 - Seed file & callbacks
 
@@ -206,7 +206,7 @@ slidenumbers: true
 
 ---
 
-# Syncing Data with Watch
+# Syncing Data with Apple Watch
 
 - Your watch extension is a separate process from your iPhone app; you just signed up for data syncing.
 - Watch apps die easily; network operations are right out.[^1]
@@ -215,7 +215,7 @@ slidenumbers: true
 
 ---
 
-# [fit] Debugging Watch Apps
+# [fit] Debugging Apple Watch Apps
 
 - Run iPhone app first
 - Open Watch “external display”
@@ -225,6 +225,12 @@ slidenumbers: true
 - Use Console to watch Simulator’s system log
 
 ^ Just a summary of the demo for reference on the steps.
+
+---
+
+# [fit] Provisioning
+
+[[[Fresh circles of provisioning hell…]]]
 
 ---
 
