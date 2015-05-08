@@ -280,6 +280,16 @@ slidenumbers: true
 
 ^ I wanted to briefly mention some of the challenges I had implementing the demo app…
 
+--- 
+
+# [fit] Provisioning
+
+---
+
+# [fit] Provisioning
+
+![original](CirclesOfHell.png)
+
 ---
 
 # You need to provision your Apple Watch and configure (at least) three targets.
