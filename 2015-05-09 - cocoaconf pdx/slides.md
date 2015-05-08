@@ -49,11 +49,47 @@ slidenumbers: true
 
 ## Your Watch app can include notifications, glances, the main app, and handoff.
 
+^ [builds on subsequent slides]
+
+---
+
+## Your Watch app can include notifications, glances, the main app, and handoff.xw
+
+![original fill](Notifications.png)
+
 ^ describe each piece
 ^ for each, discuss what you need to do as a dev
 ^ fast in, fast out
 
-^ [[[Add screenshots]]]
+---
+
+## Your Watch app can include notifications, glances, the main app, and handoff.
+
+![original fill](GlanceSlide.png)
+
+^ describe each piece
+^ for each, discuss what you need to do as a dev
+^ fast in, fast out
+
+---
+
+## Your Watch app can include notifications, glances, the main app, and handoff.
+
+![original fill](MainAppSlide.png)
+
+^ describe each piece
+^ for each, discuss what you need to do as a dev
+^ fast in, fast out
+
+---
+
+## Your Watch app can include notifications, glances, the main app, and handoff.
+
+![original fill](HandoffSlide.png)
+
+^ describe each piece
+^ for each, discuss what you need to do as a dev
+^ fast in, fast out
 
 ---
 
@@ -222,7 +258,7 @@ slidenumbers: true
 # Syncing Data with Apple Watch
 
 - Your watch extension is a separate process from your iPhone app; you just signed up for data syncing.
-- Watch apps die easily; network operations are right out.[^1]
+- Watch apps die easily; network operations are right out.
 
 ^ summarize
 
@@ -232,8 +268,8 @@ slidenumbers: true
 
 - Run iPhone app first
 - Open Watch “external display”
-- Launch the WatchKit app
-- In the simulator, tap the iPhone app
+- Launch the WatchKit app from Xcode
+- Launch the iPhone app from Springboard
 - In Xcode, connect to the iPhone app
 - Use Console to watch Simulator’s system log
 
