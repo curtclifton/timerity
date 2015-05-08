@@ -310,12 +310,27 @@ slidenumbers: true
 
 ---
 
-## Shared frameworks help encapsulate your data model but require some initial configuration work.
+### Shared frameworks help encapsulate your data model but require some initial configuration work.
 
-![inline fill](SharedData1.png)![inline fill](SharedData2.png)
-![inline fill](SharedData3.png)![inline fill](SharedData4.png)
+---
+### Shared frameworks help encapsulate your data model but require some initial configuration work.
 
-^ [[[If you have time for this, make a series of images using Graffle's zoom feature to highlight the key bits.
+![original](TimerityGeneralGraffle.png)
+
+---
+### Shared frameworks help encapsulate your data model but require some initial configuration work.
+
+![original](TimerityBuildPhasesGraffle.png)
+
+---
+### Shared frameworks help encapsulate your data model but require some initial configuration work.
+
+![original](ExtensionGeneralGraffle.png)
+
+---
+### Shared frameworks help encapsulate your data model but require some initial configuration work.
+
+![original](ExtensionBuildPhasesGraffle.png)
 
 ---
 
