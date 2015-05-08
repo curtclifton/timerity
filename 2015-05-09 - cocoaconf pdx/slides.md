@@ -34,7 +34,6 @@ slidenumbers: true
 - Conceptual model
 - Syncing data with Apple Watch
 - Debugging Apple Watch apps
-- Provisioning
 - Some challenges
 - Other resources
 
@@ -277,7 +276,13 @@ slidenumbers: true
 
 ---
 
-# [fit] Provisioning
+# [fit] Challenges
+
+^ I wanted to briefly mention some of the challenges I had implementing the demo app…
+
+---
+
+# You need to provision your Apple Watch and configure (at least) three targets.
 
 ![inline](Provisioning.png)
 
@@ -287,25 +292,20 @@ slidenumbers: true
 
 ---
 
-# [fit] Challenges
+## WKInterface objects silently ignore commands if their proxied views aren't active.
 
-^ I wanted to briefly mention some of the challenges I had implementing the demo app…
+^ This is especially challenging given that you need to also avoid sending commands more than once.
+
+^ [If OK on time, show code.]
 
 ---
 
-# Challenges
+## Shared frameworks help encapsulate your data model but require some initial configuration work.
 
-- Sending UI commands to non-active controls
-- Using shared frameworks
-- Selecting watch menu items crashes the simulator eventually
-- No auto layout?
-- Notifications while watch app is running?
- 
-^ [If OK on time, show code for first two items.]
+![inline fill](SharedData1.png)![inline fill](SharedData2.png)
+![inline fill](SharedData3.png)![inline fill](SharedData4.png)
 
-^ [If swimming in time, demo coding and running dynamic notification]
-
-^ On the iPhone, if a notification arrives while your app is foregrounded, the system doesn't present the notification, it just calls a method on your app delegate. What's going to happen on the Watch? (There's a method that might be called on the watch, but the docs are unclear and we can't test it.)
+^ [[[If you have time for this, make a series of images using Graffle's zoom feature to highlight the key bits.
 
 ---
 
