@@ -106,12 +106,12 @@
                   moduleName = "TimerityData"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/curt/Documents/SourceDirs/Timerity/Timerity/TimerityData/TimerCommand.swift"
-                  timestampString = "452669164.621312"
+                  timestampString = "452800551.767938"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "25"
                   endingLineNumber = "25"
-                  offsetFromSymbolStart = "120">
+                  offsetFromSymbolStart = "146">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -121,12 +121,12 @@
                   moduleName = "TimerityData"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/curt/Documents/SourceDirs/Timerity/Timerity/TimerityData/TimerCommand.swift"
-                  timestampString = "452669164.621611"
+                  timestampString = "452800551.768131"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "26"
                   endingLineNumber = "26"
-                  offsetFromSymbolStart = "36">
+                  offsetFromSymbolStart = "40">
                </Location>
             </Locations>
          </BreakpointContent>

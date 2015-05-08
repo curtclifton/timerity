@@ -265,12 +265,12 @@ slidenumbers: true
 
 # [fit] Debugging Apple Watch Apps
 
-- Run iPhone app first
-- Open Watch “external display”
+- Run iPhone app, open Watch “external display”
 - Launch the WatchKit app from Xcode
 - Launch the iPhone app from Springboard
-- In Xcode, connect to the iPhone app
+- In debugger, connect to the iPhone app
 - Use Console to watch Simulator’s system log
+  - `…/data/Library/Logs/system.log`
 
 ^ Just a summary of the demo for reference on the steps.
 
