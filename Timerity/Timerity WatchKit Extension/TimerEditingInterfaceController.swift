@@ -10,7 +10,7 @@ import TimerityData
 import WatchKit
 
 // TODO: really should localize these and read them from a configuration file
-let defaultTimerNames = ["Tea", "Power Nap", "Brownies", "Egg", "Tempo Run"]
+let defaultTimerNames = ["Tea", "Power Nap", "Brownies", "Egg", "Tempo Run", "CocoaConf Demo"]
 
 class TimerEditingInterfaceController: WKInterfaceController {
     private lazy var timer = Timer()
