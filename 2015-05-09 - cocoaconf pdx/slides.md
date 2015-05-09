@@ -52,7 +52,7 @@ slidenumbers: true
 
 ---
 
-## Your Watch app can include notifications, glances, the main app, and handoff.xw
+## Your Watch app can include notifications, glances, the main app, and handoff.
 
 ![original fill](Notifications.png)
 
@@ -367,8 +367,9 @@ slidenumbers: true
 # Wish List
 
 - Direct access to the Taptic Engine
-- iPhone-free 3<sup>rd</sup> party code
 - API for digital crown
+- iPhone-free 3<sup>rd</sup> party code
+- On-device storage
 
 ---
 
